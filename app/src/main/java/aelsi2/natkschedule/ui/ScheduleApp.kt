@@ -19,7 +19,7 @@ fun ScheduleApp() {
     ) { innerPadding ->
         NavHost(
             navController = appState.navController,
-            startDestination = "personalSchedule",
+            startDestination = TopLevelDestinations.HOME_ROUTE,
             modifier = Modifier.consumedWindowInsets(innerPadding)
         ) {
             composable(TopLevelDestinations.HOME_ROUTE){
