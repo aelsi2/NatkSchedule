@@ -4,5 +4,5 @@
     <string name="favourites_tab_name">Favourites</string>
     <string name="groups_tab_name">Groups</string>
     <string name="teachers_tab_name">Teachers</string>
-    <string name="classrooms_tab_name">Classrooms</string>
+    <string name="classrooms_tab_name">Rooms</string>
 </resources>

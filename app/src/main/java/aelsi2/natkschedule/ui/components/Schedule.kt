@@ -25,10 +25,11 @@ fun ScheduleEntry(
 ) {
     Surface(
         shape = Shapes.medium,
-        color = MaterialTheme.colorScheme.secondaryContainer
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        modifier = modifier
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(10.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {

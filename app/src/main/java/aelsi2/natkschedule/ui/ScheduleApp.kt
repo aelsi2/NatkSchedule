@@ -1,10 +1,13 @@
 package aelsi2.natkschedule.ui
 
+import aelsi2.natkschedule.ui.components.AppTabs
+import aelsi2.natkschedule.ui.components.ScheduleNavbar
 import aelsi2.natkschedule.ui.screens.HomeScreen
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumedWindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -15,15 +18,33 @@ import androidx.navigation.compose.composable
 fun ScheduleApp() {
     val appState = rememberScheduleAppState()
     Scaffold(
-
+        bottomBar = {
+            ScheduleNavbar(
+                items = AppTabs.values().asIterable(),
+                selectedTabRoute = appState.currentTopRoute,
+                onItemClick = { route -> appState.navigateToTab(route) }
+            )
+        }
     ) { innerPadding ->
         NavHost(
             navController = appState.navController,
-            startDestination = TopLevelDestinations.HOME_ROUTE,
+            startDestination = TopLevelRoutes.HOME_ROUTE,
             modifier = Modifier.consumedWindowInsets(innerPadding)
         ) {
-            composable(TopLevelDestinations.HOME_ROUTE){
-                HomeScreen()
+            composable(TopLevelRoutes.HOME_ROUTE){
+                Text("Home")
+            }
+            composable(TopLevelRoutes.TEACHERS_ROUTE){
+                Text("Teachers")
+            }
+            composable(TopLevelRoutes.GROUPS_ROUTE){
+                Text("Groups")
+            }
+            composable(TopLevelRoutes.FAVORITES_ROUTE){
+                Text("Favs")
+            }
+            composable(TopLevelRoutes.CLASSROOMS_ROUTE){
+                Text("Classrooms")
             }
         }
     }
