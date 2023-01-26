@@ -2,7 +2,6 @@ package aelsi2.natkschedule.ui
 
 import aelsi2.natkschedule.ui.components.AppTabs
 import aelsi2.natkschedule.ui.components.ScheduleNavbar
-import aelsi2.natkschedule.ui.screens.HomeScreen
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumedWindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 
-class HomeScreenViewModel : ViewModel() {
+class ScheduleScreenViewModel : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -16,7 +16,7 @@ class HomeScreenViewModel : ViewModel() {
             ): T {
                 val application = checkNotNull(extras[APPLICATION_KEY])
                 val savedStateHandle = extras.createSavedStateHandle()
-                return HomeScreenViewModel() as T
+                return ScheduleScreenViewModel() as T
             }
         }
 
