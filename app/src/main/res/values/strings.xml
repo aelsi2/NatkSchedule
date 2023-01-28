@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Natk Schedule</string>
+    <string name="app_name">Schedule</string>
     <string name="home_tab_name">Home</string>
     <string name="favourites_tab_name">Favourites</string>
     <string name="groups_tab_name">Groups</string>

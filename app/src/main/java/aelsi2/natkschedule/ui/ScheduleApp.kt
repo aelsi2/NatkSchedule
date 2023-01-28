@@ -4,6 +4,7 @@ import aelsi2.natkschedule.ui.components.AppTabs
 import aelsi2.natkschedule.ui.components.ScheduleNavbar
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumedWindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +29,7 @@ fun ScheduleApp() {
         NavHost(
             navController = appState.navController,
             startDestination = TopLevelRoutes.HOME_ROUTE,
-            modifier = Modifier.consumedWindowInsets(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(TopLevelRoutes.HOME_ROUTE){
                 Text("Home")
