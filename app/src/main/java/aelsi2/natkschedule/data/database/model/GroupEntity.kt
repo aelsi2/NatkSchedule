@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 data class GroupEntity(
     @PrimaryKey val groupId : String,
     val groupName : String,
-    val groupFieldOfStudy : String,
+    val groupProgramName : String,
     val groupYear : Int,
 ) {
     companion object {
-        fun fromGroup(group: Group) = GroupEntity(group.id, group.name, group.fieldOfStudy, group.year)
+        fun fromGroup(group: Group) = GroupEntity(group.id, group.name, group.programName, group.year)
     }
-    fun toGroup() = Group(groupName, groupFieldOfStudy, groupYear, groupId)
+    fun toGroup() = Group(groupName, groupProgramName, groupYear, groupId)
 }
