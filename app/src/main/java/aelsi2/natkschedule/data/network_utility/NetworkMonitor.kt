@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data
+package aelsi2.natkschedule.data.network_utility
 
 import kotlinx.coroutines.flow.Flow
 

@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.screens
+package aelsi2.natkschedule.ui.screens.schedule
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable

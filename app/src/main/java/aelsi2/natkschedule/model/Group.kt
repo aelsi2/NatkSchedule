@@ -4,5 +4,5 @@ data class Group(
     val name : String,
     val fieldOfStudy : String,
     val year : Int,
-    override val id : String = "${name}_${fieldOfStudy}_${year}"
-    ) : ScheduleMetaItem
+    val id : String = "${name}_${fieldOfStudy}_${year}"
+    )

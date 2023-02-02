@@ -6,8 +6,8 @@ data class Teacher(
     val lastName: String,
     val firstName: String,
     val middleName: String? = null,
-    override val id: String = "${firstName}_${middleName}_${lastName}"
-) : ScheduleMetaItem {
+    val id: String = "${firstName}_${middleName}_${lastName}"
+) {
     fun getFullName(): String {
         val joiner = StringJoiner(" ")
         if (lastName.isNotEmpty()) {

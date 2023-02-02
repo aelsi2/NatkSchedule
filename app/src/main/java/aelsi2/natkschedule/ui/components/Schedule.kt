@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ScheduleEntry(
+fun Lecture(
     title : String,
     time : String,
     info : String,
@@ -79,9 +79,9 @@ fun ScheduleEntry(
 
 @Preview
 @Composable
-fun ScheduleEntryPreview() {
+fun LecturePreview() {
     ScheduleTheme(darkTheme = false) {
-        ScheduleEntry(
+        Lecture(
             title = "МДК.01.03 Разработка мобильных приложений",
             time = "16:20 – 18:00",
             info = "№366 • Климова И. С.",

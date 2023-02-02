@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data
+package aelsi2.natkschedule.data.network_utility
 
 import android.net.NetworkRequest.Builder
 import android.content.Context
@@ -6,15 +6,13 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build.VERSION
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
-import javax.inject.Inject
 
-class ConnectivityManagerNetworkMonitor @Inject constructor(
-    @ApplicationContext private val context: Context
+class ConnectivityManagerNetworkMonitor constructor(
+    private val context: Context
 ) : NetworkMonitor {
     override val isOnline : Flow<Boolean> = callbackFlow {
         val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
@@ -43,14 +41,13 @@ class ConnectivityManagerNetworkMonitor @Inject constructor(
             connectivityManager?.unregisterNetworkCallback(callback)
         }
     }.conflate()
-}
-
-private fun ConnectivityManager?.isConnected() : Boolean {
-    this ?: return false
-    @Suppress("DEPRECATION")
-    return when {
-        VERSION.SDK_INT > 29 -> activeNetwork?.let(::getNetworkCapabilities)
-            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-        else -> activeNetworkInfo?.isConnected ?: false
+    private fun ConnectivityManager?.isConnected() : Boolean {
+        this ?: return false
+        @Suppress("DEPRECATION")
+        return when {
+            VERSION.SDK_INT > 29 -> activeNetwork?.let(::getNetworkCapabilities)
+                ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+            else -> activeNetworkInfo?.isConnected ?: false
+        }
     }
 }

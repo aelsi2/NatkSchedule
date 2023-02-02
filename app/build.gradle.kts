@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -56,15 +55,17 @@ dependencies {
     val navVersion = "2.5.3"
     val roomVersion = "2.5.0"
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
+
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("io.insert-koin:koin-android:3.3.2")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
 
     implementation("mysql:mysql-connector-java:5.1.46")
 
@@ -78,6 +79,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.6.1")
 
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
