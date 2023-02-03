@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.aelsi2.natkschedule"
+    namespace = "aelsi2.natkschedule"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.aelsi2.natkschedule"
+        applicationId = "aelsi2.natkschedule"
         minSdk = 23
         targetSdk = 33
         versionCode = 1
