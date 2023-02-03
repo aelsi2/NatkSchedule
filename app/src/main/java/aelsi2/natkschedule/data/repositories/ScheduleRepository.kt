@@ -6,7 +6,7 @@ import java.time.Instant
 /**
  * Репозиторий учебных занятий.
  */
-interface LectureRepository {
+interface ScheduleRepository {
     /**
      * Поддерживает ли репозиторий синхронизацию.
      */
@@ -21,12 +21,10 @@ interface LectureRepository {
      * @param sync Нужно ли выполнить синхронизацию (если поддерживается).
      * @return Последовательность занятий.
      */
-    suspend fun getLectures(
+    suspend fun getSchedule(
         startDate : Instant,
         endDate: Instant,
-        group : Group? = null,
-        teacher: Teacher? = null,
-        classroom: Classroom? = null,
+        identifier : ScheduleIdentifier,
         sync : Boolean = true
     ) : Result<Iterable<Lecture>>
 }

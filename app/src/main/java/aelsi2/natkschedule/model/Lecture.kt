@@ -11,7 +11,7 @@ data class Lecture(
     val group: Group?,
     val subgroupNumber : Int? = null,
     val id : String =
-        "${startTime}_${teacher?.getFullName()}_${classroom?.fullName}_${group?.name}_${subgroupNumber}"
+        "${startTime}_${teacher?.fullName}_${classroom?.fullName}_${group?.name}_${subgroupNumber}"
     ) {
     val ongoing : Boolean
         get() = (startTime < Instant.now()) and (endTime > Instant.now())
