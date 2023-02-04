@@ -1,3 +1,9 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
+val databaseUrl: String = gradleLocalProperties(rootDir).getProperty("DATABASE_URL")
+val databaseUser: String = gradleLocalProperties(rootDir).getProperty("DATABASE_USER")
+val databasePassword: String = gradleLocalProperties(rootDir).getProperty("DATABASE_PASSWORD")
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -15,10 +21,13 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "DATABASE_URL", databaseUrl)
+        buildConfigField("String", "DATABASE_USER", databaseUser)
+        buildConfigField("String", "DATABASE_PASSWORD", databasePassword)
     }
 
     buildTypes {
@@ -58,29 +67,33 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
 
+    //Koin (автоматическое внедрение зависимостей)
     implementation("io.insert-koin:koin-android:3.3.2")
     implementation("io.insert-koin:koin-androidx-compose:3.4.1")
 
+    //Room persistence (хранение кэшированных расписаний)
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    //DataStore (хранение настроек)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    //JDBC MySQL connector (скачивание расписаний из сетевой БД)
     implementation("mysql:mysql-connector-java:5.1.46")
 
+    //Compose (интерфейс)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.6.1")
 
+    //Compose navigation (навигация в интерфейсе)
     implementation("androidx.navigation:navigation-compose:$navVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
