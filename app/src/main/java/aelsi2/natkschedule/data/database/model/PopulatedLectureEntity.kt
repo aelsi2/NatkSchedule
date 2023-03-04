@@ -1,10 +1,11 @@
 package aelsi2.natkschedule.data.database.model
 
+import aelsi2.natkschedule.model.Lecture
 import androidx.room.Embedded
 import androidx.room.Relation
 
 data class PopulatedLectureEntity(
-    @Embedded val lecture : LectureEntity,
+    @Embedded val lectureEntity : LectureEntity,
     @Relation(
         parentColumn = "lectureClassroomId",
         entityColumn = "classroomId"
@@ -20,5 +21,17 @@ data class PopulatedLectureEntity(
         entityColumn = "groupId"
     )
     val groupEntity: GroupEntity,
-
-)
+) {
+    fun toLecture() = Lecture(
+        lectureEntity.lectureDisciplineName,
+        lectureEntity.lectureDate,
+        lectureEntity.lectureStartTime,
+        lectureEntity.lectureEndTime,
+        teacherEntity.toTeacher(),
+        classroomEntity.toClassroom(),
+        groupEntity.toGroup(),
+        lectureEntity.lectureSubgroupNumber,
+        lectureEntity.lectureBreakStartTime,
+        lectureEntity.lectureEndTime
+    )
+}

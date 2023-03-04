@@ -8,10 +8,10 @@ import androidx.room.Upsert
 @Dao
 interface ClassroomDao {
     @Upsert
-    fun putClassrooms(classrooms : List<ClassroomEntity>)
+    suspend fun putClassrooms(classrooms : List<ClassroomEntity>)
 
     @Query("SELECT * FROM Classrooms WHERE classroomId IN (:ids)")
-    fun getClassrooms(ids : List<String>) : List<ClassroomEntity>
+    suspend fun getClassrooms(ids : List<String>) : List<ClassroomEntity>
 
     @Query("""
         DELETE FROM Classrooms
@@ -24,5 +24,5 @@ interface ClassroomDao {
             WHERE lectureClassroomId IS NOT NULL
         )
         """)
-    fun deleteUnused(favorites : List<String>)
+    suspend fun deleteUnused(favorites : List<String>)
 }

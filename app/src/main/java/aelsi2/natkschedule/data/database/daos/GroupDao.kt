@@ -8,10 +8,10 @@ import androidx.room.Upsert
 @Dao
 interface GroupDao {
     @Upsert
-    fun putGroups(groups : List<GroupEntity>)
+    suspend fun putGroups(groups : List<GroupEntity>)
 
     @Query("SELECT * FROM Groups WHERE groupId in (:ids)")
-    fun getGroups(ids : List<String>) : List<GroupEntity>
+    suspend fun getGroups(ids : List<String>) : List<GroupEntity>
 
     @Query("""
         DELETE FROM Groups
@@ -24,5 +24,5 @@ interface GroupDao {
             WHERE lectureGroupId IS NOT NULL
         )
         """)
-    fun deleteUnused(favorites : List<String>)
+    suspend fun deleteUnused(favorites : List<String>)
 }

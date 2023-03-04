@@ -7,4 +7,5 @@ interface SettingsReader {
     val cacheFavoriteSchedulesEnabled : Flow<Boolean>
     val cacheInBackgroundEnabled : Flow<Boolean>
     val backgroundCachingIntervalSeconds : Flow<Long>
+    val keepCacheForDays : Flow<Int>
 }

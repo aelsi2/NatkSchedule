@@ -8,11 +8,12 @@ import androidx.room.PrimaryKey
 data class ClassroomEntity(
     @PrimaryKey val classroomId : String,
     val classroomFullName : String,
-    val classroomShortName : String = classroomFullName
+    val classroomShortName : String? = null,
+    val classroomAddress : String? = null,
 ) {
     companion object {
         fun fromClassroom(classroom: Classroom) =
-            ClassroomEntity(classroom.id, classroom.fullName, classroom.shortName)
+            ClassroomEntity(classroom.id, classroom.fullName, classroom.shortName, classroom.address)
     }
-    fun toClassroom() = Classroom(classroomFullName, classroomShortName, classroomId)
+    fun toClassroom() = Classroom(classroomFullName, classroomShortName, classroomAddress, classroomId)
 }

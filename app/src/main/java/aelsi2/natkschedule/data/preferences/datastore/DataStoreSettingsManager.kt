@@ -4,6 +4,7 @@ import aelsi2.natkschedule.data.preferences.SettingsManager
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +57,19 @@ class DataStoreSettingsManager(appContext : Context) : SettingsManager {
         }
     }
 
+    override val keepCacheForDays: Flow<Int>
+        get() = settingsDataStore.data.map {
+            it[KEEP_CACHE_FOR_DAYS] ?: KEEP_CACHE_FOR_DAYS_DEFAULT
+        }
+    override suspend fun setKeepCacheForDays(value: Int) {
+        if (value < 0) {
+            return
+        }
+        settingsDataStore.edit { preferences ->
+            preferences[KEEP_CACHE_FOR_DAYS] = value
+        }
+    }
+
     override suspend fun resetAll() {
         settingsDataStore.edit { preferences ->
             preferences[CACHE_MAIN_SCHEDULE] = CACHE_MAIN_SCHEDULE_DEFAULT
@@ -70,10 +84,12 @@ class DataStoreSettingsManager(appContext : Context) : SettingsManager {
         private val CACHE_FAVORITE_SCHEDULES = booleanPreferencesKey("cache_favorites")
         private val CACHE_IN_BACKGROUND = booleanPreferencesKey("cache_background")
         private val BACKGROUND_CACHING_INTERVAL = longPreferencesKey("cache_interval")
+        private val KEEP_CACHE_FOR_DAYS = intPreferencesKey("keep_cache_days")
 
         private const val CACHE_MAIN_SCHEDULE_DEFAULT : Boolean = true
         private const val CACHE_FAVORITE_SCHEDULES_DEFAULT : Boolean = false
         private const val CACHE_IN_BACKGROUND_DEFAULT : Boolean = true
         private const val BACKGROUND_CACHING_INTERVAL_DEFAULT : Long = 12 * 60 * 60
+        private const val KEEP_CACHE_FOR_DAYS_DEFAULT : Int = 7
     }
 }

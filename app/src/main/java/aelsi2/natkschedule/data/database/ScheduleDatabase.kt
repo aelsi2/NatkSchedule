@@ -1,6 +1,7 @@
 package aelsi2.natkschedule.data.database
 
-import aelsi2.natkschedule.data.database.converters.InstantConverter
+import aelsi2.natkschedule.data.database.converters.DateConverter
+import aelsi2.natkschedule.data.database.converters.TimeConverter
 import aelsi2.natkschedule.data.database.daos.ClassroomDao
 import aelsi2.natkschedule.data.database.daos.GroupDao
 import aelsi2.natkschedule.data.database.daos.LectureDao
@@ -22,7 +23,7 @@ import androidx.room.TypeConverters
     ],
     version = 1
 )
-@TypeConverters(InstantConverter::class)
+@TypeConverters(DateConverter::class, TimeConverter::class)
 abstract class ScheduleDatabase : RoomDatabase() {
     abstract fun classroomDao() : ClassroomDao
     abstract fun teacherDao() : TeacherDao

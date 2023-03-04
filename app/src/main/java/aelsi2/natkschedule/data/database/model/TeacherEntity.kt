@@ -7,13 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Teachers")
 data class TeacherEntity(
     @PrimaryKey val teacherId : String,
-    val teacherLastName: String,
-    val teacherFirstName: String,
-    val teacherMiddleName: String? = null
+    val teacherFullName: String,
+    val teacherShortName: String?
 ) {
     companion object {
         fun fromTeacher(teacher: Teacher) =
-            TeacherEntity(teacher.id, teacher.lastName, teacher.firstName, teacher.middleName)
+            TeacherEntity(teacher.id, teacher.fullName, teacher.shortName)
     }
-    fun toTeacher() = Teacher(teacherLastName, teacherFirstName, teacherMiddleName, teacherId)
+    fun toTeacher() = Teacher(teacherFullName, teacherShortName, teacherId)
 }

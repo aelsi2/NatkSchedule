@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class GroupEntity(
     @PrimaryKey val groupId : String,
     val groupName : String,
-    val groupProgramName : String,
+    val groupProgramName : String?,
     val groupYear : Int,
 ) {
     companion object {

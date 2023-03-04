@@ -53,7 +53,7 @@ fun Lecture(
                     Text(time, style = MaterialTheme.typography.bodySmall)
                     Text(info, style = MaterialTheme.typography.bodySmall)
                 }
-                if (state.isNotEmpty() and stateTime.isNotEmpty()){
+                if (state.isNotEmpty() && stateTime.isNotEmpty()){
                     Spacer(modifier = Modifier.width(spacing))
                 }
                 Column(
