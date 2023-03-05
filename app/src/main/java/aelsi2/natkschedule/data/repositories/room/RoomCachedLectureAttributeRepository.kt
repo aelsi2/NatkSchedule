@@ -12,8 +12,8 @@ class RoomCachedLectureAttributeRepository(
         get() = true
 
     override suspend fun getAttributes(
-        sync: Boolean,
-        vararg keys: List<ScheduleIdentifier>
+        keys: List<ScheduleIdentifier>,
+        sync: Boolean
     ): Result<List<LectureAttribute>> {
         TODO("Not yet implemented")
     }

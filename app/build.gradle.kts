@@ -1,7 +1,8 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
+// Для сборки нужно указать DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD, в local.properties
 val databaseUrl: String = gradleLocalProperties(rootDir).getProperty("DATABASE_URL")
-val databaseUser: String = gradleLocalProperties(rootDir).getProperty("DATABASE_USER")
+val databaseUser: String = gradleLocalProperties(rootDir).getProperty("DATABASE_USERNAME")
 val databasePassword: String = gradleLocalProperties(rootDir).getProperty("DATABASE_PASSWORD")
 
 plugins {

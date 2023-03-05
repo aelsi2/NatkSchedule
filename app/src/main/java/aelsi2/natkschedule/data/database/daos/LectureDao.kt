@@ -14,7 +14,8 @@ interface LectureDao {
             and (:teacherId is null or lectureTeacherId = :teacherId)
             and (:groupId is null or lectureGroupId = :groupId)
             and (:classroomId is null or lectureClassroomId = :classroomId)
-        ORDER BY lectureDate ASC, lectureStartTime ASC, lectureSubgroupNumber ASC""")
+        ORDER BY lectureDate ASC, lectureStartTime ASC, lectureSubgroupNumber ASC
+    """)
     suspend fun getPopulatedLectures(
         startDate : LocalDate,
         endDate : LocalDate,
@@ -29,8 +30,21 @@ interface LectureDao {
     @Query("DELETE FROM Lectures WHERE lectureDate <= :date")
     suspend fun deleteLecturesBefore(date : LocalDate)
 
-    @Query("DELETE FROM Lectures WHERE lectureDate >= :startDate and lectureDate <= :endDate")
-    suspend fun deleteLecturesBetween(startDate : LocalDate, endDate : LocalDate)
+    @Query("""
+        DELETE FROM Lectures 
+        WHERE lectureDate >= :startDate 
+            and lectureDate <= :endDate
+            and (:teacherId is null or lectureTeacherId = :teacherId)
+            and (:groupId is null or lectureGroupId = :groupId)
+            and (:classroomId is null or lectureClassroomId = :classroomId)
+    """)
+    suspend fun deleteLecturesBetween(
+        startDate : LocalDate,
+        endDate : LocalDate,
+        teacherId : String?,
+        groupId : String?,
+        classroomId : String?
+    )
 
     @Query("""
         DELETE FROM Lectures

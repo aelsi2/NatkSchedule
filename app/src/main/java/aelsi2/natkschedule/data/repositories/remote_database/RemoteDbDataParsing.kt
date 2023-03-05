@@ -4,6 +4,8 @@ import aelsi2.natkschedule.model.Classroom
 import aelsi2.natkschedule.model.Group
 import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.Teacher
+import java.sql.ResultSet
+import java.sql.SQLException
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
@@ -95,7 +97,7 @@ fun parseLecture(
     val breakEndTime = getBreakEndTime(startTime, endTime)
     val subgroupNumber : Int? = rawSubgroupNumber.zeroToNull()
     return Lecture(
-        disciplineName, date, startTime, endTime, teacher, classroom, group, subgroupNumber
+        disciplineName, date, startTime, endTime, teacher, classroom, group, subgroupNumber, breakStartTime, breakEndTime
     )
 }
 
@@ -140,5 +142,5 @@ fun parseClassroom(rawName : String?) : Classroom? {
 fun parseGroup(rawName : String?, rawProgramName : String?, year : Int) : Group? {
     val name : String = rawName.blankToNull() ?: return null
     val programName = rawProgramName.blankToNull() ?: return null
-    return Group(name, programName, year)
+    return Group(name, programName, year, rawName!!)
 }

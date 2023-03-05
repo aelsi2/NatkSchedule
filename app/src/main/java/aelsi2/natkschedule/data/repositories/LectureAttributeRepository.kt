@@ -5,7 +5,7 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 
 /**
- * Репозиторий атрибутов лекций (группа, препод, аудитория).
+ * Репозиторий атрибутов лекций (препод, аудитория, группа).
  */
 interface LectureAttributeRepository {
     /**
@@ -13,9 +13,15 @@ interface LectureAttributeRepository {
      */
     val syncable : Boolean
 
+    /**
+     * Получить данные об атрибутах лекций по соответствующим идентификаторам лекций.
+     * @param keys Список идентификаторов лекций.
+     * @param sync Нужно ли обновить данные в репозитории.
+     * @return Список атрибутов лекций.
+     */
     suspend fun getAttributes(
-        sync : Boolean = true,
-        vararg keys : List<ScheduleIdentifier>
+        keys : List<ScheduleIdentifier>,
+        sync : Boolean = true
     ) : Result<List<LectureAttribute>>
     suspend fun getAttributesOfType(
         type : ScheduleType,

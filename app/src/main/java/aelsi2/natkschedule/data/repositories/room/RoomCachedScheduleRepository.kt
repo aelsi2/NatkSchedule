@@ -36,7 +36,7 @@ class RoomCachedScheduleRepository(
             val syncResult = syncRepository.getSchedule(startDate, endDate, identifier)
             syncResult.fold(
                 onSuccess = {
-                    putLectures(it)
+                    putLectures(startDate, endDate, identifier, it)
                     return Result.success(it)
                 },
                 onFailure = {
@@ -65,6 +65,9 @@ class RoomCachedScheduleRepository(
         }
     }
     private suspend fun putLectures(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        identifier: ScheduleIdentifier,
         lectures : List<Lecture>
     ) {
         val teacherEntities = ArrayList<TeacherEntity>()
@@ -83,7 +86,11 @@ class RoomCachedScheduleRepository(
             }
             return@map entity
         }
+        val teacherId = if (identifier.type == ScheduleType.TEACHER) { identifier.stringId } else { null }
+        val groupId = if (identifier.type == ScheduleType.GROUP) { identifier.stringId } else { null }
+        val classroomId = if (identifier.type == ScheduleType.CLASSROOM) { identifier.stringId } else { null }
         database.withTransaction {
+            lectureDao.deleteLecturesBetween(startDate, endDate, teacherId, groupId, classroomId)
             teacherDao.putTeachers(teacherEntities)
             groupDao.putGroups(groupEntities)
             classroomDao.putClassrooms(classroomEntities)
