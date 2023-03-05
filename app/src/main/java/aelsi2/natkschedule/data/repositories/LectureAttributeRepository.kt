@@ -7,7 +7,7 @@ import aelsi2.natkschedule.model.ScheduleType
 /**
  * Репозиторий атрибутов лекций (группа, препод, аудитория).
  */
-interface LectureAttributeRepository<T> {
+interface LectureAttributeRepository {
     /**
      * Поддерживает ли репозиторий синхронизацию.
      */
@@ -16,9 +16,9 @@ interface LectureAttributeRepository<T> {
     suspend fun getAttributes(
         sync : Boolean = true,
         vararg keys : List<ScheduleIdentifier>
-    ) : Result<Iterable<LectureAttribute>>
+    ) : Result<List<LectureAttribute>>
     suspend fun getAttributesOfType(
         type : ScheduleType,
         sync : Boolean = true
-    ) : Result<Iterable<LectureAttribute>>
+    ) : Result<List<LectureAttribute>>
 }

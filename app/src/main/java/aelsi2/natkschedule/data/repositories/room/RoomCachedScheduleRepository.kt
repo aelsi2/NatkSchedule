@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data.repositories.cached
+package aelsi2.natkschedule.data.repositories.room
 
 import aelsi2.natkschedule.data.database.ScheduleDatabase
 import aelsi2.natkschedule.data.database.daos.ClassroomDao
@@ -14,9 +14,8 @@ import aelsi2.natkschedule.data.repositories.ScheduleRepository
 import aelsi2.natkschedule.model.*
 import androidx.room.withTransaction
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
-class CachedScheduleRepository(
+class RoomCachedScheduleRepository(
     private val lectureDao: LectureDao,
     private val teacherDao: TeacherDao,
     private val classroomDao: ClassroomDao,
@@ -46,10 +45,10 @@ class CachedScheduleRepository(
             )
         }
         else {
-            return Result.success(load(startDate, endDate, identifier))
+            return Result.success(loadLectures(startDate, endDate, identifier))
         }
     }
-    private suspend fun load(
+    private suspend fun loadLectures(
         startDate: LocalDate,
         endDate: LocalDate,
         identifier: ScheduleIdentifier

@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data.repositories.network
+package aelsi2.natkschedule.data.repositories.remote_database
 
 import aelsi2.natkschedule.BuildConfig
 import java.sql.Connection
@@ -6,7 +6,7 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
 
-class NetworkDatabaseManager {
+class RemoteDbManager {
     @Throws(SQLException::class)
     fun openConnection() : Connection = DriverManager.getConnection(
         DATABASE_URL,
