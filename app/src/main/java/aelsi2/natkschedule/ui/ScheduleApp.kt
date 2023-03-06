@@ -1,20 +1,18 @@
 package aelsi2.natkschedule.ui
 
 import aelsi2.natkschedule.ui.components.AppTabs
+import aelsi2.natkschedule.ui.components.LectureCard
+import aelsi2.natkschedule.ui.components.LectureCardStyle
 import aelsi2.natkschedule.ui.components.ScheduleNavbar
-import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreenViewModel
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.qualifier.named
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -35,7 +33,15 @@ fun ScheduleApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(TopLevelRoutes.HOME_ROUTE){
-                Text("Home")
+                LectureCard(
+                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    onClick = {},
+                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(10.dp),
+                    infoText = "16:20 – 18:00\n№366 • Климова И. С.",
+                    stateText = "Идет",
+                    stateTimerText = "До перерыва: 40:31",
+                    style = LectureCardStyle.Highlighted
+                )
             }
             composable(TopLevelRoutes.TEACHERS_ROUTE){
                 Text("Teachers")
