@@ -1,9 +1,10 @@
 package aelsi2.natkschedule
 
-import aelsi2.natkschedule.data.database.databaseModule
-import aelsi2.natkschedule.data.network_utility.networkUtilityModule
+import aelsi2.natkschedule.data.room_database.roomDatabaseModule
+import aelsi2.natkschedule.data.network.networkModule
 import aelsi2.natkschedule.data.preferences.preferencesModule
-import aelsi2.natkschedule.data.repositories.repositoriesModule
+import aelsi2.natkschedule.data.repositories.natk_database.natkDatabaseReposModule
+import aelsi2.natkschedule.data.repositories.room_database.roomDatabaseReposModule
 import aelsi2.natkschedule.ui.viewModelsModule
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
@@ -13,9 +14,15 @@ class ScheduleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            modules(databaseModule, networkUtilityModule, preferencesModule, repositoriesModule)
-            modules(viewModelsModule)
             androidContext(this@ScheduleApplication)
+            modules(
+                roomDatabaseModule,
+                networkModule,
+                preferencesModule,
+                natkDatabaseReposModule,
+                roomDatabaseReposModule
+            )
+            modules(viewModelsModule)
         }
     }
 }

@@ -4,7 +4,8 @@ data class Group(
     val name : String,
     val programName : String?,
     val year : Int,
-    override val id : String = "${name}_${programName}_${year}"
-    ) : LectureAttribute {
-    override fun toScheduleIdentifier() = ScheduleIdentifier(ScheduleType.GROUP, id)
-    }
+    val id : String = "${name}_${programName}_${year}"
+) : LectureAttribute {
+    override val scheduleIdentifier: ScheduleIdentifier
+        get() = ScheduleIdentifier(ScheduleType.GROUP, id)
+}
