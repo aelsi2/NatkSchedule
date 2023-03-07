@@ -1,9 +1,6 @@
 package aelsi2.natkschedule.ui
 
-import aelsi2.natkschedule.ui.components.AppTabs
-import aelsi2.natkschedule.ui.components.LectureCard
-import aelsi2.natkschedule.ui.components.LectureCardStyle
-import aelsi2.natkschedule.ui.components.ScheduleNavbar
+import aelsi2.natkschedule.ui.components.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -33,15 +30,24 @@ fun ScheduleApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(TopLevelRoutes.HOME_ROUTE){
-                LectureCard(
-                    titleText = "МДК.01.03 Разработка мобильных приложений",
-                    onClick = {},
-                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(10.dp),
-                    infoText = "16:20 – 18:00\n№366 • Климова И. С.",
-                    stateText = "Идет",
-                    stateTimerText = "До перерыва: 40:31",
-                    style = LectureCardStyle.Highlighted
-                )
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(7.dp)
+                ) {
+                    DateDivider(
+                        dayOfWeekText = "Вторник",
+                        dateText = "07.03.2023",
+                    )
+                    LectureCard(
+                        titleText = "МДК.01.03 Разработка мобильных приложений",
+                        onClick = {},
+                        modifier = Modifier.defaultMinSize(minHeight = 75.dp),
+                        infoText = "16:20 – 18:00\n№366 • Климова И. С.",
+                        stateText = "Идет",
+                        stateTimerText = "До перерыва: 40:31",
+                        colors = LectureCardColors.Highlighted
+                    )
+                }
             }
             composable(TopLevelRoutes.TEACHERS_ROUTE){
                 Text("Teachers")

@@ -48,7 +48,7 @@ class NatkDatabaseLectureRepository(private val database: NatkDatabase, private 
                     ScheduleType.CLASSROOM -> "`auditoria` = ?"
                 }
             } and ? <= data and data <= ?
-            ORDER BY `data` ASC, `vremya` ASC, `podgruppa` ASC
+            ORDER BY `data` ASC, `para` ASC, `podgruppa` ASC
         """
     ).apply {
         setString(1, identifier.stringId)

@@ -2,6 +2,7 @@ package aelsi2.natkschedule.ui.components
 
 import aelsi2.natkschedule.ui.theme.ScheduleTheme
 import aelsi2.natkschedule.ui.theme.Shapes
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,57 +19,69 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 
-interface LectureCardStyle {
+interface LectureCardColors {
     val backgroundColor: Color
         @Composable get
-    val stateInfoColor: Color
+    val titleTextColor: Color
+        @Composable get
+    val supportingTextColor: Color
+        @Composable get
+    val stateTextColor: Color
         @Composable get
 
-    object Inactive : LectureCardStyle {
+    object Inactive : LectureCardColors {
         override val backgroundColor: Color
             @Composable
-            get() = Color.Transparent
-        override val stateInfoColor: Color
+            get() = MaterialTheme.colorScheme.surface
+        override val titleTextColor: Color
             @Composable
-            get() = MaterialTheme.colorScheme.onBackground
+            get() = MaterialTheme.colorScheme.onSurface
+        override val supportingTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSurfaceVariant
+        override val stateTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSurface
     }
 
-    object Active : LectureCardStyle {
+    object Active : LectureCardColors {
         override val backgroundColor: Color
             @Composable
             get() = MaterialTheme.colorScheme.secondaryContainer
-        override val stateInfoColor: Color
+        override val titleTextColor: Color
             @Composable
-            get() = MaterialTheme.colorScheme.onBackground
+            get() = MaterialTheme.colorScheme.onSecondaryContainer
+        override val supportingTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSecondaryContainer
+        override val stateTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSecondaryContainer
     }
 
-    object Highlighted : LectureCardStyle {
+    object Highlighted : LectureCardColors {
         override val backgroundColor: Color
             @Composable
             get() {
                 val infiniteTransition = rememberInfiniteTransition()
-                val alpha = infiniteTransition.animateFloat(
-                    initialValue = 1f,
-                    targetValue = 0f,
+                return infiniteTransition.animateColor(
+                    initialValue = MaterialTheme.colorScheme.secondaryContainer,
+                    targetValue = MaterialTheme.colorScheme.surface,
                     animationSpec = infiniteRepeatable(
                         animation = tween(750, easing = EaseIn),
                         repeatMode = RepeatMode.Reverse
                     )
                 ).value
-                return MaterialTheme.colorScheme.secondaryContainer.applyAlpha(alpha)
             }
-        override val stateInfoColor: Color
+        override val titleTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSecondaryContainer
+        override val supportingTextColor: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.onSecondaryContainer
+        override val stateTextColor: Color
             @Composable
             get() = MaterialTheme.colorScheme.primary
-
-        private fun Color.applyAlpha(alpha: Float): Color {
-            val resultAlpha = when (this.alpha * alpha) {
-                in Float.MIN_VALUE..0f -> 0f
-                in 1f..Float.MAX_VALUE -> 1f
-                else -> this.alpha * alpha
-            }
-            return Color(red, green, blue, resultAlpha)
-        }
     }
 }
 
@@ -81,11 +94,11 @@ fun LectureCard(
     stateText: String? = null,
     stateTimerText: String? = null,
     spacing: Dp = 5.dp,
-    style: LectureCardStyle = LectureCardStyle.Inactive
+    colors: LectureCardColors = LectureCardColors.Inactive
 ) {
     Surface(
         shape = Shapes.medium,
-        color = style.backgroundColor,
+        color = colors.backgroundColor,
         modifier = modifier.clip(Shapes.medium).clickable(onClick = onClick)
     ) {
         Column(
@@ -97,7 +110,8 @@ fun LectureCard(
             Text(
                 text = titleText,
                 modifier = columnChildModifier,
-                style = MaterialTheme.typography.titleSmall
+                style = MaterialTheme.typography.titleSmall,
+                color = colors.titleTextColor
             )
             if (infoText != null || stateText != null || stateTimerText != null) {
                 Spacer(
@@ -110,7 +124,11 @@ fun LectureCard(
                 verticalAlignment = Alignment.Bottom
             ) {
                 if (infoText != null) {
-                    Text(infoText, style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        infoText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colors.supportingTextColor
+                    )
                 }
                 if (infoText != null && (stateText != null || stateTimerText != null)) {
                     Spacer(modifier = Modifier.width(spacing))
@@ -122,13 +140,14 @@ fun LectureCard(
                     if (stateText != null) {
                         Text(
                             stateText,
-                            color = style.stateInfoColor,
+                            color = colors.stateTextColor,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                     if (stateTimerText != null) {
                         Text(
                             stateTimerText,
+                            color = colors.supportingTextColor,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -143,17 +162,44 @@ fun LectureCard(
 fun LectureCardPreview() {
     ScheduleTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.background) {
-            LectureCard(
-                titleText = "МДК.01.03 Разработка мобильных приложений",
-                infoText = "16:20 – 18:00\n№366 • Климова И. С.",
-                stateText = "Идет",
-                stateTimerText = "До перерыва: 40:31",
-                style = LectureCardStyle.Highlighted,
-                modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(10.dp),
-                onClick = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(7.dp),
+                modifier = Modifier.padding(vertical = 10.dp)
+            ){
+                LectureCard(
+                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    infoText = "16:20 – 18:00\n№366 • Климова И. С.",
+                    stateText = "Идет",
+                    stateTimerText = "До перерыва: 40:31",
+                    colors = LectureCardColors.Inactive,
+                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    onClick = {
 
-                },
-            )
+                    },
+                )
+                LectureCard(
+                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    infoText = "16:20 – 18:00\n№366 • Климова И. С.",
+                    stateText = "Идет",
+                    stateTimerText = "До перерыва: 40:31",
+                    colors = LectureCardColors.Active,
+                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    onClick = {
+
+                    },
+                )
+                LectureCard(
+                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    infoText = "16:20 – 18:00\n№366 • Климова И. С.",
+                    stateText = "Идет",
+                    stateTimerText = "До перерыва: 40:31",
+                    colors = LectureCardColors.Highlighted,
+                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    onClick = {
+
+                    },
+                )
+            }
         }
     }
 }

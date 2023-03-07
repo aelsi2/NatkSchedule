@@ -17,7 +17,11 @@ interface AttributeRepository {
     suspend fun getAttributesById(
         ids: List<ScheduleIdentifier>
     ): Result<List<LectureAttribute>>
-
+    /**
+     * Получить все атрибуты лекций типа [type].
+     * @param type Тип атрибутов лекций.
+     * @return Список атрибутов лекций.
+     */
     suspend fun getAllAttributes(
         type : ScheduleType
     ): Result<List<LectureAttribute>>
