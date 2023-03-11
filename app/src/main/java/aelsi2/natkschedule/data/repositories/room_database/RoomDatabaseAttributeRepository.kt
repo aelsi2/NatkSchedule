@@ -35,11 +35,11 @@ class RoomDatabaseAttributeRepository(
         }
     }
 
-    override suspend fun deleteUnused(alwaysKeep: List<ScheduleIdentifier>) {
+    override suspend fun deleteUnused(attributesToKeep: List<ScheduleIdentifier>) {
         val teacherIds = ArrayList<String>()
         val classroomIds = ArrayList<String>()
         val groupIds = ArrayList<String>()
-        alwaysKeep.forEach{
+        attributesToKeep.forEach{
             when (it.type) {
                 ScheduleType.TEACHER -> teacherIds.add(it.stringId)
                 ScheduleType.CLASSROOM -> classroomIds.add(it.stringId)

@@ -99,7 +99,9 @@ fun LectureCard(
     Surface(
         shape = Shapes.medium,
         color = colors.backgroundColor,
-        modifier = modifier.clip(Shapes.medium).clickable(onClick = onClick)
+        modifier = modifier
+            .clip(Shapes.medium)
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
@@ -120,7 +122,11 @@ fun LectureCard(
             }
             Row(
                 modifier = columnChildModifier,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = if (infoText != null && (stateText != null || stateTimerText != null)) {
+                    Arrangement.SpaceBetween
+                } else {
+                    Arrangement.End
+                },
                 verticalAlignment = Alignment.Bottom
             ) {
                 if (infoText != null) {
@@ -165,14 +171,16 @@ fun LectureCardPreview() {
             Column(
                 verticalArrangement = Arrangement.spacedBy(7.dp),
                 modifier = Modifier.padding(vertical = 10.dp)
-            ){
+            ) {
                 LectureCard(
                     titleText = "МДК.01.03 Разработка мобильных приложений",
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
                     colors = LectureCardColors.Inactive,
-                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        .defaultMinSize(minHeight = 75.dp)
+                        .padding(horizontal = 10.dp),
                     onClick = {
 
                     },
@@ -183,7 +191,9 @@ fun LectureCardPreview() {
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
                     colors = LectureCardColors.Active,
-                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        .defaultMinSize(minHeight = 75.dp)
+                        .padding(horizontal = 10.dp),
                     onClick = {
 
                     },
@@ -194,7 +204,9 @@ fun LectureCardPreview() {
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
                     colors = LectureCardColors.Highlighted,
-                    modifier = Modifier.defaultMinSize(minHeight = 75.dp).padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        .defaultMinSize(minHeight = 75.dp)
+                        .padding(horizontal = 10.dp),
                     onClick = {
 
                     },

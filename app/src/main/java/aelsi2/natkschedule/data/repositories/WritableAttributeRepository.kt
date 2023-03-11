@@ -5,5 +5,5 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 
 interface WritableAttributeRepository : AttributeRepository {
     suspend fun putAttributes(attributes: List<LectureAttribute>)
-    suspend fun deleteUnused(alwaysKeep : List<ScheduleIdentifier>)
+    suspend fun deleteUnused(attributesToKeep : List<ScheduleIdentifier>)
 }

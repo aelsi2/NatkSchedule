@@ -40,7 +40,7 @@ class NatkDatabaseLectureRepository(private val database: NatkDatabase, private 
     ): ResultSet = prepareStatement(
         """
             SELECT `disciplina`, `data`, `vremya`, `prepod`, `auditoria`, `gruppa`, `podgruppa`, `kurs`, `shift`
-            FROM `1c_shedule`
+            FROM `pl4453-mobile`.`1c_shedule`
             WHERE ${
                 when (identifier.type) {
                     ScheduleType.GROUP -> "`gruppa` = ?"

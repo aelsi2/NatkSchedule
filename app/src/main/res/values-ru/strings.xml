@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Расписание</string>
+    <string name="home_tab_name">Главная</string>
+    <string name="favourites_tab_name">Избранное</string>
+    <string name="groups_tab_name">Группы</string>
+    <string name="teachers_tab_name">Преподы</string>
+    <string name="classrooms_tab_name">Аудитории</string>
+</resources>

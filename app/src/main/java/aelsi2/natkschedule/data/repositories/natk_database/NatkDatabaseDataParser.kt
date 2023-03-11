@@ -6,6 +6,7 @@ import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.Teacher
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
 
@@ -26,9 +27,11 @@ class NatkDatabaseDataParser {
         val teacher = parseTeacher(rawTeacherName)
         val classroom = parseClassroom(rawClassroomName)
         val group = parseGroup(rawGroupName, rawGroupProgramName, groupYear)
+
         if (teacher == null && classroom == null && group == null) {
             return null
         }
+
         val (startTime, endTime) = parseStartEndTime(rawTime)
         val breakStartTime = getBreakStartTime(startTime, endTime)
         val breakEndTime = getBreakEndTime(startTime, endTime)
@@ -117,7 +120,7 @@ class NatkDatabaseDataParser {
     private fun String?.toLocalDateNoExcept() : LocalDate? {
         this ?: return null
         return try {
-            LocalDate.parse(this)
+            LocalDate.parse(this, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
         } catch (e : DateTimeParseException) { null }
     }
 

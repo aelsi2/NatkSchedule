@@ -1,9 +1,8 @@
 package aelsi2.natkschedule.ui
 
-import android.util.Log
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -28,7 +27,6 @@ fun rememberScheduleAppState(
         ScheduleAppState(snackBarHostState, navController)
     }
 
-@Stable
 class ScheduleAppState(
     val snackBarHostState: SnackbarHostState,
     val navController: NavHostController
@@ -50,3 +48,14 @@ class ScheduleAppState(
 
     }
 }
+
+data class TopBarState(
+    val titleText: String = "",
+    val visible: Boolean = true,
+    val actions: (@Composable RowScope.() -> Unit)? = null,
+    val bottomContent: (@Composable () -> Unit)? = null
+)
+
+data class BottomBarState(
+    val visible: Boolean
+)

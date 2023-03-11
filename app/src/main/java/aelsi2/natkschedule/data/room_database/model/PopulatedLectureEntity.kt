@@ -10,26 +10,26 @@ data class PopulatedLectureEntity(
         parentColumn = "lectureClassroomId",
         entityColumn = "classroomId"
     )
-    val classroomEntity: ClassroomEntity,
+    val classroomEntity: ClassroomEntity?,
     @Relation(
         parentColumn = "lectureTeacherId",
         entityColumn = "teacherId"
     )
-    val teacherEntity: TeacherEntity,
+    val teacherEntity: TeacherEntity?,
     @Relation(
         parentColumn = "lectureGroupId",
         entityColumn = "groupId"
     )
-    val groupEntity: GroupEntity,
+    val groupEntity: GroupEntity?,
 ) {
     fun toLecture() = Lecture(
         lectureEntity.lectureDisciplineName,
         lectureEntity.lectureDate,
         lectureEntity.lectureStartTime,
         lectureEntity.lectureEndTime,
-        teacherEntity.toTeacher(),
-        classroomEntity.toClassroom(),
-        groupEntity.toGroup(),
+        teacherEntity?.toTeacher(),
+        classroomEntity?.toClassroom(),
+        groupEntity?.toGroup(),
         lectureEntity.lectureSubgroupNumber,
         lectureEntity.lectureBreakStartTime,
         lectureEntity.lectureEndTime

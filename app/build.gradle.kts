@@ -93,6 +93,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.6.1")
 
+    //pullrefresh для material3
+    implementation("me.omico.lux:lux-androidx-compose-material3-pullrefresh")
+
     //Compose navigation (навигация в интерфейсе)
     implementation("androidx.navigation:navigation-compose:$navVersion")
 

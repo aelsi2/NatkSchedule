@@ -30,7 +30,8 @@ class RoomDatabaseLectureRepository(
         val groupId = if (identifier.type == ScheduleType.GROUP) { identifier.stringId } else { null }
         val classroomId = if (identifier.type == ScheduleType.CLASSROOM) { identifier.stringId } else { null }
         return Result.success(
-            lectureDao.getPopulatedLectures(fromDate,
+            lectureDao.getPopulatedLectures(
+                fromDate,
                 toDate,
                 teacherId,
                 groupId,
@@ -77,5 +78,19 @@ class RoomDatabaseLectureRepository(
             classroomDao.putClassrooms(classroomEntities)
             lectureDao.putLectures(lectureEntities)
         }
+    }
+
+    override suspend fun cleanSchedules(schedulesToKeep: List<ScheduleIdentifier>) {
+        val teacherIds = ArrayList<String>()
+        val classroomIds = ArrayList<String>()
+        val groupIds = ArrayList<String>()
+        schedulesToKeep.forEach {
+            when (it.type) {
+                ScheduleType.TEACHER -> teacherIds.add(it.stringId)
+                ScheduleType.CLASSROOM -> classroomIds.add(it.stringId)
+                ScheduleType.GROUP -> groupIds.add(it.stringId)
+            }
+        }
+        lectureDao.deleteAllExcept(teacherIds, classroomIds, groupIds)
     }
 }

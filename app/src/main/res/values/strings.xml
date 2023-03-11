@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Schedule</string>
     <string name="home_tab_name">Home</string>
-    <string name="favourites_tab_name">Favourites</string>
+    <string name="favourites_tab_name">Favorites</string>
     <string name="groups_tab_name">Groups</string>
     <string name="teachers_tab_name">Teachers</string>
     <string name="classrooms_tab_name">Rooms</string>

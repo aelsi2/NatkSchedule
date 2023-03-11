@@ -12,4 +12,5 @@ interface WritableLectureRepository : LectureRepository {
         identifier: ScheduleIdentifier,
         lectures : List<Lecture>
     )
+    suspend fun cleanSchedules(schedulesToKeep: List<ScheduleIdentifier>)
 }

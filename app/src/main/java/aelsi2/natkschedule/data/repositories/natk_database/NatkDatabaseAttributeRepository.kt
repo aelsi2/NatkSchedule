@@ -100,7 +100,7 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
                     ScheduleType.CLASSROOM -> "`auditoria`"
                 }
             }
-            FROM `1c_shedule`
+            FROM `pl4453-mobile`.`1c_shedule`
         """
     ).executeQuery()
 
@@ -128,7 +128,7 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
                     ScheduleType.CLASSROOM -> "`auditoria`"
                 }
             } IN (${attributes.joinToString {"?"}})
-            FROM `1c_shedule`
+            FROM `pl4453-mobile`.`1c_shedule`
         """
         ).apply {
             for (i in 1..attributes.count()) {

@@ -36,23 +36,23 @@ class DataStoreFavoritesManager(appContext : Context) : FavoritesManager {
         }
     }
 
-    override val favoriteSchedules : Flow<List<ScheduleIdentifier>>
+    override val favoriteScheduleIds : Flow<List<ScheduleIdentifier>>
         get() = favoritesDataStore.data.map { preferences ->
             preferences[FAVORITE_SCHEDULES]?.mapNotNull {
                 it.toScheduleIdentifier()
             } ?: listOf()
         }
-    override fun isInFavorites(schedule : ScheduleIdentifier) : Flow<Boolean> =
-        favoriteSchedules.map {
-            schedule in it
+    override fun isInFavorites(scheduleId : ScheduleIdentifier) : Flow<Boolean> =
+        favoriteScheduleIds.map {
+            scheduleId in it
         }
     override suspend fun addToFavorites(schedule : ScheduleIdentifier) {
-        val favorites = favoriteSchedules.first().toMutableSet()
+        val favorites = favoriteScheduleIds.first().toMutableSet()
         favorites.add(schedule)
         setFavorites(favorites)
     }
     override suspend fun removeFromFavorites(schedule : ScheduleIdentifier) {
-        val favorites = favoriteSchedules.first().toMutableSet()
+        val favorites = favoriteScheduleIds.first().toMutableSet()
         favorites.remove(schedule)
         setFavorites(favorites)
     }

@@ -12,6 +12,9 @@ import java.util.*
  * Менеджер соединений СУБД. Занимается их созданием и закрытием.
  */
 class NatkDatabase {
+    init {
+//        Class.forName("com.mysql.jdbc.Driver")
+    }
     /**
      * Открывает новое соединение СУБД.
      * @return Соединение СУБД.
@@ -60,7 +63,7 @@ class NatkDatabase {
     ): Result<T> {
         return try {
             Result.success(withConnection(action))
-        } catch (e: Throwable) {
+        } catch (e: SQLException) {
             Log.e("RemoteDb", errorMessage ?: "При осуществлении доступа к СУБД произошла ошибка.", e)
             Result.failure(e)
         }
@@ -78,7 +81,7 @@ class NatkDatabase {
     ): Result<List<T>> {
         return try {
             Result.success(withConnections(actions = actions))
-        } catch (e: Throwable) {
+        } catch (e: SQLException) {
             Log.e("RemoteDb", errorMessage ?: "При осуществлении множественного доступа к СУБД произошла ошибка.", e)
             Result.failure(e)
         }
