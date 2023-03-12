@@ -28,15 +28,15 @@ sealed interface LectureState{
     ) : LectureState
     data class Ongoing(
         val started: Duration,
-        val willEndIn: Duration
+        val endsIn: Duration
     ) : LectureState
     data class OngoingPreBreak(
         val started: Duration,
-        val willEndIn: Duration
+        val endsIn: Duration
     ) : LectureState
     data class Break(
         val started: Duration,
-        val willEndIn: Duration
+        val endsIn: Duration
     ) : LectureState
 }
 

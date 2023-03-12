@@ -23,7 +23,7 @@ class DataStoreFavoritesManager(appContext : Context) : FavoritesManager {
 
     override val mainScheduleId : Flow<ScheduleIdentifier?>
         get() = favoritesDataStore.data.map {
-            it[MAIN_SCHEDULE].toScheduleIdentifier()
+            it[MAIN_SCHEDULE].toScheduleIdentifier() ?: MAIN_SCHEDULE_DEFAULT
         }
     override suspend fun setMainScheduleId(value : ScheduleIdentifier?) {
         favoritesDataStore.edit {preferences ->
@@ -71,6 +71,11 @@ class DataStoreFavoritesManager(appContext : Context) : FavoritesManager {
     companion object {
         private val MAIN_SCHEDULE = stringPreferencesKey("main")
         private val FAVORITE_SCHEDULES = stringSetPreferencesKey("favorites")
+
+        private val MAIN_SCHEDULE_DEFAULT = ScheduleIdentifier(
+            ScheduleType.GROUP,
+            "ПР-20.101"
+        )
     }
 }
 

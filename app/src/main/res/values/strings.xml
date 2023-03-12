@@ -6,4 +6,22 @@
     <string name="groups_tab_name">Groups</string>
     <string name="teachers_tab_name">Teachers</string>
     <string name="classrooms_tab_name">Rooms</string>
+    <string name="lecture_state_ongoing">Ongoing</string>
+    <string name="lecture_state_break">Break</string>
+    <string name="lecture_state_canceled">Canceled</string>
+    <string name="lecture_time_to_end">Ends in: %1$s</string>
+    <string name="lecture_time_to_start">Starts in: %1$s</string>
+    <string name="lecture_time_to_break_end">Break ends in: %1$s</string>
+    <string name="lecture_time_to_break">Break in: %1$s</string>
+    <string name="lecture_time_from_start">Going for: %1$s</string>
+    <string name="lecture_time_from_break_start">Break going for: %1$s</string>
+    <string name="lecture_info_time">%1$s – %2$s</string>
+    <string name="lecture_info_attribute_separator">\ •\ </string>
+    <string name="lecture_info_subgroup">%1$d subgroup</string>
+    <string name="lecture_details_date">Date</string>
+    <string name="lecture_details_time">Time</string>
+    <string name="lecture_details_teacher">Teacher</string>
+    <string name="lecture_details_classroom">Classroom</string>
+    <string name="lecture_details_group">Group</string>
+    <string name="lecture_details_subgroup">SubGroup</string>
 </resources>

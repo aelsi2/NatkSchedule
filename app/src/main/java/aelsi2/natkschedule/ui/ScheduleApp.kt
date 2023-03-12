@@ -18,7 +18,7 @@ fun ScheduleApp() {
     Scaffold(
         bottomBar = {
             ScheduleNavbar(
-                items = AppTabs.values().asIterable(),
+                items = AppTabs.values().toList(),
                 selectedTabRoute = appState.currentTopRoute,
                 onItemClick = { route -> appState.navigateToTab(route) }
             )

@@ -28,6 +28,8 @@ class ScheduleScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val timeManager: TimeManager
 ) : ViewModel() {
+    val displayMode =
+        savedStateHandle.getStateFlow(DISPLAY_MODE_KEY, ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
     private val startDate = savedStateHandle.getStateFlow(
         START_DATE_KEY, timeManager.currentCollegeLocalDate
     )
@@ -35,12 +37,65 @@ class ScheduleScreenViewModel(
         END_DATE_KEY,
         timeManager.currentCollegeLocalDate.plusDays(7)
     )
+
     private val update = MutableSharedFlow<Unit>(
         replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val displayMode =
-        savedStateHandle.getStateFlow(DISPLAY_MODE_KEY, ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
+
+    val lectures: StateFlow<List<GroupedLectureWithState>>
+        get() = _lectures
+    private val _lectures = MutableStateFlow<List<GroupedLectureWithState>>(listOf())
+
+    val state: StateFlow<ScheduleState> =
+        combineTransform<ScheduleParameters, Boolean, Unit, LocalDate, LocalDate, ScheduleState>(
+            getScheduleParameters(),
+            networkMonitor.isOnline,
+            update.conflate(),
+            startDate,
+            endDate
+        ) { params, isOnline, _, startDate, endDate ->
+            if (params.identifier == null) {
+                return@combineTransform
+            }
+            val localJob = if (params.cache) viewModelScope.async {
+                localRepo.getLectures(startDate, endDate, params.identifier)
+            } else null
+            val networkJob = if (isOnline) viewModelScope.async {
+                networkRepo.getLectures(startDate, endDate, params.identifier)
+            } else null
+            if (params.cache) {
+                emit(ScheduleState.Loading)
+                val localResult = localJob!!.await()
+                localResult.fold(
+                    onSuccess = {
+                        _lectures.emit(groupLectures(it, viewModelScope))
+                        emit(ScheduleState.Loaded)
+                    },
+                    onFailure = { }
+                )
+            }
+            if (isOnline) {
+                emit(ScheduleState.Loading)
+                val networkResult = networkJob!!.await()
+                if (params.cache) {
+                    localJob!!.cancel()
+                }
+                networkResult.fold(
+                    onSuccess = {
+                        localRepo.putLectures(startDate, endDate, params.identifier, it)
+                        _lectures.emit(groupLectures(it, viewModelScope))
+                        emit(ScheduleState.Loaded)
+                    },
+                    onFailure = {
+                        emit(ScheduleState.Error)
+                    }
+                )
+            }
+            if (!isOnline && !params.cache) {
+                emit(ScheduleState.NoInternet)
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ScheduleState.Loading)
 
     init {
         viewModelScope.launch {
@@ -66,70 +121,6 @@ class ScheduleScreenViewModel(
         }
         update()
     }
-
-    val lectures: StateFlow<List<GroupedLectureWithState>> =
-        combineTransform<ScheduleParameters, Boolean, Unit, LocalDate, LocalDate, List<GroupedLectureWithState>>(
-            getScheduleParameters(),
-            networkMonitor.isOnline,
-            update.conflate(),
-            startDate,
-            endDate
-        ) { params, isOnline, _, startDate, endDate ->
-            if (params.identifier == null) {
-                return@combineTransform
-            }
-            if (isOnline && params.cache) {
-                val localJob = viewModelScope.async {
-                    localRepo.getLectures(startDate, endDate, params.identifier)
-                }
-                val networkJob = viewModelScope.async { networkRepo.getLectures(startDate, endDate, params.identifier) }
-                val localResult = localJob.await()
-                localResult.fold(
-                    onSuccess = {
-                        emit(groupLectures(it, viewModelScope))
-                    },
-                    onFailure = {
-                        // TODO
-                    }
-                )
-                val networkResult = networkJob.await()
-                localJob.cancel()
-                networkResult.fold(
-                    onSuccess = {
-                        localRepo.putLectures(startDate, endDate, params.identifier, it)
-                        emit(groupLectures(it, viewModelScope))
-                    },
-                    onFailure = {
-                        // TODO
-                    }
-                )
-            }
-            else if (params.cache) {
-                val localResult = localRepo.getLectures(startDate, endDate, params.identifier)
-                localResult.fold(
-                    onSuccess = {
-                        emit(groupLectures(it, viewModelScope))
-                    },
-                    onFailure = {
-                        // TODO
-                    }
-                )
-            }
-            else if (isOnline) {
-                val result = networkRepo.getLectures(startDate, endDate, params.identifier)
-                result.fold(
-                    onSuccess = {
-                        emit(groupLectures(it, viewModelScope))
-                    },
-                    onFailure = {
-                        // TODO
-                    }
-                )
-            }
-            else {
-                // TODO
-            }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), listOf())
 
     fun loadPreviousWeek() {
         if (displayMode.value != ScheduleDisplayMode.FREE_SCROLLING) {
@@ -181,5 +172,6 @@ sealed interface ScheduleState {
     object Loading : ScheduleState
     object Error : ScheduleState
     object Loaded : ScheduleState
+    object NoInternet : ScheduleState
 }
 

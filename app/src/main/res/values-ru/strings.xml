@@ -6,4 +6,22 @@
     <string name="groups_tab_name">Группы</string>
     <string name="teachers_tab_name">Преподы</string>
     <string name="classrooms_tab_name">Аудитории</string>
+    <string name="lecture_state_ongoing">Идет</string>
+    <string name="lecture_state_break">Перерыв</string>
+    <string name="lecture_state_canceled">Отмена</string>
+    <string name="lecture_time_to_end">До конца: %1$s</string>
+    <string name="lecture_time_to_start">До начала: %1$s</string>
+    <string name="lecture_time_to_break_end">До конца перерыва: %1$s</string>
+    <string name="lecture_time_to_break">До перерыва: %1$s</string>
+    <string name="lecture_time_from_start">Прошло: %1$s</string>
+    <string name="lecture_time_from_break_start">Прошло: %1$s</string>
+    <string name="lecture_info_time">%1$s – %2$s</string>
+    <string name="lecture_info_attribute_separator">\ •\ </string>
+    <string name="lecture_info_subgroup">%1$d группа</string>
+    <string name="lecture_details_date">Дата</string>
+    <string name="lecture_details_time">Время</string>
+    <string name="lecture_details_teacher">Преподаватель</string>
+    <string name="lecture_details_classroom">Аудитория</string>
+    <string name="lecture_details_group">Группа</string>
+    <string name="lecture_details_subgroup">Подгруппа</string>
 </resources>

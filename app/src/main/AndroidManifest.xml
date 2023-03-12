@@ -13,12 +13,11 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NatkSchedule"
+        android:theme="@style/Theme.NatkSchedule.Starting"
         tools:targetApi="33">
         <activity
             android:name="aelsi2.natkschedule.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.NatkSchedule">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -101,6 +101,7 @@ fun LectureCard(
         color = colors.backgroundColor,
         modifier = modifier
             .clip(Shapes.medium)
+            .defaultMinSize(minHeight = 48.dp)
             .clickable(onClick = onClick)
     ) {
         Column(
@@ -122,11 +123,7 @@ fun LectureCard(
             }
             Row(
                 modifier = columnChildModifier,
-                horizontalArrangement = if (infoText != null && (stateText != null || stateTimerText != null)) {
-                    Arrangement.SpaceBetween
-                } else {
-                    Arrangement.End
-                },
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
                 if (infoText != null) {
@@ -136,9 +133,7 @@ fun LectureCard(
                         color = colors.supportingTextColor
                     )
                 }
-                if (infoText != null && (stateText != null || stateTimerText != null)) {
-                    Spacer(modifier = Modifier.width(spacing))
-                }
+                Spacer(modifier = Modifier.width(spacing))
                 Column(
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.End

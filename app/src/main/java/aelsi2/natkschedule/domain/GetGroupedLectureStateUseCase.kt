@@ -71,7 +71,7 @@ class GetGroupedLectureStateUseCase(
         // Проверка на "неначатость"
         if (zonedCurrentTime < zonedStartTime) {
             // Если задано время окончания предыдущей лекции, и она закончилась, значит проверяемая лекция следующая
-            if (zonedPreviousLectureEndTime != null && zonedCurrentTime > zonedPreviousLectureEndTime) {
+            if (zonedPreviousLectureEndTime == null || zonedCurrentTime > zonedPreviousLectureEndTime) {
                 return LectureState.UpNext(
                     Duration.between(zonedCurrentTime, zonedStartTime)
                 )
