@@ -4,18 +4,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT">
-            <builds>
-              <build path="$PROJECT_DIR$/../androidx-compose-material3-pullrefresh" name="androidx-compose-material3-pullrefresh">
-                <projects>
-                  <project path="$PROJECT_DIR$/../androidx-compose-material3-pullrefresh" />
-                  <project path="$PROJECT_DIR$/../androidx-compose-material3-pullrefresh/library" />
-                </projects>
-              </build>
-            </builds>
-          </compositeBuild>
-        </compositeConfiguration>
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -24,8 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/../androidx-compose-material3-pullrefresh" />
-            <option value="$PROJECT_DIR$/../androidx-compose-material3-pullrefresh/library" />
+            <option value="$PROJECT_DIR$/compose-material3-pullrefresh" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -50,7 +50,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
     packagingOptions {
         resources {
@@ -64,13 +64,13 @@ dependencies {
     val roomVersion = "2.5.0"
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
 
     //Koin (автоматическое внедрение зависимостей)
-    implementation("io.insert-koin:koin-android:3.3.2")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
+    implementation("io.insert-koin:koin-android:3.3.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.2")
 
     //Room persistence (хранение кэшированных расписаний)
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -93,8 +93,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.6.1")
 
-    //pullrefresh для material3
-    implementation("me.omico.lux:lux-androidx-compose-material3-pullrefresh")
+    implementation(project(":compose-material3-pullrefresh"))
 
     //Compose navigation (навигация в интерфейсе)
     implementation("androidx.navigation:navigation-compose:$navVersion")
