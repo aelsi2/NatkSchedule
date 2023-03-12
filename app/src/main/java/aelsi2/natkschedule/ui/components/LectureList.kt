@@ -44,7 +44,7 @@ fun LectureList(
     onRefresh: (() -> Unit)? = null,
     onReachedTop: (() -> Unit)? = null,
     onReachedBottom: (() -> Unit)? = null,
-){
+) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing,
         onRefresh ?: {},
@@ -55,7 +55,8 @@ fun LectureList(
         Modifier
             .fillMaxSize()
             .clip(RectangleShape)
-            .pullRefresh(pullRefreshState, enablePullToRefresh)) {
+            .pullRefresh(pullRefreshState, enablePullToRefresh)
+    ) {
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -129,7 +130,12 @@ fun LectureList(
                 }
             }
         }
-        PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+        PullRefreshIndicator(
+            refreshing,
+            pullRefreshState,
+            Modifier.align(Alignment.TopCenter),
+            contentColor = MaterialTheme.colorScheme.primary
+        )
     }
     if (onReachedBottom != null) {
         val atBottom = remember {
@@ -140,7 +146,7 @@ fun LectureList(
                 lastVisibleItemIndex != null && lastVisibleItemIndex >= totalItemCount - 1
             }
         }
-        LaunchedEffect(key1 = atBottom){
+        LaunchedEffect(key1 = atBottom) {
             snapshotFlow {
                 atBottom.value
             }.filter { it }.collect {
@@ -157,7 +163,7 @@ fun LectureList(
             }
         }
 
-        LaunchedEffect(key1 = atTop){
+        LaunchedEffect(key1 = atTop) {
             snapshotFlow {
                 atTop.value
             }.filter { it }.collect {
@@ -166,24 +172,27 @@ fun LectureList(
         }
     }
 }
+
 @Composable
 private fun getLectureInfoString(
     subLectures: List<SubLecture>,
     startTime: LocalTime?,
     endTime: LocalTime?,
     displayTeacher: Boolean,
-    displayClassroom : Boolean,
+    displayClassroom: Boolean,
     displayGroup: Boolean,
     displaySubgroup: Boolean
 ): String {
     val infoSb = StringBuilder()
     val attributeSeparator = stringResource(R.string.lecture_info_attribute_separator)
     if (startTime != null && endTime != null) {
-        infoSb.append(stringResource(
-            R.string.lecture_info_time,
-            startTime.toString(),
-            endTime.toString()
-        ))
+        infoSb.append(
+            stringResource(
+                R.string.lecture_info_time,
+                startTime.toString(),
+                endTime.toString()
+            )
+        )
     }
     subLectures.forEach {
         if (infoSb.isNotEmpty()) {
@@ -195,21 +204,21 @@ private fun getLectureInfoString(
             lineHasContent = true
         }
         if (displayClassroom && it.classroom != null) {
-            if (lineHasContent){
+            if (lineHasContent) {
                 infoSb.append(attributeSeparator)
             }
             infoSb.append(it.classroom.shortName)
             lineHasContent = true
         }
         if (displayTeacher && it.teacher != null) {
-            if (lineHasContent){
+            if (lineHasContent) {
                 infoSb.append(attributeSeparator)
             }
             infoSb.append(it.teacher.shortName)
             lineHasContent = true
         }
         if (displayGroup && it.group != null) {
-            if (lineHasContent){
+            if (lineHasContent) {
                 infoSb.append(attributeSeparator)
             }
             infoSb.append(it.group.name)
@@ -217,6 +226,7 @@ private fun getLectureInfoString(
     }
     return infoSb.toString()
 }
+
 private fun Duration.toHumanReadableString(): String {
     var timePart = round(toMillis() / 1000f).toLong()
     val seconds = timePart % 60
@@ -232,7 +242,10 @@ private fun Duration.toHumanReadableString(): String {
             seconds.toDurationPartWithSeparator(days + hours + minutes == 0L, true)
 }
 
-private fun Long.toDurationPartWithSeparator(isFirst: Boolean, displayZero: Boolean = false): String {
+private fun Long.toDurationPartWithSeparator(
+    isFirst: Boolean,
+    displayZero: Boolean = false
+): String {
     if (isFirst) {
         if (this == 0L && !displayZero) {
             return ""
