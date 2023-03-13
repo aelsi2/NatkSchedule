@@ -13,7 +13,7 @@ import java.util.*
  */
 class NatkDatabase {
     init {
-//        Class.forName("com.mysql.jdbc.Driver")
+        Class.forName("com.mysql.jdbc.Driver")
     }
     /**
      * Открывает новое соединение СУБД.

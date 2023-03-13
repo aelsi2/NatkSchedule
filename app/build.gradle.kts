@@ -82,7 +82,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //JDBC MySQL connector (скачивание расписаний из сетевой БД)
-    implementation("mysql:mysql-connector-java:5.1.46")
+    implementation("mysql:mysql-connector-java:5.1.49")
 
     //Compose (интерфейс)
     implementation(composeBom)
