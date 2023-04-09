@@ -39,20 +39,12 @@ class ScheduleAppState(
 
     fun navigateToTab(route: String) {
         val alreadyAtTab = navController.currentDestination?.route?.startsWith(route) ?: false
-        if (!alreadyAtTab) {
-            navController.navigate(route) {
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
             }
-        }
-        else {
-            navController.navigate(route) {
-                popUpTo(navController.graph.findStartDestination().id)
-                launchSingleTop = true
-            }
+            launchSingleTop = true
+            restoreState = true
         }
     }
     fun navigate(route: String) {
