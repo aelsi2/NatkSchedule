@@ -43,6 +43,7 @@ class ScheduleAppState(
             navController.navigate(route) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
+                    inclusive = true
                 }
                 launchSingleTop = true
                 restoreState = true
@@ -50,7 +51,9 @@ class ScheduleAppState(
         }
         else {
             navController.navigate(route) {
-                popUpTo(navController.graph.findStartDestination().id)
+                popUpTo(navController.graph.findStartDestination().id) {
+                    inclusive = true
+                }
                 launchSingleTop = true
             }
         }

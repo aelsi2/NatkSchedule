@@ -2,7 +2,6 @@ package aelsi2.natkschedule.data.repositories.natk_database
 
 import aelsi2.natkschedule.data.repositories.ScheduleDayRepository
 import aelsi2.natkschedule.model.*
-import android.util.Log
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -48,16 +47,17 @@ class NatkDatabaseScheduleDayRepository(
                 current.groupYear,
                 current.subgroupIndex
             )
+            val sameDay = parser.compareDays(current.stringDate, next?.stringDate)
+            val sameLecture = parser.compareLectures(
+                rawIndex1 = current.index,
+                rawTime1 = current.stringTime,
+                rawIndex2 = next?.index ?: 0,
+                rawTime2 = next?.stringTime
+            )
             if (lectureData != null){
                 currentLectureData.add(lectureData)
             }
-            if (!parser.compareLectures(
-                    rawIndex1 = current.index,
-                    rawTime1 = current.stringTime,
-                    rawIndex2 = next?.index ?: 0,
-                    rawTime2 = next?.stringTime
-                )
-            ) {
+            if (!sameLecture || !sameDay) {
                 val lecture = parser.parseLecture(
                     current.index, current.stringTime, currentLectureData
                 )
@@ -66,7 +66,7 @@ class NatkDatabaseScheduleDayRepository(
                 }
                 currentLectureData = ArrayList()
             }
-            if (!parser.compareDays(current.stringDate, next?.stringDate)) {
+            if (!sameDay) {
                 val day = parser.parseScheduleDay(current.stringDate, currentDayLectures)
                 if (day != null) {
                     days.add(day)
