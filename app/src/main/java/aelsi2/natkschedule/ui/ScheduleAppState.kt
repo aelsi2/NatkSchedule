@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -31,21 +31,34 @@ class ScheduleAppState(
     val snackBarHostState: SnackbarHostState,
     val navController: NavHostController
 ) {
-    val currentTopRoute : String?
-        @Composable
-        get() = navController
-            .currentBackStackEntryAsState().value
-            ?.destination?.hierarchy?.first()?.route
+    @Composable
+    fun isAtTopRoute(
+        route: String
+    ): Boolean = navController
+        .currentBackStackEntryAsState().value?.destination?.route?.startsWith(route) ?: false
 
-    fun navigateToTab(route : String) {
-        navController.navigate(route) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+    fun navigateToTab(route: String) {
+        val alreadyAtTab = navController.currentDestination?.route?.startsWith(route) ?: false
+        if (!alreadyAtTab) {
+            navController.navigate(route) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
-            launchSingleTop = true
-            restoreState = true
         }
-
+        else {
+            navController.navigate(route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        }
+    }
+    fun navigate(route: String) {
+        navController.navigate(route) {
+            launchSingleTop = true
+        }
     }
 }
 

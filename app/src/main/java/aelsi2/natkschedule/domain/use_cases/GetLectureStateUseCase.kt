@@ -32,7 +32,7 @@ class GetLectureStateUseCase(
             }
         )
         val zonedEndTime = timeManager.localToCollegeZoned(
-            if (lecture.startTime == null) {
+            if (lecture.endTime == null) {
                 scheduleDay.date.plusDays(1).atStartOfDay()
             } else {
                 scheduleDay.date.atTime(lecture.endTime)

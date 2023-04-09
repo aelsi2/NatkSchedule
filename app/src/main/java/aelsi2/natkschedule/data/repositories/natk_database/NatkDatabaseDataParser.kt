@@ -117,7 +117,7 @@ class NatkDatabaseDataParser {
         if (fullName.matches(CLASSROOM_GYM_PATTERN)) {
             return Classroom(fullName, CLASSROOM_GYM_SHORT, address, rawName!!)
         }
-        return Classroom(fullName, null, address, rawName!!)
+        return Classroom(fullName, fullName, address, rawName!!)
     }
 
     fun parseGroup(rawName: String?, rawProgramName: String?, year: Int): Group? {

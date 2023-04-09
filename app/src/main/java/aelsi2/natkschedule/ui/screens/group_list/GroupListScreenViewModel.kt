@@ -6,6 +6,7 @@ import aelsi2.natkschedule.domain.ScreenState
 import aelsi2.natkschedule.model.Group
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleType
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +15,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class GroupListScreenViewModel(
+    private val savedStateHandle: SavedStateHandle,
     scheduleAttributeRepository: ScheduleAttributeRepository,
-    networkMonitor: NetworkMonitor,
-    private val savedStateHandle: SavedStateHandle
+    networkMonitor: NetworkMonitor
 ) : ViewModel() {
     private val attributesUnfiltered = MutableStateFlow<List<ScheduleAttribute>>(listOf())
     private val update = MutableSharedFlow<Unit>(

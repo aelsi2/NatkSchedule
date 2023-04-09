@@ -25,8 +25,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ScheduleNavbar(
-    items: List<AppTabs>,
-    selectedTabRoute: String?,
+    items: List<ScheduleAppTab>,
+    isItemSelected: @Composable (route: String) -> Boolean,
     onItemClick: (route: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -37,7 +37,7 @@ fun ScheduleNavbar(
             mutableStateOf<Float?>(null)
         }
         items.forEach { item ->
-            val isSelected = selectedTabRoute == item.route
+            val isSelected = isItemSelected(item.route)
             NavigationBarItem(
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
@@ -82,7 +82,7 @@ fun ScheduleNavbar(
 }
 
 @Composable
-private fun getMinMaxLabelFontSizeFactor(items: List<AppTabs>, style: TextStyle, maxWidth: Dp): Float {
+private fun getMinMaxLabelFontSizeFactor(items: List<ScheduleAppTab>, style: TextStyle, maxWidth: Dp): Float {
     val density = LocalDensity.current
     val fontFamilyResolver = LocalFontFamilyResolver.current
     return items.map {
@@ -123,7 +123,7 @@ private fun getMaxFontSizeFactor(
     }
 }
 
-enum class AppTabs(val route: String, val title: Int, val iconNormal: Int, val iconSelected: Int) {
+enum class ScheduleAppTab(val route: String, val title: Int, val iconNormal: Int, val iconSelected: Int) {
     GROUPS(
         TopLevelRoutes.GROUPS_ROUTE,
         R.string.groups_tab_name,
@@ -162,8 +162,10 @@ fun ScheduleNavbarPreview() {
     ScheduleTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.background) {
             ScheduleNavbar(
-                items = AppTabs.values().toList(),
-                selectedTabRoute = AppTabs.values().first().route,
+                items = ScheduleAppTab.values().toList(),
+                isItemSelected = { route ->
+                    route == TopLevelRoutes.GROUPS_ROUTE
+                },
                 onItemClick = { }
             )
         }
