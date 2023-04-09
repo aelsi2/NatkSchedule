@@ -1,5 +1,7 @@
 package aelsi2.natkschedule.ui.screens.schedule
 
+import aelsi2.natkschedule.domain.ScreenState
+import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.components.LectureList
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -16,15 +18,21 @@ fun ScheduleScreen(
 ) {
     val viewModel = koinViewModel<ScheduleScreenViewModel>(
         qualifier = named("main"))
-    val lectures = viewModel.lectures.collectAsState().value
+    val days = viewModel.days.collectAsState().value
     val state = viewModel.state.collectAsState().value
+    val identifier = viewModel.scheduleIdentifier.collectAsState().value
     LectureList(
-        lectures = lectures,
+        days = days,
+        viewModel::getLectureState,
         enablePullToRefresh = true,
-        refreshing = state == ScheduleState.Loading,
+        isRefreshing = state == ScreenState.Loading,
         onRefresh = {
             viewModel.update()
         },
+        displayTeacher = identifier?.type != ScheduleType.TEACHER,
+        displayClassroom = identifier?.type != ScheduleType.CLASSROOM,
+        displayGroup = identifier?.type != ScheduleType.GROUP,
+        displaySubgroup = identifier?.type == ScheduleType.GROUP,
         modifier = modifier
     )
 }

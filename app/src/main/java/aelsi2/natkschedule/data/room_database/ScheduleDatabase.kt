@@ -1,15 +1,10 @@
 package aelsi2.natkschedule.data.room_database
 
 import aelsi2.natkschedule.data.room_database.converters.DateConverter
+import aelsi2.natkschedule.data.room_database.converters.ScheduleIdentifierConverter
 import aelsi2.natkschedule.data.room_database.converters.TimeConverter
-import aelsi2.natkschedule.data.room_database.daos.ClassroomDao
-import aelsi2.natkschedule.data.room_database.daos.GroupDao
-import aelsi2.natkschedule.data.room_database.daos.LectureDao
-import aelsi2.natkschedule.data.room_database.daos.TeacherDao
-import aelsi2.natkschedule.data.room_database.model.ClassroomEntity
-import aelsi2.natkschedule.data.room_database.model.GroupEntity
-import aelsi2.natkschedule.data.room_database.model.LectureEntity
-import aelsi2.natkschedule.data.room_database.model.TeacherEntity
+import aelsi2.natkschedule.data.room_database.daos.*
+import aelsi2.natkschedule.data.room_database.model.*
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -19,14 +14,19 @@ import androidx.room.TypeConverters
         ClassroomEntity::class,
         GroupEntity::class,
         TeacherEntity::class,
-        LectureEntity::class
+        LectureEntity::class,
+        DisciplineEntity::class,
+        ScheduleDayEntity::class,
+        LectureDataEntity::class,
+        ProgramEntity::class
     ],
-    version = 1
+    version = 2
 )
-@TypeConverters(DateConverter::class, TimeConverter::class)
+@TypeConverters(DateConverter::class, TimeConverter::class, ScheduleIdentifierConverter::class)
 abstract class ScheduleDatabase : RoomDatabase() {
     abstract fun classroomDao() : ClassroomDao
+    abstract fun disciplineDao() : DisciplineDao
     abstract fun teacherDao() : TeacherDao
     abstract fun groupDao() : GroupDao
-    abstract fun lectureDao() : LectureDao
+    abstract fun lectureDao() : ScheduleDao
 }

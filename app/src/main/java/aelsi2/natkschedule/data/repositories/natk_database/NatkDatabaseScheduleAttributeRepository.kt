@@ -1,17 +1,19 @@
 package aelsi2.natkschedule.data.repositories.natk_database
 
-import aelsi2.natkschedule.data.repositories.AttributeRepository
-import aelsi2.natkschedule.model.LectureAttribute
+import aelsi2.natkschedule.data.repositories.ScheduleAttributeRepository
+import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
+import android.util.Log
+import java.nio.charset.Charset
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
 
-class NatkDatabaseAttributeRepository(private val database: NatkDatabase, private val parser: NatkDatabaseDataParser) : AttributeRepository {
+class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase, private val parser: NatkDatabaseDataParser) : ScheduleAttributeRepository {
     override suspend fun getAttributesById(
         ids: List<ScheduleIdentifier>
-    ): Result<List<LectureAttribute>> {
+    ): Result<List<ScheduleAttribute>> {
         val teachers = ArrayList<ScheduleIdentifier>()
         val classrooms = ArrayList<ScheduleIdentifier>()
         val groups = ArrayList<ScheduleIdentifier>()
@@ -53,9 +55,31 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
         )
     }
 
+    override suspend fun getAttributeById(
+        id: ScheduleIdentifier
+    ): Result<ScheduleAttribute> = database.tryWithConnection(
+        "Во время загрузки атрибута по id произошла ошибка."
+    ) {
+        val sqlResultSet = it.executeGetAttributesByIdQuery(id.type, listOf(id))
+        sqlResultSet.map {
+            when (id.type) {
+                ScheduleType.TEACHER -> parser.parseTeacher(getString("prepod"))
+                ScheduleType.CLASSROOM -> parser.parseClassroom(getString("auditoria"))
+                ScheduleType.GROUP -> parser.parseGroup(
+                    getString("gruppa"), getString("shift"), getInt("kurs")
+                )
+            }
+        }.firstOrNull()
+    }.let {result ->
+        result.fold(
+            onSuccess = { if (it == null) Result.failure(Exception()) else Result.success(it) },
+            onFailure = { Result.failure(it) },
+        )
+    }
+
     override suspend fun getAllAttributes(
         type: ScheduleType
-    ): Result<List<LectureAttribute>> = database.tryWithConnection(
+    ): Result<List<ScheduleAttribute>> = database.tryWithConnection(
         "Во время загрузки всех атрибутов $type произошла ошибка."
     ) { connection ->
         val sqlResultSet = connection.executeGetAllAttributesQuery(type)
@@ -74,7 +98,7 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
     private suspend fun getAttributesByIdHomogenous(
         ids: List<ScheduleIdentifier>,
         type: ScheduleType
-    ) : Result<List<LectureAttribute>> = database.tryWithConnection {
+    ) : Result<List<ScheduleAttribute>> = database.tryWithConnection {
         val sqlResultSet = it.executeGetAttributesByIdQuery(type, ids)
         when (type) {
             ScheduleType.TEACHER -> sqlResultSet.map {
@@ -121,6 +145,7 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
                     ScheduleType.CLASSROOM -> "`auditoria`"
                 }
             }
+            FROM `pl4453-mobile`.`1c_shedule`
             WHERE ${
                 when (type) {
                     ScheduleType.GROUP -> "`gruppa`"
@@ -128,9 +153,9 @@ class NatkDatabaseAttributeRepository(private val database: NatkDatabase, privat
                     ScheduleType.CLASSROOM -> "`auditoria`"
                 }
             } IN (${attributes.joinToString {"?"}})
-            FROM `pl4453-mobile`.`1c_shedule`
         """
         ).apply {
+
             for (i in 1..attributes.count()) {
                 setString(i, attributes[i - 1].stringId)
             }

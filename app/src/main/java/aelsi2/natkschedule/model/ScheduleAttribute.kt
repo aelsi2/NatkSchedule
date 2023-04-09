@@ -1,5 +1,5 @@
 package aelsi2.natkschedule.model
 
-interface LectureAttribute {
+interface ScheduleAttribute {
     val scheduleIdentifier : ScheduleIdentifier
 }

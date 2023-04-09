@@ -1,6 +1,7 @@
 package aelsi2.natkschedule.ui
 
 import aelsi2.natkschedule.ui.components.*
+import aelsi2.natkschedule.ui.screens.group_list.GroupListScreen
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +37,7 @@ fun ScheduleApp() {
                 Text("Teachers")
             }
             composable(TopLevelRoutes.GROUPS_ROUTE){
-                Text("Groups")
+                GroupListScreen()
             }
             composable(TopLevelRoutes.FAVORITES_ROUTE){
                 Text("Favorites")

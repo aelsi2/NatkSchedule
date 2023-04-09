@@ -5,7 +5,7 @@ data class Classroom(
     val shortName : String? = null,
     val address : String? = null,
     val id : String = fullName
-    ) : LectureAttribute {
+    ) : ScheduleAttribute {
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.CLASSROOM, id)
 }

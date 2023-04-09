@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.domain
+package aelsi2.natkschedule.domain.use_cases
 
 import aelsi2.natkschedule.data.preferences.FavoritesReader
 import aelsi2.natkschedule.data.preferences.SettingsReader

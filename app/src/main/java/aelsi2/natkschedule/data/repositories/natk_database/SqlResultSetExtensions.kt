@@ -5,7 +5,7 @@ import java.sql.SQLException
 import java.util.ArrayList
 
 /**
- * Выполняет трансформацию для каждой строки [ResultSet].
+ * Применяет трансформацию к каждой строке [ResultSet].
  * @return Список результатов трансформации.
  */
 @Throws(SQLException::class)
@@ -19,4 +19,16 @@ inline fun <T> ResultSet?.map(transform: ResultSet.() -> T?) : List<T> {
         }
     }
     return items
+}
+
+/**
+ * Выполняет действие для каждой строки [ResultSet].
+ * @return Список результатов трансформации.
+ */
+@Throws(SQLException::class)
+inline fun ResultSet?.forEach(action: ResultSet.() -> Unit) {
+    this ?: return
+    while (this.next()) {
+        this.action()
+    }
 }

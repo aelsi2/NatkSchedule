@@ -6,10 +6,14 @@ import org.koin.dsl.module
 
 val roomDatabaseModule = module {
     single {
-        Room.databaseBuilder(get(), ScheduleDatabase::class.java, "natk_schedule_database").build()
+        Room.databaseBuilder(get(), ScheduleDatabase::class.java, "natk_schedule_database")
+            .fallbackToDestructiveMigration().build()
     } bind ScheduleDatabase::class
     factory {
         get<ScheduleDatabase>().lectureDao()
+    }
+    factory {
+        get<ScheduleDatabase>().disciplineDao()
     }
     factory {
         get<ScheduleDatabase>().teacherDao()

@@ -1,8 +1,9 @@
-package aelsi2.natkschedule.domain
+package aelsi2.natkschedule.domain.use_cases
 
 import aelsi2.natkschedule.data.time.TimeManager
-import aelsi2.natkschedule.domain.model.GroupedLectureWithState
 import aelsi2.natkschedule.domain.model.LectureState
+import aelsi2.natkschedule.model.Lecture
+import aelsi2.natkschedule.model.ScheduleDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -10,39 +11,45 @@ import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.ZonedDateTime
 
-class GetGroupedLectureStateUseCase(
+class GetLectureStateUseCase(
     private val timeManager: TimeManager
 ) {
     operator fun invoke(
-        lecture: GroupedLectureWithState,
-        previousLecture: GroupedLectureWithState? = null
+        scheduleDay: ScheduleDay,
+        lecture: Lecture,
     ): Flow<LectureState> = flow {
+        val isToday = scheduleDay.date == timeManager.currentCollegeLocalDate
+        val previousLecture = if (isToday && lecture.startTime != null) {
+            scheduleDay.lectures.lastOrNull {
+                it.endTime != null && it.endTime < lecture.startTime
+            }
+        } else null
         val zonedStartTime = timeManager.localToCollegeZoned(
             if (lecture.startTime == null) {
-                lecture.date.atStartOfDay()
+                scheduleDay.date.atStartOfDay()
             } else {
-                lecture.date.atTime(lecture.startTime)
+                scheduleDay.date.atTime(lecture.startTime)
             }
         )
         val zonedEndTime = timeManager.localToCollegeZoned(
             if (lecture.startTime == null) {
-                lecture.date.plusDays(1).atStartOfDay()
+                scheduleDay.date.plusDays(1).atStartOfDay()
             } else {
-                lecture.date.atTime(lecture.endTime)
+                scheduleDay.date.atTime(lecture.endTime)
             }
         )
         val zonedBreakStartTime = if (lecture.breakStartTime != null)
-            timeManager.localToCollegeZoned(lecture.date.atTime(lecture.breakStartTime))
+            timeManager.localToCollegeZoned(scheduleDay.date.atTime(lecture.breakStartTime))
         else null
         val zonedBreakEndTime = if (lecture.breakEndTime != null)
-            timeManager.localToCollegeZoned(lecture.date.atTime(lecture.breakEndTime))
+            timeManager.localToCollegeZoned(scheduleDay.date.atTime(lecture.breakEndTime))
         else null
         val zonedPreviousLectureEndTime = if (previousLecture != null)
             timeManager.localToCollegeZoned(
                 if (previousLecture.startTime == null) {
-                    previousLecture.date.plusDays(1).atStartOfDay()
+                    scheduleDay.date.plusDays(1).atStartOfDay()
                 } else {
-                    previousLecture.date.atTime(previousLecture.endTime)
+                    scheduleDay.date.atTime(previousLecture.endTime)
                 }
             )
         else null
@@ -53,7 +60,8 @@ class GetGroupedLectureStateUseCase(
                     zonedEndTime,
                     zonedBreakStartTime,
                     zonedBreakEndTime,
-                    zonedPreviousLectureEndTime
+                    zonedPreviousLectureEndTime,
+                    isToday
                 )
             )
         }
@@ -64,14 +72,15 @@ class GetGroupedLectureStateUseCase(
         zonedEndTime: ZonedDateTime,
         zonedBreakStartTime: ZonedDateTime?,
         zonedBreakEndTime: ZonedDateTime?,
-        zonedPreviousLectureEndTime: ZonedDateTime?
+        zonedPreviousLectureEndTime: ZonedDateTime?,
+        isToday: Boolean
     ): LectureState {
         val hasBreak = zonedBreakStartTime != null && zonedBreakEndTime != null
         val zonedCurrentTime = timeManager.currentCollegeZonedDateTime
         // Проверка на "неначатость"
         if (zonedCurrentTime < zonedStartTime) {
             // Если задано время окончания предыдущей лекции, и она закончилась, значит проверяемая лекция следующая
-            if (zonedPreviousLectureEndTime == null || zonedCurrentTime > zonedPreviousLectureEndTime) {
+            if (isToday && (zonedPreviousLectureEndTime == null || zonedCurrentTime > zonedPreviousLectureEndTime)) {
                 return LectureState.UpNext(
                     Duration.between(zonedCurrentTime, zonedStartTime)
                 )
@@ -86,20 +95,20 @@ class GetGroupedLectureStateUseCase(
         // Проверка на перерыв
         if (hasBreak) {
             // Идет до перерыва
-            if (zonedCurrentTime in zonedStartTime..zonedBreakStartTime!!) {
+            if (zonedCurrentTime <= zonedBreakStartTime!!) {
                 return LectureState.OngoingPreBreak(
                     Duration.between(zonedStartTime, zonedCurrentTime),
                     Duration.between(zonedCurrentTime, zonedBreakStartTime)
                 )
             }
-            // Перерыв
-            if (zonedCurrentTime in zonedBreakEndTime!!..zonedStartTime) {
+            //Идет после перерыва
+            if (zonedCurrentTime >= zonedBreakEndTime!!) {
                 return LectureState.Ongoing(
                     Duration.between(zonedBreakEndTime, zonedCurrentTime),
                     Duration.between(zonedCurrentTime, zonedEndTime)
                 )
             }
-            //Идет после перерыва
+            // Перерыв
             return LectureState.Break(
                 Duration.between(zonedBreakStartTime, zonedCurrentTime),
                 Duration.between(zonedCurrentTime, zonedBreakEndTime)

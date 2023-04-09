@@ -1,39 +1,41 @@
 package aelsi2.natkschedule.data.room_database.model
 
 import aelsi2.natkschedule.model.Lecture
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import aelsi2.natkschedule.model.ScheduleDay
+import androidx.room.*
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Entity(tableName = "Lectures")
-data class LectureEntity(
-    @PrimaryKey val id : String,
-    val lectureDisciplineName : String,
-    val lectureDate : LocalDate,
-    val lectureStartTime : LocalTime?,
-    val lectureEndTime : LocalTime?,
-
-    val lectureTeacherId : String?,
-    val lectureClassroomId : String?,
-    val lectureGroupId : String?,
-    val lectureSubgroupNumber : Int?,
-    val lectureBreakStartTime : LocalTime?,
-    val lectureBreakEndTime : LocalTime?
-) {
-    companion object{
-        fun fromLecture(lecture: Lecture) = LectureEntity(
-            lecture.id,
-            lecture.disciplineName,
-            lecture.date,
-            lecture.startTime,
-            lecture.endTime,
-            lecture.teacher?.id,
-            lecture.classroom?.id,
-            lecture.group?.id,
-            lecture.subgroupNumber,
-            lecture.breakStartTime,
-            lecture.breakEndTime
+@Entity(
+    tableName = "Lectures",
+    foreignKeys = [
+        ForeignKey(
+            entity = ScheduleDayEntity::class,
+            parentColumns = ["scheduleDayId"],
+            childColumns = ["lectureScheduleDayId"],
+            onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [ Index("lectureScheduleDayId", unique = false) ]
+)
+data class LectureEntity(
+    val lectureScheduleDayId: Long,
+    val lectureIndex: Int?,
+    val lectureStartTime: LocalTime?,
+    val lectureEndTime: LocalTime?,
+    val lectureBreakStartTime: LocalTime?,
+    val lectureBreakEndTime: LocalTime?,
+) {
+    @PrimaryKey(autoGenerate = true) var lectureId: Long = 0
+    companion object {
+        fun fromLecture(lecture: Lecture, scheduleDayId: Long) =
+            LectureEntity(
+                scheduleDayId,
+                lecture.index,
+                lecture.startTime,
+                lecture.endTime,
+                lecture.breakStartTime,
+                lecture.breakEndTime
+            )
     }
 }

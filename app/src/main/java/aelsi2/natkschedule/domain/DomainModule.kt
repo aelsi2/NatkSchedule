@@ -1,5 +1,6 @@
 package aelsi2.natkschedule.domain
 
+import aelsi2.natkschedule.domain.use_cases.*
 import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
@@ -8,8 +9,8 @@ import org.koin.dsl.module
 
 val domainModule = module {
     singleOf(::CleanCacheUnusedUseCase)
-    singleOf(::GetGroupedLectureStateUseCase)
-    singleOf(::GroupLecturesUseCase)
+    singleOf(::GetLectureStateUseCase)
+    singleOf(::LoadScheduleUseCase)
 
     factory {params ->
         GetOtherScheduleParametersUseCase(params.get(), get(), get())

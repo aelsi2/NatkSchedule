@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.domain
+package aelsi2.natkschedule.domain.use_cases
 
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import kotlinx.coroutines.flow.Flow

@@ -6,7 +6,7 @@ import java.time.LocalDate
 /**
  * Репозиторий учебных занятий.
  */
-interface LectureRepository {
+interface ScheduleDayRepository {
     /**
      * Получить расписание учебных занятий из репозитория.
      * @param fromDate Минимальная дата.
@@ -14,9 +14,9 @@ interface LectureRepository {
      * @param identifier Идентификатор расписания (преподаватель, аудитория, группа).
      * @return Последовательность занятий.
      */
-    suspend fun getLectures(
+    suspend fun getDays(
         fromDate: LocalDate,
         toDate: LocalDate,
         identifier: ScheduleIdentifier
-    ): Result<List<Lecture>>
+    ): Result<List<ScheduleDay>>
 }
