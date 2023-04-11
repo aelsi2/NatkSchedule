@@ -19,7 +19,7 @@ class GetOtherScheduleParametersUseCase(
         when {
             isMain -> ScheduleParameters(identifier, cacheMain)
             isFavorite -> ScheduleParameters(identifier, cacheFavorite)
-            else -> ScheduleParameters(identifier, true)// TODO убрать true
+            else -> ScheduleParameters(identifier, false)
         }
     }.conflate().distinctUntilChanged()
 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.remember
 
 
 interface LectureCardColors {
@@ -60,11 +61,10 @@ interface LectureCardColors {
             get() = MaterialTheme.colorScheme.onSecondaryContainer
     }
 
-    object Highlighted : LectureCardColors {
+    class Highlighted(private val infiniteTransition: InfiniteTransition) : LectureCardColors {
         override val backgroundColor: Color
             @Composable
             get() {
-                val infiniteTransition = rememberInfiniteTransition()
                 return infiniteTransition.animateColor(
                     initialValue = MaterialTheme.colorScheme.secondaryContainer,
                     targetValue = MaterialTheme.colorScheme.surface,
@@ -83,6 +83,15 @@ interface LectureCardColors {
         override val stateTextColor: Color
             @Composable
             get() = MaterialTheme.colorScheme.primary
+
+        companion object {
+            @Composable
+            fun remember(
+                infiniteTransition: InfiniteTransition = rememberInfiniteTransition()
+            ): LectureCardColors = remember(infiniteTransition) {
+                Highlighted(infiniteTransition)
+            }
+        }
     }
 }
 
@@ -169,6 +178,7 @@ fun LectureCardPreview() {
                 verticalArrangement = Arrangement.spacedBy(7.dp),
                 modifier = Modifier.padding(vertical = 10.dp)
             ) {
+                val highlighted = LectureCardColors.Highlighted.remember()
                 LectureCard(
                     titleText = "МДК.01.03 Разработка мобильных приложений",
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
@@ -200,7 +210,7 @@ fun LectureCardPreview() {
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
-                    colors = LectureCardColors.Highlighted,
+                    colors = highlighted,
                     modifier = Modifier
                         .defaultMinSize(minHeight = 75.dp)
                         .padding(horizontal = 10.dp),

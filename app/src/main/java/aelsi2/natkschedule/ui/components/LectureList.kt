@@ -62,6 +62,7 @@ fun LectureList(
             .clip(RectangleShape)
             .pullRefresh(pullRefreshState, enablePullToRefresh)
     ) {
+        val highlightedCardColors = LectureCardColors.Highlighted.remember()
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -124,8 +125,8 @@ fun LectureList(
                                 else -> null
                             },
                             colors = when (state) {
-                                is LectureState.Ongoing -> LectureCardColors.Highlighted
-                                is LectureState.OngoingPreBreak -> LectureCardColors.Highlighted
+                                is LectureState.Ongoing -> highlightedCardColors
+                                is LectureState.OngoingPreBreak -> highlightedCardColors
                                 is LectureState.Break -> LectureCardColors.Active
                                 is LectureState.UpNext -> LectureCardColors.Active
                                 else -> LectureCardColors.Inactive
