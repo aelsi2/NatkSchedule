@@ -25,4 +25,6 @@
     <string name="lecture_details_group">Group</string>
     <string name="lecture_details_subgroup">SubGroup</string>
     <string name="group_info">Year %1$d • %2$s</string>
+    <string name="discipline_list_first_item">%1$s</string>
+    <string name="discipline_list_item">;\n%1$s</string>
 </resources>

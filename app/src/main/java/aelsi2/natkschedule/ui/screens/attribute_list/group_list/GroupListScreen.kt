@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.screens.group_list
+package aelsi2.natkschedule.ui.screens.attribute_list.group_list
 
 import aelsi2.natkschedule.domain.ScreenState
 import aelsi2.natkschedule.model.ScheduleIdentifier
@@ -10,7 +10,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GroupListScreen(
-    onGroupClick: (ScheduleIdentifier) -> Unit,
+    onAttributeClick: (ScheduleIdentifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel = koinViewModel<GroupListScreenViewModel>()
@@ -22,7 +22,7 @@ fun GroupListScreen(
         onRefresh = {
             viewModel.update()
         },
-        onAttributeClick = onGroupClick,
+        onAttributeClick = onAttributeClick,
         modifier = modifier
     )
 }

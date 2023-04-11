@@ -25,4 +25,6 @@
     <string name="lecture_details_group">Группа</string>
     <string name="lecture_details_subgroup">Подгруппа</string>
     <string name="group_info">%1$d курс • %2$s</string>
+    <string name="discipline_list_first_item">%1$s</string>
+    <string name="discipline_list_item">;\n%1$s</string>
 </resources>

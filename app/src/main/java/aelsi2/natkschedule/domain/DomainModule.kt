@@ -11,6 +11,7 @@ val domainModule = module {
     singleOf(::CleanCacheUnusedUseCase)
     singleOf(::GetLectureStateUseCase)
     singleOf(::LoadScheduleUseCase)
+    singleOf(::LoadAttributesUseCase)
 
     factory {params ->
         GetOtherScheduleParametersUseCase(params.get(), get(), get())

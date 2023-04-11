@@ -7,5 +7,14 @@ data class Teacher(
 ) : ScheduleAttribute {
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.TEACHER, id)
+
+    override fun matchesString(string: String): Boolean =
+        string.isEmpty() || fullName.contains(
+            other = string,
+            ignoreCase = true
+        ) || shortName?.contains(
+            other = string,
+            ignoreCase = true
+        ) ?: true
 }
 

@@ -125,6 +125,13 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
                 }
             }
             FROM `pl4453-mobile`.`1c_shedule`
+            ORDER BY ${
+                when (type) {
+                    ScheduleType.GROUP -> "`gruppa`"
+                    ScheduleType.TEACHER -> "`prepod`"
+                    ScheduleType.CLASSROOM -> "`auditoria`"
+                }
+            }
         """
     ).executeQuery()
 

@@ -5,7 +5,6 @@ import aelsi2.natkschedule.domain.model.LectureState
 import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.LectureData
 import aelsi2.natkschedule.model.ScheduleDay
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -93,7 +92,7 @@ fun LectureList(
                             displaySubgroup
                         )
                         LectureCard(
-                            titleText = lecture.data[0].discipline.name,
+                            titleText = getLectureDisciplineString(lecture.data),
                             infoText = lectureInfo,
                             onClick = { onLectureClick?.invoke(lecture) },
                             stateText = when (state) {
@@ -177,8 +176,36 @@ fun LectureList(
 }
 
 @Composable
+private fun getLectureDisciplineString(
+    lectureData: List<LectureData>
+): String {
+    if (lectureData.isEmpty()) {
+        return ""
+    }
+    if (lectureData.count() == 1 || lectureData.all { it.discipline == lectureData[0].discipline }) {
+        return lectureData[0].discipline.name
+    }
+    val disciplineSb = StringBuilder()
+    disciplineSb.append(
+        stringResource(
+            R.string.discipline_list_first_item,
+            lectureData[0].discipline.name
+        )
+    )
+    for (data in lectureData.drop(1)) {
+        disciplineSb.append(
+            stringResource(
+                R.string.discipline_list_item,
+                data.discipline.name
+            )
+        )
+    }
+    return disciplineSb.toString()
+}
+
+@Composable
 private fun getLectureInfoString(
-    subLectures: List<LectureData>,
+    lectureData: List<LectureData>,
     startTime: LocalTime?,
     endTime: LocalTime?,
     displayTeacher: Boolean,
@@ -197,7 +224,7 @@ private fun getLectureInfoString(
             )
         )
     }
-    subLectures.forEach {
+    lectureData.forEach {
         if (infoSb.isNotEmpty()) {
             infoSb.append('\n')
         }

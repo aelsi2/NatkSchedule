@@ -7,7 +7,6 @@ import aelsi2.natkschedule.data.repositories.WritableScheduleDayRepository
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleDay
 import aelsi2.natkschedule.model.ScheduleIdentifier
-import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.time.LocalDate

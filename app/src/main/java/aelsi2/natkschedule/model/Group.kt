@@ -8,4 +8,16 @@ data class Group(
 ) : ScheduleAttribute {
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.GROUP, id)
+
+    override fun matchesString(string: String): Boolean =
+        string.isEmpty() || name.contains(
+            other = string,
+            ignoreCase = true
+        ) || programName.contains(
+            other = string,
+            ignoreCase = true
+        ) || year.toString().contains(
+            other = string,
+            ignoreCase = true
+        )
 }
