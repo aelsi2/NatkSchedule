@@ -9,6 +9,14 @@ import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
 
 class NatkDatabaseDataParser {
+    fun compareDisciplines(
+        rawDisciplineName1: String?,
+        rawDisciplineName2: String?,
+    ): Boolean {
+        val discipline1 = parseDiscipline(rawDisciplineName1)
+        val discipline2 = parseDiscipline(rawDisciplineName2)
+        return discipline1 == discipline2
+    }
     fun compareDays(
         rawDate1: String?,
         rawDate2: String?

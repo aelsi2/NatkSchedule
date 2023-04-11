@@ -80,6 +80,9 @@ fun LectureList(
                     )
                 }
                 for (lecture in day.lectures) {
+                    if (lecture.data.isEmpty()) {
+                        continue
+                    }
                     item {
                         val state = getLectureState(day, lecture).collectAsState().value
                         val lectureInfo = getLectureInfoString(
@@ -92,7 +95,7 @@ fun LectureList(
                             displaySubgroup
                         )
                         LectureCard(
-                            titleText = getLectureDisciplineString(lecture.data),
+                            titleText = lecture.data[0].discipline.name,
                             infoText = lectureInfo,
                             onClick = { onLectureClick?.invoke(lecture) },
                             stateText = when (state) {
@@ -173,34 +176,6 @@ fun LectureList(
             }
         }
     }
-}
-
-@Composable
-private fun getLectureDisciplineString(
-    lectureData: List<LectureData>
-): String {
-    if (lectureData.isEmpty()) {
-        return ""
-    }
-    if (lectureData.count() == 1 || lectureData.all { it.discipline == lectureData[0].discipline }) {
-        return lectureData[0].discipline.name
-    }
-    val disciplineSb = StringBuilder()
-    disciplineSb.append(
-        stringResource(
-            R.string.discipline_list_first_item,
-            lectureData[0].discipline.name
-        )
-    )
-    for (data in lectureData.drop(1)) {
-        disciplineSb.append(
-            stringResource(
-                R.string.discipline_list_item,
-                data.discipline.name
-            )
-        )
-    }
-    return disciplineSb.toString()
 }
 
 @Composable

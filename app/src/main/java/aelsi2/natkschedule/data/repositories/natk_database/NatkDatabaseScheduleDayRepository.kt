@@ -54,10 +54,11 @@ class NatkDatabaseScheduleDayRepository(
                 rawIndex2 = next?.index ?: 0,
                 rawTime2 = next?.stringTime
             )
+            val sameDiscipline = parser.compareDisciplines(current.disciplineName, next?.disciplineName)
             if (lectureData != null){
                 currentLectureData.add(lectureData)
             }
-            if (!sameLecture || !sameDay) {
+            if (!sameLecture || !sameDay || !sameDiscipline) {
                 val lecture = parser.parseLecture(
                     current.index, current.stringTime, currentLectureData
                 )
@@ -93,7 +94,7 @@ class NatkDatabaseScheduleDayRepository(
                 ScheduleType.CLASSROOM -> "`auditoria` = ?"
             }
         } and ? <= data and data <= ?
-            ORDER BY `data` ASC, `para` ASC, `podgruppa` ASC
+            ORDER BY `data` ASC, `vremya` ASC, `disciplina` ASC, `podgruppa` ASC
         """
     ).apply {
         setString(1, identifier.stringId)
