@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package androidx.compose.material3.pullrefresh
+//Modifications Copyright 2023 Andrey Eliseev
+
+package aelsi2.compose.material3.pullrefresh
 import androidx.compose.animation.core.animate
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.Composable
@@ -37,8 +39,6 @@ import kotlinx.coroutines.launch
  * Creates a [PullRefreshState] that is remembered across compositions.
  *
  * Changes to [refreshing] will result in [PullRefreshState] being updated.
- *
- * @sample androidx.compose.material.samples.PullRefreshSample
  *
  * @param refreshing A boolean representing whether a refresh is currently occurring.
  * @param onRefresh The function to be called to trigger a refresh.
@@ -101,7 +101,11 @@ class PullRefreshState internal constructor(
      * two times the refreshThreshold.
      */
     val progress get() = adjustedDistancePulled / threshold
-    internal val refreshing get() = _refreshing
+
+    /**
+     * A boolean representing whether a refresh is currently occurring.
+     */
+    val refreshing get() = _refreshing
     internal val position get() = _position
     internal val threshold get() = _threshold
     private val adjustedDistancePulled by derivedStateOf { distancePulled * DragMultiplier }

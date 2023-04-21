@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package androidx.compose.material3.pullrefresh
+//Modifications Copyright 2023 Andrey Eliseev
+
+package aelsi2.compose.material3.pullrefresh
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -29,13 +31,10 @@ import androidx.compose.ui.unit.Velocity
  * Note that this modifier must be added above a scrolling container, such as a lazy column, in
  * order to receive scroll events. For example:
  *
- * @sample androidx.compose.material.samples.PullRefreshSample
- *
  * @param state The [PullRefreshState] associated with this pull-to-refresh component.
  * The state will be updated by this modifier.
  * @param enabled If not enabled, all scroll delta and fling velocity will be ignored.
  */
-// TODO(b/244423199): Move pullRefresh into its own material library similar to material-ripple.
 fun Modifier.pullRefresh(
     state: PullRefreshState,
     enabled: Boolean = true
@@ -52,8 +51,6 @@ fun Modifier.pullRefresh(
  *
  * Note that this modifier must be added above a scrolling container, such as a lazy column, in
  * order to receive scroll events. For example:
- *
- * @sample androidx.compose.material.samples.CustomPullRefreshSample
  *
  * @param onPull Callback for dispatching vertical scroll delta, takes float pullDelta as argument.
  * Positive delta (pulling down) is dispatched only if the child does not consume it (i.e. pulling

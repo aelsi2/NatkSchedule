@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+//Modifications Copyright 2023 Andrey Eliseev
 
-package androidx.compose.material3.pullrefresh
+package aelsi2.compose.material3.pullrefresh
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.runtime.getValue
@@ -32,8 +33,6 @@ import androidx.compose.ui.platform.debugInspectorInfo
 /**
  * A modifier for translating the position and scaling the size of a pull-to-refresh indicator
  * based on the given [PullRefreshState].
- *
- * @sample androidx.compose.material.samples.PullRefreshIndicatorTransformSample
  *
  * @param state The [PullRefreshState] which determines the position of the indicator.
  * @param scale A boolean controlling whether the indicator's size scales with pull progress or not.

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Расписание</string>
     <string name="home_tab_name">Главная</string>
-    <string name="favourites_tab_name">Избранное</string>
+    <string name="favorites_tab_name">Избранное</string>
     <string name="groups_tab_name">Группы</string>
     <string name="teachers_tab_name">Преподы</string>
     <string name="classrooms_tab_name">Аудитории</string>
@@ -27,4 +27,34 @@
     <string name="group_info">%1$d курс • %2$s</string>
     <string name="discipline_list_first_item">%1$s</string>
     <string name="discipline_list_item">;\n%1$s</string>
+    <string name="title_home">Главная</string>
+    <string name="title_favorite_list">Избранное</string>
+    <string name="title_classroom_list">Аудитории</string>
+    <string name="title_teacher_list">Преподаватели</string>
+    <string name="title_group_list">Группы</string>
+    <string name="title_loading">Загрузка…</string>
+    <string name="filter_schedule_from_today">С сегодня</string>
+    <string name="filter_schedule_this_week">Эта неделя</string>
+    <string name="filter_schedule_all">Все</string>
+    <string name="filter_group_list_year">Курс</string>
+    <string name="filter_group_list_program">Специальность</string>
+    <string name="filter_classroom_list_address">Адрес</string>
+    <string name="action_back">Назад</string>
+    <string name="action_menu">Меню</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="action_favorite_add">В избранное</string>
+    <string name="action_favorite_remove">В избранном</string>
+    <string name="action_set_main_schedule">Задать как главное</string>
+    <string name="action_schedule_details">Подробнее</string>
+    <string name="action_schedule_show_date">Перейти к дате</string>
+    <string name="search_groups_placeholder">Искать группу…</string>
+    <string name="search_teachers_placeholder">Искать преподавателя…</string>
+    <string name="search_classrooms_placeholder">Искать аудиторию…</string>
+    <string name="search_favorites_placeholder">Искать в избранном…</string>
+    <string name="description_classroom">Аудитория</string>
+    <string name="description_teacher">Преподаватель</string>
+    <string name="description_group">Группа</string>
+    <string name="message_main_schedule_not_set">Главное расписание не задано.\n\nЧтобы сделать расписание главным:\n• Перейдите на вкладку \"$inline[0] Группы\", \"$inline[1] Преподаватели\" или \"$inline[2] Аудитории\"\n• Выберите расписание из списка\n• Нажмите \'$inline[3]\'\n• Нажмите \'Задать как главное\'</string>
 </resources>

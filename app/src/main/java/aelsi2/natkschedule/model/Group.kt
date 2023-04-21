@@ -6,6 +6,8 @@ data class Group(
     val year : Int,
     val id : String = "${name}_${programName}_${year}"
 ) : ScheduleAttribute {
+    override val displayName: String
+        get() = name
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.GROUP, id)
 

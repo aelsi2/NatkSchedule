@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Schedule</string>
     <string name="home_tab_name">Home</string>
-    <string name="favourites_tab_name">Favorites</string>
+    <string name="favorites_tab_name">Favorites</string>
     <string name="groups_tab_name">Groups</string>
     <string name="teachers_tab_name">Teachers</string>
     <string name="classrooms_tab_name">Rooms</string>
@@ -27,4 +27,34 @@
     <string name="group_info">Year %1$d • %2$s</string>
     <string name="discipline_list_first_item">%1$s</string>
     <string name="discipline_list_item">;\n%1$s</string>
+    <string name="title_home">Home</string>
+    <string name="title_favorite_list">Favorites</string>
+    <string name="title_classroom_list">Classrooms</string>
+    <string name="title_teacher_list">Teachers</string>
+    <string name="title_group_list">Groups</string>
+    <string name="title_loading">Loading…</string>
+    <string name="filter_schedule_from_today">From today</string>
+    <string name="filter_schedule_this_week">Current week</string>
+    <string name="filter_schedule_all">All</string>
+    <string name="filter_group_list_year">Year</string>
+    <string name="filter_group_list_program">Program</string>
+    <string name="filter_classroom_list_address">Address</string>
+    <string name="action_back">Back</string>
+    <string name="action_menu">Menu</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_favorite_add">Add to favorites</string>
+    <string name="action_favorite_remove">Remove from favorites</string>
+    <string name="action_set_main_schedule">Set as main</string>
+    <string name="action_schedule_details">Details</string>
+    <string name="action_schedule_show_date">Go to date</string>
+    <string name="search_groups_placeholder">Search for groups…</string>
+    <string name="search_teachers_placeholder">Search for teachers…</string>
+    <string name="search_classrooms_placeholder">Search for classrooms…</string>
+    <string name="search_favorites_placeholder">Search in favorites…</string>
+    <string name="description_classroom">Classroom</string>
+    <string name="description_teacher">Teacher</string>
+    <string name="description_group">Group</string>
+    <string name="message_main_schedule_not_set">Main schedule not set.\n\nTo make a schedule the main schedule:\n• Go to the \'$inline[0] Groups\', \'$inline[1] Teachers\' or \'$inline[2] Classrooms\' tab\n• Select a schedule from the list\n• Click \'$inline[3]\'\n• Click \'Set as main\'</string>
 </resources>

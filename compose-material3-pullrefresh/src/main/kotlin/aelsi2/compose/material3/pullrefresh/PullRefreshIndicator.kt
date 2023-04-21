@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package androidx.compose.material3.pullrefresh
+//Modifications Copyright 2023 Andrey Eliseev
+
+package aelsi2.compose.material3.pullrefresh
+
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
@@ -50,12 +54,10 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+
 /**
  * The default indicator for Compose pull-to-refresh, based on Android's SwipeRefreshLayout.
  *
- * @sample androidx.compose.material.samples.PullRefreshSample
- *
- * @param refreshing A boolean representing whether a refresh is occurring.
  * @param state The [PullRefreshState] which controls where and how the indicator will be drawn.
  * @param modifier Modifiers for the indicator.
  * @param backgroundColor The color of the indicator's background.
@@ -63,29 +65,28 @@ import kotlin.math.pow
  * @param scale A boolean controlling whether the indicator's size scales with pull progress or not.
  */
 @Composable
-// TODO(b/244423199): Consider whether the state parameter should be replaced with lambdas to
-//  enable people to use this indicator with custom pull-to-refresh components.
 fun PullRefreshIndicator(
-    refreshing: Boolean,
     state: PullRefreshState,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(backgroundColor),
     scale: Boolean = false
 ) {
-    val showElevation by remember(refreshing, state) {
-        derivedStateOf { refreshing || state.position > 0.5f }
-    }
-    Surface(
+    Box(
         modifier = modifier
             .size(IndicatorSize)
-            .pullRefreshIndicatorTransform(state, scale),
-        shape = SpinnerShape,
-        color = backgroundColor,
-        tonalElevation = if (showElevation) Elevation else 0.dp,
+            .pullRefreshIndicatorTransform(state, scale)
+            .background(
+                color = if (backgroundColor == MaterialTheme.colorScheme.surface)
+                {
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(Elevation)
+                }
+                else { backgroundColor },
+                shape = SpinnerShape
+            )
     ) {
         Crossfade(
-            targetState = refreshing,
+            targetState = state.refreshing,
             animationSpec = tween(durationMillis = CrossfadeDurationMs)
         ) { refreshing ->
             Box(
@@ -100,12 +101,16 @@ fun PullRefreshIndicator(
                         modifier = Modifier.size(spinnerSize),
                     )
                 } else {
-                    CircularArrowIndicator(state, contentColor, Modifier.size(spinnerSize))
+                    CircularArrowIndicator(
+                        state = state,
+                        color = contentColor,
+                        modifier = Modifier.size(spinnerSize))
                 }
             }
         }
     }
 }
+
 /**
  * Modifier.size MUST be specified.
  */
@@ -151,6 +156,7 @@ private fun CircularArrowIndicator(
         }
     }
 }
+
 @Immutable
 private class ArrowValues(
     val rotation: Float,
@@ -158,6 +164,7 @@ private class ArrowValues(
     val endAngle: Float,
     val scale: Float
 )
+
 private fun ArrowValues(progress: Float): ArrowValues {
     // Discard first 40% of progress. Scale remaining progress to full range between 0 and 100%.
     val adjustedPercent = max(min(1f, progress) - 0.4f, 0f) * 5 / 3
@@ -175,6 +182,7 @@ private fun ArrowValues(progress: Float): ArrowValues {
     val scale = min(1f, adjustedPercent)
     return ArrowValues(rotation, startAngle, endAngle, scale)
 }
+
 private fun DrawScope.drawArrow(
     arrow: Path,
     bounds: Rect,
@@ -203,6 +211,7 @@ private fun DrawScope.drawArrow(
         drawPath(path = arrow, color = color, alpha = alpha)
     }
 }
+
 private const val CrossfadeDurationMs = 100
 private const val MaxProgressArc = 0.8f
 private val IndicatorSize = 40.dp
@@ -212,6 +221,7 @@ private val StrokeWidth = 2.5.dp
 private val ArrowWidth = 10.dp
 private val ArrowHeight = 5.dp
 private val Elevation = 6.dp
+
 // Values taken from SwipeRefreshLayout
 private const val MinAlpha = 0.3f
 private const val MaxAlpha = 1f

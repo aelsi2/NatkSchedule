@@ -2,9 +2,8 @@ package aelsi2.natkschedule.ui.screens.attribute_list
 
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
-import aelsi2.natkschedule.ui.TopLevelRoutes
-import aelsi2.natkschedule.ui.screens.attribute_list.teacher_list.TeacherListScreen
-import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreen
+import aelsi2.natkschedule.ui.SetUiStateLambda
+import aelsi2.natkschedule.ui.screens.schedule.RegularScheduleScreen
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -26,11 +25,13 @@ fun NavController.navigateToSchedule(
 fun NavGraphBuilder.attributeListTab(
     route: String,
     scheduleType: ScheduleType,
-    list: @Composable () -> Unit
+    onScheduleBackClick: () -> Unit,
+    setUiState: SetUiStateLambda,
+    list: @Composable (setUiState: SetUiStateLambda) -> Unit
 ) {
     navigation(startDestination = "$route/list", route = route) {
         composable("$route/list"){
-            list()
+            list(setUiState)
         }
         composable(
             "$route/schedule/{stringId}",
@@ -40,8 +41,10 @@ fun NavGraphBuilder.attributeListTab(
         ) {
             val stringId = it.arguments?.getString("stringId")
             if (stringId != null) {
-                ScheduleScreen(
-                    scheduleIdentifier = ScheduleIdentifier(scheduleType, Uri.decode(stringId))
+                RegularScheduleScreen(
+                    scheduleIdentifier = ScheduleIdentifier(scheduleType, Uri.decode(stringId)),
+                    onBackClick = onScheduleBackClick,
+                    setUiState = setUiState
                 )
             }
         }

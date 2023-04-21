@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.*
 import kotlin.math.roundToInt
 
 @Composable
-fun ScheduleNavbar(
+fun NavBar(
     items: List<ScheduleAppTab>,
     isItemSelected: @Composable (route: String) -> Boolean,
     onItemClick: (route: String) -> Unit,
@@ -130,9 +130,9 @@ enum class ScheduleAppTab(val route: String, val title: Int, val iconNormal: Int
         R.drawable.people_outlined,
         R.drawable.people_filled
     ),
-    FAVOURITES(
+    FAVORITES(
         TopLevelRoutes.FAVORITES_ROUTE,
-        R.string.favourites_tab_name,
+        R.string.favorites_tab_name,
         R.drawable.star_outlined,
         R.drawable.star_filled
     ),
@@ -158,10 +158,10 @@ enum class ScheduleAppTab(val route: String, val title: Int, val iconNormal: Int
 
 @Preview
 @Composable
-fun ScheduleNavbarPreview() {
+fun NavBarPreview() {
     ScheduleTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.background) {
-            ScheduleNavbar(
+            NavBar(
                 items = ScheduleAppTab.values().toList(),
                 isItemSelected = { route ->
                     route == TopLevelRoutes.GROUPS_ROUTE

@@ -72,10 +72,7 @@ class DataStoreFavoritesManager(appContext : Context) : FavoritesManager {
         private val MAIN_SCHEDULE = stringPreferencesKey("main")
         private val FAVORITE_SCHEDULES = stringSetPreferencesKey("favorites")
 
-        private val MAIN_SCHEDULE_DEFAULT = ScheduleIdentifier(
-            ScheduleType.GROUP,
-            "ПР-20.101"
-        )
+        private val MAIN_SCHEDULE_DEFAULT = null
     }
 }
 

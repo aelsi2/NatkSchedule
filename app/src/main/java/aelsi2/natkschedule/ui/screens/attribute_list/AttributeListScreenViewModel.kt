@@ -1,11 +1,11 @@
 package aelsi2.natkschedule.ui.screens.attribute_list
 
 import aelsi2.natkschedule.data.network.NetworkMonitor
-import aelsi2.natkschedule.domain.ScreenState
+import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.domain.use_cases.LoadAttributesUseCase
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleType
-import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +13,70 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@Stable
+class TeacherListScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    networkMonitor: NetworkMonitor,
+    loadAttributes: LoadAttributesUseCase
+) : AttributeListScreenViewModel(
+    ScheduleType.TEACHER,
+    savedStateHandle,
+    networkMonitor,
+    loadAttributes
+) {
+
+    init {
+        onPostInit()
+        refresh()
+    }
+}
+
+@Stable
+class ClassroomListScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    networkMonitor: NetworkMonitor,
+    loadAttributes: LoadAttributesUseCase
+) : AttributeListScreenViewModel(
+    ScheduleType.CLASSROOM,
+    savedStateHandle,
+    networkMonitor,
+    loadAttributes
+) {
+
+    init {
+        onPostInit()
+        refresh()
+    }
+
+    companion object {
+        private const val FILTER_ADDRESS_KEY = "address"
+    }
+}
+
+@Stable
+class GroupListScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    networkMonitor: NetworkMonitor,
+    loadAttributes: LoadAttributesUseCase
+) : AttributeListScreenViewModel(
+    ScheduleType.GROUP,
+    savedStateHandle,
+    networkMonitor,
+    loadAttributes
+) {
+
+    init {
+        onPostInit()
+        refresh()
+    }
+
+    companion object {
+        private const val FILTER_PROGRAM_KEY = "program"
+        private const val FILTER_YEAR_KEY = "year"
+    }
+}
+
+@Stable
 abstract class AttributeListScreenViewModel(
     scheduleType: ScheduleType,
     private val savedStateHandle: SavedStateHandle,
@@ -53,7 +117,7 @@ abstract class AttributeListScreenViewModel(
         viewModelScope, SharingStarted.WhileSubscribed(5000), ScreenState.Loading
     )
 
-    fun update() {
+    fun refresh() {
         viewModelScope.launch {
             update.emit(Unit)
         }

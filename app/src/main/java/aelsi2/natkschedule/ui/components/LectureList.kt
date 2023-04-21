@@ -5,19 +5,14 @@ import aelsi2.natkschedule.domain.model.LectureState
 import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.LectureData
 import aelsi2.natkschedule.model.ScheduleDay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.pullrefresh.PullRefreshIndicator
-import androidx.compose.material3.pullrefresh.pullRefresh
-import androidx.compose.material3.pullrefresh.rememberPullRefreshState
+import android.content.res.Resources
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
@@ -36,112 +31,93 @@ import kotlin.math.round
 fun LectureList(
     days: List<ScheduleDay>,
     getLectureState: ((ScheduleDay, Lecture) -> StateFlow<LectureState>),
-    enablePullToRefresh: Boolean,
-    isRefreshing: Boolean,
     modifier: Modifier = Modifier,
     displayTeacher: Boolean = true,
     displayClassroom: Boolean = true,
     displayGroup: Boolean = true,
     displaySubgroup: Boolean = true,
     onLectureClick: ((Lecture) -> Unit)? = null,
-    onRefresh: (() -> Unit)? = null,
     onReachedTop: (() -> Unit)? = null,
     onReachedBottom: (() -> Unit)? = null,
 ) {
-    val pullRefreshState = rememberPullRefreshState(
-        isRefreshing,
-        onRefresh ?: {},
-        refreshThreshold = 48.dp,
-        refreshingOffset = 48.dp
-    )
     val listState = rememberLazyListState()
-    Box(
-        modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-            .clip(RectangleShape)
-            .pullRefresh(pullRefreshState, enablePullToRefresh)
+    val highlightedCardColors = LectureCardColors.Highlighted.remember()
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+        modifier = modifier
     ) {
-        val highlightedCardColors = LectureCardColors.Highlighted.remember()
-        LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-        ) {
-            for (day in days) {
-                item{
-                    DateDivider(
-                        dayOfWeekText = DayOfWeek.from(day.date)
-                            .getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                        dateText = day.date.format(
-                            DateTimeFormatter.ofLocalizedDate(
-                                FormatStyle.MEDIUM
-                            )
+        for (day in days) {
+            item(key = day.date.toString()) {
+                DateDivider(
+                    dayOfWeekText = DayOfWeek.from(day.date)
+                        .getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                    dateText = day.date.format(
+                        DateTimeFormatter.ofLocalizedDate(
+                            FormatStyle.MEDIUM
                         )
                     )
+                )
+            }
+            itemsIndexed(day.lectures, key = { index, _ -> "${day.date}:${index}" }) { _, lecture ->
+                val state = getLectureState(day, lecture).collectAsState().value
+                val resources = LocalContext.current.resources
+                val lectureInfo = remember(lecture) {
+                    getLectureInfoString(
+                        resources,
+                        lecture.data,
+                        lecture.startTime,
+                        lecture.endTime,
+                        displayTeacher,
+                        displayClassroom,
+                        displayGroup,
+                        displaySubgroup
+                    )
                 }
-                for (lecture in day.lectures) {
-                    if (lecture.data.isEmpty()) {
-                        continue
-                    }
-                    item {
-                        val state = getLectureState(day, lecture).collectAsState().value
-                        val lectureInfo = getLectureInfoString(
-                            lecture.data,
-                            lecture.startTime,
-                            lecture.endTime,
-                            displayTeacher,
-                            displayClassroom,
-                            displayGroup,
-                            displaySubgroup
+                LectureCard(
+                    titleText = lecture.data[0].discipline.name,
+                    infoText = lectureInfo,
+                    onClick = { onLectureClick?.invoke(lecture) },
+                    stateText = when (state) {
+                        is LectureState.OngoingPreBreak -> stringResource(R.string.lecture_state_ongoing)
+                        is LectureState.Ongoing -> stringResource(R.string.lecture_state_ongoing)
+                        is LectureState.Break -> stringResource(R.string.lecture_state_break)
+                        else -> null
+                    },
+                    stateTimerText = when (state) {
+                        is LectureState.Ongoing -> stringResource(
+                            R.string.lecture_time_to_end,
+                            state.endsIn.toHumanReadableString()
                         )
-                        LectureCard(
-                            titleText = lecture.data[0].discipline.name,
-                            infoText = lectureInfo,
-                            onClick = { onLectureClick?.invoke(lecture) },
-                            stateText = when (state) {
-                                is LectureState.OngoingPreBreak -> stringResource(R.string.lecture_state_ongoing)
-                                is LectureState.Ongoing -> stringResource(R.string.lecture_state_ongoing)
-                                is LectureState.Break -> stringResource(R.string.lecture_state_break)
-                                else -> null
-                            },
-                            stateTimerText = when (state) {
-                                is LectureState.Ongoing -> stringResource(
-                                    R.string.lecture_time_to_end,
-                                    state.endsIn.toHumanReadableString()
-                                )
-                                is LectureState.OngoingPreBreak -> stringResource(
-                                    R.string.lecture_time_to_break,
-                                    state.endsIn.toHumanReadableString()
-                                )
-                                is LectureState.Break -> stringResource(
-                                    R.string.lecture_time_to_break_end,
-                                    state.endsIn.toHumanReadableString()
-                                )
-                                is LectureState.UpNext -> stringResource(
-                                    R.string.lecture_time_to_start,
-                                    state.startsIn.toHumanReadableString()
-                                )
-                                else -> null
-                            },
-                            colors = when (state) {
-                                is LectureState.Ongoing -> highlightedCardColors
-                                is LectureState.OngoingPreBreak -> highlightedCardColors
-                                is LectureState.Break -> LectureCardColors.Active
-                                is LectureState.UpNext -> LectureCardColors.Active
-                                else -> LectureCardColors.Inactive
-                            }
+
+                        is LectureState.OngoingPreBreak -> stringResource(
+                            R.string.lecture_time_to_break,
+                            state.endsIn.toHumanReadableString()
                         )
+
+                        is LectureState.Break -> stringResource(
+                            R.string.lecture_time_to_break_end,
+                            state.endsIn.toHumanReadableString()
+                        )
+
+                        is LectureState.UpNext -> stringResource(
+                            R.string.lecture_time_to_start,
+                            state.startsIn.toHumanReadableString()
+                        )
+
+                        else -> null
+                    },
+                    colors = when (state) {
+                        is LectureState.Ongoing -> highlightedCardColors
+                        is LectureState.OngoingPreBreak -> highlightedCardColors
+                        is LectureState.Break -> LectureCardColors.Active
+                        is LectureState.UpNext -> LectureCardColors.Active
+                        else -> LectureCardColors.Inactive
                     }
-                }
+                )
             }
         }
-        PullRefreshIndicator(
-            isRefreshing,
-            pullRefreshState,
-            Modifier.align(Alignment.TopCenter),
-            contentColor = MaterialTheme.colorScheme.primary
-        )
     }
     if (onReachedBottom != null) {
         val atBottom = remember {
@@ -179,8 +155,8 @@ fun LectureList(
     }
 }
 
-@Composable
 private fun getLectureInfoString(
+    resources: Resources,
     lectureData: List<LectureData>,
     startTime: LocalTime?,
     endTime: LocalTime?,
@@ -190,10 +166,10 @@ private fun getLectureInfoString(
     displaySubgroup: Boolean
 ): String {
     val infoSb = StringBuilder()
-    val attributeSeparator = stringResource(R.string.lecture_info_attribute_separator)
+    val attributeSeparator = resources.getString(R.string.lecture_info_attribute_separator)
     if (startTime != null && endTime != null) {
         infoSb.append(
-            stringResource(
+            resources.getString(
                 R.string.lecture_info_time,
                 startTime.toString(),
                 endTime.toString()
@@ -206,7 +182,12 @@ private fun getLectureInfoString(
         }
         var lineHasContent = false
         if (displaySubgroup && it.subgroupIndex != null) {
-            infoSb.append(stringResource(R.string.lecture_info_subgroup, it.subgroupIndex))
+            infoSb.append(
+                resources.getString(
+                    R.string.lecture_info_subgroup,
+                    it.subgroupIndex
+                )
+            )
             lineHasContent = true
         }
         if (displayClassroom && it.classroom != null) {
@@ -245,7 +226,7 @@ private fun Duration.toHumanReadableString(): String {
     return days.toDurationPartWithSeparator(isFirst = true) +
             hours.toDurationPartWithSeparator(isFirst = days == 0L) +
             minutes.toDurationPartWithSeparator(isFirst = days + hours == 0L, displayZero = true) +
-            seconds.toDurationPartWithSeparator(isFirst = false, displayZero =  true)
+            seconds.toDurationPartWithSeparator(isFirst = false, displayZero = true)
 }
 
 private fun Long.toDurationPartWithSeparator(

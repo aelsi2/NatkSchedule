@@ -1,13 +1,18 @@
 package aelsi2.natkschedule.ui
 
+import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.screens.attribute_list.navigateToSchedule
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.navigation.NavDestination
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,17 +28,23 @@ object TopLevelRoutes {
 
 @Composable
 fun rememberScheduleAppState(
-    snackBarHostState: SnackbarHostState = SnackbarHostState(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navController: NavHostController = rememberNavController()
 ) : ScheduleAppState =
-    remember(navController, snackBarHostState) {
+    remember(snackBarHostState, navController) {
         ScheduleAppState(snackBarHostState, navController)
     }
 
+@Stable
 class ScheduleAppState(
     val snackBarHostState: SnackbarHostState,
     val navController: NavHostController
 ) {
+    var topAppBarContent: (@Composable () -> Unit)? by mutableStateOf(null)
+    var topAppBarNestedScrollConnection: NestedScrollConnection? by mutableStateOf(null)
+    var pullRefreshState: PullRefreshState? by mutableStateOf(null)
+    var navigationBarVisible: Boolean by mutableStateOf(true)
+
     @Composable
     fun isAtTopRoute(
         route: String
@@ -60,15 +71,7 @@ class ScheduleAppState(
             stringId = scheduleIdentifier.stringId
         )
     }
+    fun navigateBack() {
+        navController.popBackStack()
+    }
 }
-
-data class TopBarState(
-    val titleText: String = "",
-    val visible: Boolean = true,
-    val actions: (@Composable RowScope.() -> Unit)? = null,
-    val bottomContent: (@Composable () -> Unit)? = null
-)
-
-data class BottomBarState(
-    val visible: Boolean
-)

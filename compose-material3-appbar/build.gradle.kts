@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "aelsi2.compose.material3.pullrefresh"
+    namespace = "aelsi2.compose.material3.appbar"
     compileSdk = 33
 
     defaultConfig {

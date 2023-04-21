@@ -12,6 +12,10 @@ val domainModule = module {
     singleOf(::GetLectureStateUseCase)
     singleOf(::LoadScheduleUseCase)
     singleOf(::LoadAttributesUseCase)
+    singleOf(::GetScheduleIsMainUseCase)
+    singleOf(::GetScheduleIsFavoriteUseCase)
+    singleOf(::SetMainScheduleUseCase)
+    singleOf(::ToggleScheduleFavoriteUseCase)
 
     factory {params ->
         GetOtherScheduleParametersUseCase(params.get(), get(), get())
