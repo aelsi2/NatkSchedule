@@ -110,9 +110,10 @@ fun TopAppBarWithBottomContent(
     modifier: Modifier = Modifier,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    bottomContent: @Composable () -> Unit = {},
+    bottomContent: @Composable (insets: WindowInsets) -> Unit = {},
     maxBottomContentHeight: Dp = 32.dp,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+    bottomContentWindowInsets: WindowInsets = TopAppBarDefaults.bottomContentWindowInsets,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
@@ -600,6 +601,14 @@ object TopAppBarDefaults {
         @Composable
         get() = WindowInsets.systemBars
             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+
+    /**
+     * Default insets to be used and consumed by the top app bar bottom content
+     */
+    val bottomContentWindowInsets: WindowInsets
+        @Composable
+        get() = WindowInsets.systemBars
+            .only(WindowInsetsSides.Horizontal)
     /**
      * Creates a [TopAppBarColors] for [CenterAlignedTopAppBar]s. The default implementation
      * animates between the provided colors according to the Material Design specification.
@@ -1076,11 +1085,12 @@ private fun SingleRowTopAppBarWithCollapsingContent(
     title: @Composable () -> Unit,
     titleTextStyle: TextStyle,
     centeredTitle: Boolean,
-    bottomContent: @Composable () -> Unit,
+    bottomContent: @Composable (insets: WindowInsets) -> Unit,
     maxBottomContentHeight: Dp,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     windowInsets: WindowInsets,
+    bottomContentWindowInsets: WindowInsets = TopAppBarDefaults.bottomContentWindowInsets,
     colors: TopAppBarColors,
     scrollBehavior: TopAppBarScrollBehavior?
 ) {
@@ -1154,7 +1164,7 @@ private fun SingleRowTopAppBarWithCollapsingContent(
                 .fillMaxWidth()
                 .height(bottomContentHeight)
                 .clipToBounds()) {
-                bottomContent()
+                bottomContent(bottomContentWindowInsets)
             }
         }
     }

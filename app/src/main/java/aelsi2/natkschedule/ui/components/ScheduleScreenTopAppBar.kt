@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -235,8 +236,8 @@ fun ScheduleScreenTopAppBar(
                 }
             }
         },
-        bottomContent = {
-            Box(modifier = Modifier.requiredHeight(52.dp)) {
+        bottomContent = {windowInsets ->
+            Box(modifier = Modifier.requiredHeight(52.dp).windowInsetsPadding(windowInsets)) {
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
