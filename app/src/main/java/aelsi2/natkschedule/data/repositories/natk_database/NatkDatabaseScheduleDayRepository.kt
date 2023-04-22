@@ -89,9 +89,9 @@ class NatkDatabaseScheduleDayRepository(
             FROM `pl4453-mobile`.`1c_shedule`
             WHERE ${
             when (identifier.type) {
-                ScheduleType.GROUP -> "`gruppa` = ?"
-                ScheduleType.TEACHER -> "`prepod` = ?"
-                ScheduleType.CLASSROOM -> "`auditoria` = ?"
+                ScheduleType.Group -> "`gruppa` = ?"
+                ScheduleType.Teacher -> "`prepod` = ?"
+                ScheduleType.Classroom -> "`auditoria` = ?"
             }
         } and ? <= data and data <= ?
             ORDER BY `data` ASC, `vremya` ASC, `disciplina` ASC, `podgruppa` ASC

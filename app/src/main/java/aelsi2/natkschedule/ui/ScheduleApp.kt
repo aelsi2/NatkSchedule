@@ -10,14 +10,17 @@ import aelsi2.natkschedule.ui.screens.attribute_list.GroupListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.TeacherListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.attributeListTab
 import aelsi2.natkschedule.ui.screens.schedule.MainScheduleScreen
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -26,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.animation.with
 
 typealias SetUiStateLambda = (
     topAppBar: (@Composable () -> Unit)?,
@@ -46,19 +50,20 @@ fun ScheduleAppState.setUiState(
     this.navigationBarVisible = navigationBarVisible
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ScheduleApp(
     appState: ScheduleAppState = rememberScheduleAppState()
 ) {
     Scaffold(
         topBar = {
-            Crossfade(targetState = appState.topAppBarContent) {
-                (it ?: {
-                    Box(modifier = Modifier.windowInsetsPadding(
-                        WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                    ))
-                }).invoke()
+            AnimatedContent(
+                targetState = appState.topAppBarContent,
+                transitionSpec = {
+                    (fadeIn()).with(fadeOut()).using(SizeTransform { _, _ -> snap(50) })
+                }
+            ) {
+                it?.invoke()
             }
         },
         bottomBar = {
@@ -92,11 +97,10 @@ fun ScheduleApp(
                     LaunchedEffect(key1 = true) {
                         appState.setUiState()
                     }
-                    Text("Favorites")
                 }
                 attributeListTab(
                     route = TopLevelRoutes.TEACHERS_ROUTE,
-                    scheduleType = ScheduleType.TEACHER,
+                    scheduleType = ScheduleType.Teacher,
                     setUiState = appState::setUiState,
                     onScheduleBackClick = appState::navigateBack
                 ) {setUiState ->
@@ -109,7 +113,7 @@ fun ScheduleApp(
                 }
                 attributeListTab(
                     route = TopLevelRoutes.CLASSROOMS_ROUTE,
-                    scheduleType = ScheduleType.CLASSROOM,
+                    scheduleType = ScheduleType.Classroom,
                     setUiState = appState::setUiState,
                     onScheduleBackClick = appState::navigateBack
                 ) {setUiState ->
@@ -122,7 +126,7 @@ fun ScheduleApp(
                 }
                 attributeListTab(
                     route = TopLevelRoutes.GROUPS_ROUTE,
-                    scheduleType = ScheduleType.GROUP,
+                    scheduleType = ScheduleType.Group,
                     setUiState = appState::setUiState,
                     onScheduleBackClick = appState::navigateBack
                 ) {setUiState ->

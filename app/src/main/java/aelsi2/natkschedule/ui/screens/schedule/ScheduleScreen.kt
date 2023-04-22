@@ -130,10 +130,10 @@ private fun ScheduleScreen(
         LectureList(
             days = days,
             viewModel::getLectureState,
-            displayTeacher = identifier?.type != ScheduleType.TEACHER,
-            displayClassroom = identifier?.type != ScheduleType.CLASSROOM,
-            displayGroup = identifier?.type != ScheduleType.GROUP,
-            displaySubgroup = identifier?.type == ScheduleType.GROUP,
+            displayTeacher = identifier?.type != ScheduleType.Teacher,
+            displayClassroom = identifier?.type != ScheduleType.Classroom,
+            displayGroup = identifier?.type != ScheduleType.Group,
+            displaySubgroup = identifier?.type == ScheduleType.Group,
             modifier = Modifier.fillMaxSize()
         )
     }

@@ -1,9 +1,7 @@
 package aelsi2.natkschedule.model
 
-import java.text.ParseException
-
 enum class ScheduleType(val numericValue : Int) {
-    GROUP(0), TEACHER(1), CLASSROOM(2);
+    Group(0), Teacher(1), Classroom(2);
     companion object {
         fun fromInt(numericValue : Int?) = ScheduleType.values().firstOrNull { it.numericValue == numericValue }
         fun fromString(string: String?) = ScheduleType.values().firstOrNull { it.name == string }

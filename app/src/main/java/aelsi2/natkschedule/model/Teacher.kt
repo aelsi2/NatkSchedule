@@ -8,7 +8,7 @@ data class Teacher(
     override val displayName: String
         get() = shortName ?: fullName
     override val scheduleIdentifier: ScheduleIdentifier
-        get() = ScheduleIdentifier(ScheduleType.TEACHER, id)
+        get() = ScheduleIdentifier(ScheduleType.Teacher, id)
 
     override fun matchesString(string: String): Boolean =
         string.isEmpty() || fullName.contains(

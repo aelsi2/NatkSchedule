@@ -49,6 +49,7 @@
     <string name="action_set_main_schedule">Задать как главное</string>
     <string name="action_schedule_details">Подробнее</string>
     <string name="action_schedule_show_date">Перейти к дате</string>
+    <string name="action_clear_search_field">Очистить поле поиска</string>
     <string name="search_groups_placeholder">Искать группу…</string>
     <string name="search_teachers_placeholder">Искать преподавателя…</string>
     <string name="search_classrooms_placeholder">Искать аудиторию…</string>

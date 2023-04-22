@@ -23,14 +23,14 @@ class LoadScheduleUseCase(
         loadOnline: Boolean,
         startDate: LocalDate,
         endDate: LocalDate,
-        onOfflineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit)? = null,
-        onOfflineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit)? = null,
-        onOfflineDaysError: (suspend (Throwable) -> Unit)? = null,
-        onOfflineAttributeError: (suspend (Throwable) -> Unit)? = null,
-        onOnlineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit)? = null,
-        onOnlineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit)? = null,
-        onOnlineDaysError: (suspend (Throwable) -> Unit)? = null,
-        onOnlineAttributeError: (suspend (Throwable) -> Unit)? = null,
+        onOfflineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit) = {},
+        onOfflineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit) = {},
+        onOfflineDaysError: (suspend (Throwable) -> Unit) = {},
+        onOfflineAttributeError: (suspend (Throwable) -> Unit) = {},
+        onOnlineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit) = {},
+        onOnlineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit) = {},
+        onOnlineDaysError: (suspend (Throwable) -> Unit) = {},
+        onOnlineAttributeError: (suspend (Throwable) -> Unit) = {},
     ) = coroutineScope {
         val offlineDaysJob = if (loadOffline) async {
             this@LoadScheduleUseCase.localDayRepo.getDays(startDate, endDate, identifier)
@@ -47,36 +47,36 @@ class LoadScheduleUseCase(
 
         offlineDaysJob?.await()?.fold(
             onSuccess = {
-                onOfflineDaysSuccess?.invoke(it)
+                onOfflineDaysSuccess(it)
             },
             onFailure = {
-                onOfflineDaysError?.invoke(it)
+                onOfflineDaysError(it)
             }
         )
         offlineAttributeJob?.await()?.fold(
             onSuccess = {
-                onOfflineAttributeSuccess?.invoke(it)
+                onOfflineAttributeSuccess(it)
             },
             onFailure = {
-                onOfflineAttributeError?.invoke(it)
+                onOfflineAttributeError(it)
             }
         )
         onlineDaysJob?.await()?.fold(
             onSuccess = {
                 localDayRepo.putDays(identifier, it)
-                onOnlineDaysSuccess?.invoke(it)
+                onOnlineDaysSuccess(it)
             },
             onFailure = {
-                onOnlineDaysError?.invoke(it)
+                onOnlineDaysError(it)
             }
         )
         onlineAttributeJob?.await()?.fold(
             onSuccess = {
                 localAttributeRepo.putAttribute(it)
-                onOnlineAttributeSuccess?.invoke(it)
+                onOnlineAttributeSuccess(it)
             },
             onFailure = {
-                onOnlineAttributeError?.invoke(it)
+                onOnlineAttributeError(it)
             }
         )
     }

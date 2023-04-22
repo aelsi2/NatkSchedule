@@ -4,7 +4,6 @@ import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.screens.attribute_list.navigateToSchedule
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -64,9 +63,9 @@ class ScheduleAppState(
     fun navigateToSchedule(scheduleIdentifier: ScheduleIdentifier) {
         navController.navigateToSchedule(
             route = when (scheduleIdentifier.type) {
-                ScheduleType.TEACHER -> TopLevelRoutes.TEACHERS_ROUTE
-                ScheduleType.CLASSROOM -> TopLevelRoutes.CLASSROOMS_ROUTE
-                ScheduleType.GROUP -> TopLevelRoutes.GROUPS_ROUTE
+                ScheduleType.Teacher -> TopLevelRoutes.TEACHERS_ROUTE
+                ScheduleType.Classroom -> TopLevelRoutes.CLASSROOMS_ROUTE
+                ScheduleType.Group -> TopLevelRoutes.GROUPS_ROUTE
             },
             stringId = scheduleIdentifier.stringId
         )

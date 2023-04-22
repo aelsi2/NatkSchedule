@@ -70,17 +70,17 @@ fun ScheduleScreenTopAppBar(
                     )
                     if (titleIcon != null) {
                         val (iconDrawable, iconDescription) = when (titleIcon) {
-                            ScheduleType.CLASSROOM -> Pair(
+                            ScheduleType.Classroom -> Pair(
                                 R.drawable.door_outlined,
                                 R.string.description_classroom
                             )
 
-                            ScheduleType.TEACHER -> Pair(
+                            ScheduleType.Teacher -> Pair(
                                 R.drawable.person_outlined,
                                 R.string.description_teacher
                             )
 
-                            ScheduleType.GROUP -> Pair(
+                            ScheduleType.Group -> Pair(
                                 R.drawable.people_outlined,
                                 R.string.description_group
                             )

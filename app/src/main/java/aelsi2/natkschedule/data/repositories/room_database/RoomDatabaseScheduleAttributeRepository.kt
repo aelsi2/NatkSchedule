@@ -57,9 +57,9 @@ class RoomDatabaseScheduleAttributeRepository(
         val groupIds = ArrayList<String>()
         attributesToKeep.forEach{
             when (it.type) {
-                ScheduleType.TEACHER -> teacherIds.add(it.stringId)
-                ScheduleType.CLASSROOM -> classroomIds.add(it.stringId)
-                ScheduleType.GROUP -> groupIds.add(it.stringId)
+                ScheduleType.Teacher -> teacherIds.add(it.stringId)
+                ScheduleType.Classroom -> classroomIds.add(it.stringId)
+                ScheduleType.Group -> groupIds.add(it.stringId)
             }
         }
         database.withTransaction {
@@ -80,9 +80,9 @@ class RoomDatabaseScheduleAttributeRepository(
         val groupIds = ArrayList<String>()
         ids.forEach{
             when (it.type) {
-                ScheduleType.TEACHER -> teacherIds.add(it.stringId)
-                ScheduleType.CLASSROOM -> classroomIds.add(it.stringId)
-                ScheduleType.GROUP -> groupIds.add(it.stringId)
+                ScheduleType.Teacher -> teacherIds.add(it.stringId)
+                ScheduleType.Classroom -> classroomIds.add(it.stringId)
+                ScheduleType.Group -> groupIds.add(it.stringId)
             }
         }
         return Result.success(listOf(
@@ -95,9 +95,9 @@ class RoomDatabaseScheduleAttributeRepository(
     override suspend fun getAttributeById(
         id: ScheduleIdentifier
     ): Result<ScheduleAttribute> = when (id.type) {
-        ScheduleType.TEACHER -> teacherDao.getTeacher(id.stringId)?.toTeacher()
-        ScheduleType.CLASSROOM -> classroomDao.getClassroom(id.stringId)?.toClassroom()
-        ScheduleType.GROUP -> groupDao.getGroup(id.stringId)?.toGroup()
+        ScheduleType.Teacher -> teacherDao.getTeacher(id.stringId)?.toTeacher()
+        ScheduleType.Classroom -> classroomDao.getClassroom(id.stringId)?.toClassroom()
+        ScheduleType.Group -> groupDao.getGroup(id.stringId)?.toGroup()
     }.let {
         when (it) {
             null -> Result.failure(Exception())
@@ -108,8 +108,8 @@ class RoomDatabaseScheduleAttributeRepository(
     override suspend fun getAllAttributes(
         type: ScheduleType
     ): Result<List<ScheduleAttribute>> = Result.success(when (type) {
-        ScheduleType.TEACHER -> teacherDao.getAll().map { it.toTeacher() }
-        ScheduleType.CLASSROOM -> classroomDao.getAll().map { it.toClassroom() }
-        ScheduleType.GROUP -> groupDao.getAll().map { it.toGroup() }
+        ScheduleType.Teacher -> teacherDao.getAll().map { it.toTeacher() }
+        ScheduleType.Classroom -> classroomDao.getAll().map { it.toClassroom() }
+        ScheduleType.Group -> groupDao.getAll().map { it.toGroup() }
     })
 }

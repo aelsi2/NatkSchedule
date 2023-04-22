@@ -8,20 +8,31 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.SetUiStateLambda
 import aelsi2.natkschedule.ui.components.AttributeList
 import aelsi2.natkschedule.ui.components.AttributeListTopAppBar
+import aelsi2.natkschedule.ui.components.AttributeSearchBar
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import kotlinx.coroutines.launch
 
 @Composable
 fun TeacherListScreen(
@@ -32,6 +43,7 @@ fun TeacherListScreen(
 ) {
     AttributeListScreen(
         title = stringResource(R.string.title_teacher_list),
+        searchPlaceholderText = stringResource(R.string.search_teachers_placeholder),
         filters = {},
         onAttributeClick = onAttributeClick,
         setUiState = setUiState,
@@ -49,6 +61,7 @@ fun ClassroomListScreen(
 ) {
     AttributeListScreen(
         title = stringResource(R.string.title_classroom_list),
+        searchPlaceholderText = stringResource(R.string.search_classrooms_placeholder),
         filters = {},
         onAttributeClick = onAttributeClick,
         setUiState = setUiState,
@@ -66,6 +79,7 @@ fun GroupListScreen(
 ) {
     AttributeListScreen(
         title = stringResource(R.string.title_group_list),
+        searchPlaceholderText = stringResource(R.string.search_groups_placeholder),
         filters = {},
         onAttributeClick = onAttributeClick,
         setUiState = setUiState,
@@ -78,16 +92,21 @@ fun GroupListScreen(
 @Composable
 private fun AttributeListScreen(
     title: String,
+    searchPlaceholderText: String,
     filters: @Composable () -> Unit,
     onAttributeClick: (ScheduleIdentifier) -> Unit,
     setUiState: SetUiStateLambda,
     modifier: Modifier,
     viewModel: AttributeListScreenViewModel
 ) {
-    val attributes by viewModel.attributes.collectAsState()
-    val state by viewModel.state.collectAsState()
+    val lazyListState = rememberLazyListState()
+
+    var searchActive by rememberSaveable { mutableStateOf(false) }
+    var searchRequestFocus by remember { mutableStateOf(false) }
+
+    val screenState by viewModel.state.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state == ScreenState.Loading,
+        refreshing = screenState == ScreenState.Loading,
         onRefresh = viewModel::refresh,
         refreshThreshold = 48.dp,
         refreshingOffset = 48.dp
@@ -95,21 +114,65 @@ private fun AttributeListScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val topAppBar: @Composable () -> Unit = remember {
         {
-            AttributeListTopAppBar(
-                title = title,
-                onRefreshClick = viewModel::refresh,
-                scrollBehavior = scrollBehavior
-            )
+            Crossfade(searchActive) {
+                if (it) {
+                    BackHandler {
+                        searchActive = false
+                        viewModel.resetSearchAndFilters()
+                    }
+                    val searchText by viewModel.searchString.collectAsState()
+                    val focusRequester = remember {
+                        FocusRequester()
+                    }
+                    AttributeSearchBar(
+                        searchText = searchText,
+                        onTextChange = viewModel::setSearchString,
+                        onBackClick = {
+                            searchActive = false
+                            viewModel.resetSearchAndFilters()
+                        },
+                        onClearClick = {
+                            searchRequestFocus = true
+                            viewModel.resetSearchAndFilters()
+                        },
+                        placeholderText = searchPlaceholderText,
+                        modifier = modifier.focusRequester(focusRequester)
+                    )
+                    LaunchedEffect(searchRequestFocus) {
+                        if (searchRequestFocus) {
+                            focusRequester.requestFocus()
+                            searchRequestFocus = false
+                        }
+                    }
+                }
+                else {
+                    AttributeListTopAppBar(
+                        title = title,
+                        onSearchClick = {
+                            searchActive = true
+                            searchRequestFocus = true
+                        },
+                        onRefreshClick = viewModel::refresh,
+                        scrollBehavior = scrollBehavior
+                    )
+                }
+            }
         }
     }
     LaunchedEffect(key1 = true){
         setUiState(topAppBar, scrollBehavior.nestedScrollConnection, pullRefreshState, true)
     }
+
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
     ) {
+        val attributes by viewModel.attributes.collectAsState()
+        LaunchedEffect(attributes) {
+            lazyListState.scrollToItem(0)
+        }
         AttributeList(
+            lazyListState = lazyListState,
             attributes = attributes,
             onAttributeClick = onAttributeClick,
             modifier = modifier.fillMaxSize(),

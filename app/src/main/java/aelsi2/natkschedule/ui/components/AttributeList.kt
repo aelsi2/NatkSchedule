@@ -3,7 +3,9 @@ package aelsi2.natkschedule.ui.components
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -12,10 +14,12 @@ import androidx.compose.ui.res.stringResource
 fun AttributeList(
     attributes: List<ScheduleAttribute>,
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
     filters: @Composable () -> Unit = {},
     onAttributeClick: (ScheduleIdentifier) -> Unit = {},
 ) {
     LazyColumn(
+        state = lazyListState,
         modifier = modifier
     ) {
         item {

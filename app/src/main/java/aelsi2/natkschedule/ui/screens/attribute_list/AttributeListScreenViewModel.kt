@@ -1,10 +1,15 @@
 package aelsi2.natkschedule.ui.screens.attribute_list
 
 import aelsi2.natkschedule.data.network.NetworkMonitor
+import aelsi2.natkschedule.data.preferences.FavoritesReader
 import aelsi2.natkschedule.domain.model.ScreenState
+import aelsi2.natkschedule.domain.use_cases.LoadAllAttributesUseCase
 import aelsi2.natkschedule.domain.use_cases.LoadAttributesUseCase
+import aelsi2.natkschedule.model.Classroom
+import aelsi2.natkschedule.model.Group
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleType
+import androidx.annotation.CallSuper
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,41 +17,85 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.TreeSet
 
 @Stable
 class TeacherListScreenViewModel(
     savedStateHandle: SavedStateHandle,
     networkMonitor: NetworkMonitor,
-    loadAttributes: LoadAttributesUseCase
-) : AttributeListScreenViewModel(
-    ScheduleType.TEACHER,
+    loadAttributes: LoadAllAttributesUseCase
+) : OnlineAttributeListScreenViewModel(
+    ScheduleType.Teacher,
     savedStateHandle,
     networkMonitor,
     loadAttributes
 ) {
-
-    init {
-        onPostInit()
-        refresh()
-    }
+    override val attributes: StateFlow<List<ScheduleAttribute>> =
+        rawAttributes.applySearch().stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), listOf()
+        )
 }
 
 @Stable
 class ClassroomListScreenViewModel(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     networkMonitor: NetworkMonitor,
-    loadAttributes: LoadAttributesUseCase
-) : AttributeListScreenViewModel(
-    ScheduleType.CLASSROOM,
+    loadAttributes: LoadAllAttributesUseCase
+) : OnlineAttributeListScreenViewModel(
+    ScheduleType.Classroom,
     savedStateHandle,
     networkMonitor,
     loadAttributes
 ) {
+    private val _addresses: MutableStateFlow<Iterable<String>> = MutableStateFlow(emptyList())
+    val addresses: StateFlow<Iterable<String>> get() = _addresses
+
+    val selectedAddress: StateFlow<String?> =
+        savedStateHandle.getStateFlow(FILTER_ADDRESS_KEY, null)
+
+    override val attributes: StateFlow<List<ScheduleAttribute>> =
+        rawAttributes.applySearch().stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), listOf()
+        )
 
     init {
-        onPostInit()
-        refresh()
+        viewModelScope.launch {
+            rawAttributes.collect { attributes ->
+                val treeSet = TreeSet<String>()
+                for (attribute in attributes) {
+                    val address = (attribute as Classroom).address
+                    if (address != null) {
+                        treeSet.add(address)
+                    }
+                }
+                val selectedAddressValue = selectedAddress.value
+                if (selectedAddressValue != null && selectedAddressValue !in treeSet) {
+                    selectAddress(null)
+                }
+                _addresses.emit(treeSet)
+            }
+        }
     }
+
+    fun selectAddress(address: String?) {
+        savedStateHandle[FILTER_ADDRESS_KEY] = address
+    }
+
+    override fun resetSearchAndFilters() {
+        super.resetSearchAndFilters()
+        selectAddress(null)
+    }
+
+    private fun Flow<List<ScheduleAttribute>>.applyFilters(): Flow<List<ScheduleAttribute>> =
+        combine(selectedAddress) { attributes, address ->
+            if (address == null) {
+                attributes
+            } else {
+                attributes.filter {
+                    (it as Classroom).address === address
+                }
+            }
+        }
 
     companion object {
         private const val FILTER_ADDRESS_KEY = "address"
@@ -55,20 +104,73 @@ class ClassroomListScreenViewModel(
 
 @Stable
 class GroupListScreenViewModel(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     networkMonitor: NetworkMonitor,
-    loadAttributes: LoadAttributesUseCase
-) : AttributeListScreenViewModel(
-    ScheduleType.GROUP,
+    loadAttributes: LoadAllAttributesUseCase
+) : OnlineAttributeListScreenViewModel(
+    ScheduleType.Group,
     savedStateHandle,
     networkMonitor,
     loadAttributes
 ) {
+    private val _programs: MutableStateFlow<Iterable<String>> = MutableStateFlow(emptyList())
+    val programs: StateFlow<Iterable<String>> get() = _programs
+
+    // Может, надо брать допустимые курсы из результата с сервера,
+    // хотя введение 5-го курса в колледжи, вроде как, не предвидится
+    val years: List<Int> = listOf(1, 2, 3, 4)
+
+    val selectedProgram: StateFlow<String?> =
+        savedStateHandle.getStateFlow(FILTER_PROGRAM_KEY, null)
+    val selectedYear: StateFlow<Int?> =
+        savedStateHandle.getStateFlow(FILTER_YEAR_KEY, null)
+
+    override val attributes: StateFlow<List<ScheduleAttribute>> =
+        rawAttributes.applyFilters().applySearch().stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
+        )
 
     init {
-        onPostInit()
-        refresh()
+        viewModelScope.launch {
+            rawAttributes.collect { attributes ->
+                val treeSet = TreeSet<String>()
+                for (attribute in attributes) {
+                    treeSet.add((attribute as Group).programName)
+                }
+                val selectedProgramValue = selectedProgram.value
+                if (selectedProgramValue != null && selectedProgramValue !in treeSet) {
+                    selectProgram(null)
+                }
+                _programs.emit(treeSet)
+            }
+        }
     }
+
+    fun selectProgram(program: String?) {
+        savedStateHandle[FILTER_PROGRAM_KEY] = program
+    }
+
+    fun selectYear(year: Int?) {
+        savedStateHandle[FILTER_YEAR_KEY] = year
+    }
+
+    override fun resetSearchAndFilters() {
+        super.resetSearchAndFilters()
+        selectProgram(null)
+        selectYear(null)
+    }
+
+    private fun Flow<List<ScheduleAttribute>>.applyFilters(): Flow<List<ScheduleAttribute>> =
+        combine(this, selectedProgram, selectedYear) { attributes, program, year ->
+            if (year == null && program == null) {
+                attributes
+            } else {
+                attributes.filter {
+                    (program === null || (it as Group).programName === program) &&
+                            (year === null || (it as Group).year == year)
+                }
+            }
+        }
 
     companion object {
         private const val FILTER_PROGRAM_KEY = "program"
@@ -76,27 +178,89 @@ class GroupListScreenViewModel(
     }
 }
 
-@Stable
-abstract class AttributeListScreenViewModel(
-    scheduleType: ScheduleType,
+class FavoritesListViewModel(
     private val savedStateHandle: SavedStateHandle,
     networkMonitor: NetworkMonitor,
-    loadAttributes: LoadAttributesUseCase
-) : ViewModel() {
-    private val update = MutableSharedFlow<Unit>(
-        replay = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    loadAttributes: LoadAttributesUseCase,
+    favoritesReader: FavoritesReader,
+) : AttributeListScreenViewModel(savedStateHandle) {
+    private val rawAttributes = MutableStateFlow<List<ScheduleAttribute>>(emptyList())
+
+    override val attributes: StateFlow<List<ScheduleAttribute>> =
+        rawAttributes.applyFilters().applySearch().stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
+        )
+
+    val selectedScheduleType: StateFlow<ScheduleType?> = savedStateHandle.getStateFlow(
+        FILTER_SCHEDULE_TYPE_KEY, null
     )
-    val searchQuery = savedStateHandle.getStateFlow<String>(FILTER_SEARCH_QUERY_KEY, "")
 
-    private val rawAttributes = MutableStateFlow<List<ScheduleAttribute>>(listOf())
-    private lateinit var _attributes: StateFlow<List<ScheduleAttribute>>
-    val attributes: StateFlow<List<ScheduleAttribute>>
-        get() = _attributes
+    override val state: StateFlow<ScreenState> =
+        combineTransform(
+            networkMonitor.isOnline,
+            favoritesReader.favoriteScheduleIds,
+            refreshTrigger
+        ) { isOnline, favorites, _ ->
+            var hadErrors = false
+            emit(ScreenState.Loading)
+            loadAttributes(
+                favorites,
+                loadOffline = true,
+                loadOnline = isOnline,
+                storeOffline = isOnline,
+                onOfflineError = { hadErrors = true },
+                onOfflineSuccess = { rawAttributes.emit(it) },
+                onOnlineError = { hadErrors = true },
+                onOfflineStoreError = { hadErrors = true },
+                onOfflineStoreSuccess = { rawAttributes.emit(it) }
+            )
+            when {
+                hadErrors -> ScreenState.Error
+                !isOnline -> ScreenState.NoInternet
+                else -> ScreenState.Loaded
+            }
+        }.stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), ScreenState.Loading
+        )
 
-    val state: StateFlow<ScreenState> = combineTransform(
+    fun selectScheduleType(scheduleType: ScheduleType?) {
+        savedStateHandle[FILTER_SCHEDULE_TYPE_KEY] = scheduleType
+    }
+
+    override fun resetSearchAndFilters() {
+        super.resetSearchAndFilters()
+        selectScheduleType(null)
+    }
+
+    private fun Flow<List<ScheduleAttribute>>.applyFilters(): Flow<List<ScheduleAttribute>> =
+        combine(selectedScheduleType) { attributes, type ->
+            if (type == null) {
+                attributes
+            } else {
+                attributes.filter {
+                    it.scheduleIdentifier.type === type
+                }
+            }
+        }
+
+
+    companion object {
+        private const val FILTER_SCHEDULE_TYPE_KEY = "scheduleType"
+    }
+}
+
+@Stable
+abstract class OnlineAttributeListScreenViewModel(
+    scheduleType: ScheduleType,
+    savedStateHandle: SavedStateHandle,
+    networkMonitor: NetworkMonitor,
+    loadAttributes: LoadAllAttributesUseCase
+) : AttributeListScreenViewModel(savedStateHandle) {
+    protected val rawAttributes = MutableStateFlow<List<ScheduleAttribute>>(listOf())
+
+    override val state: StateFlow<ScreenState> = combineTransform(
         networkMonitor.isOnline,
-        update
+        refreshTrigger
     ) { isOnline, _ ->
         if (!isOnline) {
             emit(ScreenState.NoInternet)
@@ -117,34 +281,51 @@ abstract class AttributeListScreenViewModel(
         viewModelScope, SharingStarted.WhileSubscribed(5000), ScreenState.Loading
     )
 
+    init {
+        refresh()
+    }
+}
+
+@Stable
+abstract class AttributeListScreenViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    protected val refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(
+        replay = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val searchString: StateFlow<String> = savedStateHandle.getStateFlow(
+        FILTER_SEARCH_STRING_KEY, ""
+    )
+    abstract val attributes: StateFlow<List<ScheduleAttribute>>
+    abstract val state: StateFlow<ScreenState>
     fun refresh() {
         viewModelScope.launch {
-            update.emit(Unit)
+            refreshTrigger.emit(Unit)
         }
     }
 
-    fun setSearchQuery(string: String) {
-        savedStateHandle[FILTER_SEARCH_QUERY_KEY] = string
+    fun setSearchString(string: String) {
+        savedStateHandle[FILTER_SEARCH_STRING_KEY] = string
     }
 
-    fun clearSearchQuery() {
-        savedStateHandle[FILTER_SEARCH_QUERY_KEY] = ""
+    @CallSuper
+    open fun resetSearchAndFilters() {
+        setSearchString("")
     }
 
-    protected fun onPostInit() {
-        _attributes = rawAttributes.filterAttributes().stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000), listOf()
-        )
-    }
-
-    protected open fun Flow<List<ScheduleAttribute>>.filterAttributes(): Flow<List<ScheduleAttribute>> =
-        combine(searchQuery) { attributes, searchQuery ->
-            attributes.filter {
-                it.matchesString(searchQuery)
+    protected fun Flow<List<ScheduleAttribute>>.applySearch(): Flow<List<ScheduleAttribute>> =
+        combine(searchString) { attributes, search ->
+            if (search.isBlank()) {
+                attributes
+            } else {
+                attributes.filter {
+                    it.matchesString(search)
+                }
             }
         }
 
     companion object {
-        private const val FILTER_SEARCH_QUERY_KEY = "searchQuery"
+        private const val FILTER_SEARCH_STRING_KEY = "searchString"
     }
 }

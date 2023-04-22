@@ -4,8 +4,6 @@ import aelsi2.natkschedule.data.repositories.ScheduleAttributeRepository
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
-import android.util.Log
-import java.nio.charset.Charset
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -19,27 +17,27 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
         val groups = ArrayList<ScheduleIdentifier>()
         ids.forEach {
             when (it.type){
-                ScheduleType.TEACHER -> teachers.add(it)
-                ScheduleType.CLASSROOM -> classrooms.add(it)
-                ScheduleType.GROUP -> groups.add(it)
+                ScheduleType.Teacher -> teachers.add(it)
+                ScheduleType.Classroom -> classrooms.add(it)
+                ScheduleType.Group -> groups.add(it)
             }
         }
         val results = database.tryWithConnections(
             "Во время загрузки списка атрибутов по id произошла ошибка.",
             {
-                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.TEACHER, teachers)
+                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.Teacher, teachers)
                 sqlResultSet.map {
                     parser.parseTeacher(getString("prepod"))
                 }
             },
             {
-                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.CLASSROOM, classrooms)
+                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.Classroom, classrooms)
                 sqlResultSet.map {
                     parser.parseClassroom(getString("auditoria"))
                 }
             },
             {
-                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.GROUP, groups)
+                val sqlResultSet = it.executeGetAttributesByIdQuery(ScheduleType.Group, groups)
                 sqlResultSet.map {
                     parser.parseGroup(getString("gruppa"), getString("shift"), getInt("kurs"))
                 }
@@ -63,9 +61,9 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
         val sqlResultSet = it.executeGetAttributesByIdQuery(id.type, listOf(id))
         sqlResultSet.map {
             when (id.type) {
-                ScheduleType.TEACHER -> parser.parseTeacher(getString("prepod"))
-                ScheduleType.CLASSROOM -> parser.parseClassroom(getString("auditoria"))
-                ScheduleType.GROUP -> parser.parseGroup(
+                ScheduleType.Teacher -> parser.parseTeacher(getString("prepod"))
+                ScheduleType.Classroom -> parser.parseClassroom(getString("auditoria"))
+                ScheduleType.Group -> parser.parseGroup(
                     getString("gruppa"), getString("shift"), getInt("kurs")
                 )
             }
@@ -84,13 +82,13 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
     ) { connection ->
         val sqlResultSet = connection.executeGetAllAttributesQuery(type)
         return@tryWithConnection when (type) {
-            ScheduleType.TEACHER -> sqlResultSet.map {
+            ScheduleType.Teacher -> sqlResultSet.map {
                 parser.parseTeacher(getString("prepod"))
             }
-            ScheduleType.CLASSROOM -> sqlResultSet.map {
+            ScheduleType.Classroom -> sqlResultSet.map {
                 parser.parseClassroom(getString("auditoria"))
             }
-            ScheduleType.GROUP -> sqlResultSet.map {
+            ScheduleType.Group -> sqlResultSet.map {
                 parser.parseGroup(getString("gruppa"), getString("shift"), getInt("kurs"))
             }
         }
@@ -101,13 +99,13 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
     ) : Result<List<ScheduleAttribute>> = database.tryWithConnection {
         val sqlResultSet = it.executeGetAttributesByIdQuery(type, ids)
         when (type) {
-            ScheduleType.TEACHER -> sqlResultSet.map {
+            ScheduleType.Teacher -> sqlResultSet.map {
                 parser.parseTeacher(getString("prepod"))
             }
-            ScheduleType.CLASSROOM -> sqlResultSet.map {
+            ScheduleType.Classroom -> sqlResultSet.map {
                 parser.parseClassroom(getString("auditoria"))
             }
-            ScheduleType.GROUP -> sqlResultSet.map {
+            ScheduleType.Group -> sqlResultSet.map {
                 parser.parseGroup(getString("gruppa"), getString("shift"), getInt("kurs"))
             }
         }
@@ -119,17 +117,17 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
         """
             SELECT DISTINCT ${
                 when (type) {
-                    ScheduleType.GROUP -> "`gruppa`, `kurs`, `shift`"
-                    ScheduleType.TEACHER -> "`prepod`"
-                    ScheduleType.CLASSROOM -> "`auditoria`"
+                    ScheduleType.Group -> "`gruppa`, `kurs`, `shift`"
+                    ScheduleType.Teacher -> "`prepod`"
+                    ScheduleType.Classroom -> "`auditoria`"
                 }
             }
             FROM `pl4453-mobile`.`1c_shedule`
             ORDER BY ${
                 when (type) {
-                    ScheduleType.GROUP -> "`gruppa`"
-                    ScheduleType.TEACHER -> "`prepod`"
-                    ScheduleType.CLASSROOM -> "`auditoria`"
+                    ScheduleType.Group -> "`gruppa`"
+                    ScheduleType.Teacher -> "`prepod`"
+                    ScheduleType.Classroom -> "`auditoria`"
                 }
             }
         """
@@ -147,17 +145,17 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
             """
             SELECT ${
                 when (type) {
-                    ScheduleType.GROUP -> "`gruppa`, `kurs`, `shift`"
-                    ScheduleType.TEACHER -> "`prepod`"
-                    ScheduleType.CLASSROOM -> "`auditoria`"
+                    ScheduleType.Group -> "`gruppa`, `kurs`, `shift`"
+                    ScheduleType.Teacher -> "`prepod`"
+                    ScheduleType.Classroom -> "`auditoria`"
                 }
             }
             FROM `pl4453-mobile`.`1c_shedule`
             WHERE ${
                 when (type) {
-                    ScheduleType.GROUP -> "`gruppa`"
-                    ScheduleType.TEACHER -> "`prepod`"
-                    ScheduleType.CLASSROOM -> "`auditoria`"
+                    ScheduleType.Group -> "`gruppa`"
+                    ScheduleType.Teacher -> "`prepod`"
+                    ScheduleType.Classroom -> "`auditoria`"
                 }
             } IN (${attributes.joinToString {"?"}})
         """

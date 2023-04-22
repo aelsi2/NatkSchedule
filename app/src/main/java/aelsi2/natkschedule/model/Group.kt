@@ -9,7 +9,7 @@ data class Group(
     override val displayName: String
         get() = name
     override val scheduleIdentifier: ScheduleIdentifier
-        get() = ScheduleIdentifier(ScheduleType.GROUP, id)
+        get() = ScheduleIdentifier(ScheduleType.Group, id)
 
     override fun matchesString(string: String): Boolean =
         string.isEmpty() || name.contains(
