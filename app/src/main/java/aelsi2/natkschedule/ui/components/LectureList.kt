@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import android.content.res.Resources
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import java.time.format.TextStyle
 import java.util.*
 import kotlin.math.round
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LectureList(
     days: List<ScheduleDay>,

@@ -92,8 +92,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.7.0")
 
-    implementation(project(":compose-material3-pullrefresh"))
-    implementation(project(":compose-material3-appbar"))
+    implementation(project(":compose-material3-components"))
 
     //Compose navigation (навигация в интерфейсе)
     implementation("androidx.navigation:navigation-compose:$navVersion")

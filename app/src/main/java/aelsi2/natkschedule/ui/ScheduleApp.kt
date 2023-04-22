@@ -53,7 +53,7 @@ fun ScheduleApp(
 ) {
     Scaffold(
         topBar = {
-            Crossfade(targetState = appState.topAppBarContent, modifier = Modifier.animateContentSize()) {
+            Crossfade(targetState = appState.topAppBarContent) {
                 (it ?: {
                     Box(modifier = Modifier.windowInsetsPadding(
                         WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)

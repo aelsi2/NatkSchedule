@@ -4,25 +4,22 @@ plugins {
 }
 
 android {
-    namespace = "aelsi2.compose.material3.appbar"
+    namespace = "aelsi2.compose.material3"
     compileSdk = 33
 
     defaultConfig {
         minSdk = 23
-
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-
     buildFeatures {
         compose = true
     }
@@ -39,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.10.0")
+
     val composeBom = platform("androidx.compose:compose-bom:2023.03.00")
     implementation(composeBom)
     implementation("androidx.compose.material3:material3")

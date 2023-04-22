@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.ui.components
 
-import aelsi2.compose.material3.appbar.TopAppBar
+import aelsi2.compose.material3.TopAppBar
 import aelsi2.natkschedule.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize

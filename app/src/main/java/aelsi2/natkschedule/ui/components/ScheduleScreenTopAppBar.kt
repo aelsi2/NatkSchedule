@@ -1,8 +1,8 @@
 package aelsi2.natkschedule.ui.components
 
-import aelsi2.compose.material3.appbar.TopAppBarDefaults
-import aelsi2.compose.material3.appbar.TopAppBarScrollBehavior
-import aelsi2.compose.material3.appbar.TopAppBarWithBottomContent
+import aelsi2.compose.material3.TopAppBarDefaults
+import aelsi2.compose.material3.TopAppBarScrollBehavior
+import aelsi2.compose.material3.TopAppBarWithBottomContent
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleDisplayMode

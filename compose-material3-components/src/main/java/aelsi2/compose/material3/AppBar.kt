@@ -15,7 +15,7 @@
  */
 //Modifications Copyright 2023 Andrey Eliseev
 
-package aelsi2.compose.material3.appbar
+package aelsi2.compose.material3
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec

@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.ui.screens.schedule
 
-import aelsi2.compose.material3.appbar.TopAppBarDefaults
+import aelsi2.compose.material3.TopAppBarDefaults
 import aelsi2.compose.material3.pullrefresh.rememberPullRefreshState
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.domain.model.ScreenState

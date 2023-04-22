@@ -14,5 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Natk Schedule"
 include(":app")
-include(":compose-material3-pullrefresh")
-include(":compose-material3-appbar")
+include(":compose-material3-components")
