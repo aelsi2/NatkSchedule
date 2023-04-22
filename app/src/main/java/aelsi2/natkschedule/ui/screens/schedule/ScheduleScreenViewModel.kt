@@ -115,9 +115,7 @@ class ScheduleScreenViewModel(
                 endDate = endDate,
                 onOfflineDaysSuccess = { days -> _days.emit(days) },
                 onOfflineAttributeSuccess = { attribute -> _scheduleAttribute.emit(attribute) },
-                onOnlineDaysSuccess = { days ->
-                    println(this@ScheduleScreenViewModel.days.value)
-                    _days.emit(days) },
+                onOnlineDaysSuccess = { days -> _days.emit(days) },
                 onOnlineAttributeSuccess = { attribute -> _scheduleAttribute.emit(attribute) },
                 onOfflineDaysError = { hadErrors = true },
                 onOfflineAttributeError = { hadErrors = true },

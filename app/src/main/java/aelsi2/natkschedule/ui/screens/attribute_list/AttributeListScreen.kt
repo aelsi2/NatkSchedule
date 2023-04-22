@@ -10,7 +10,6 @@ import aelsi2.natkschedule.ui.components.AttributeList
 import aelsi2.natkschedule.ui.components.AttributeListTopAppBar
 import aelsi2.natkschedule.ui.components.AttributeSearchBar
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -114,52 +113,49 @@ private fun AttributeListScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val topAppBar: @Composable () -> Unit = remember {
         {
-            Crossfade(searchActive) {
-                if (it) {
-                    BackHandler {
+            if (searchActive) {
+                BackHandler {
+                    searchActive = false
+                    viewModel.resetSearchAndFilters()
+                }
+                val focusRequester = remember {
+                    FocusRequester()
+                }
+                val searchText by viewModel.searchString.collectAsState()
+                AttributeSearchBar(
+                    searchText = searchText,
+                    onTextChange = viewModel::setSearchString,
+                    onBackClick = {
                         searchActive = false
                         viewModel.resetSearchAndFilters()
-                    }
-                    val searchText by viewModel.searchString.collectAsState()
-                    val focusRequester = remember {
-                        FocusRequester()
-                    }
-                    AttributeSearchBar(
-                        searchText = searchText,
-                        onTextChange = viewModel::setSearchString,
-                        onBackClick = {
-                            searchActive = false
-                            viewModel.resetSearchAndFilters()
-                        },
-                        onClearClick = {
-                            searchRequestFocus = true
-                            viewModel.resetSearchAndFilters()
-                        },
-                        placeholderText = searchPlaceholderText,
-                        modifier = modifier.focusRequester(focusRequester)
-                    )
-                    LaunchedEffect(searchRequestFocus) {
-                        if (searchRequestFocus) {
-                            focusRequester.requestFocus()
-                            searchRequestFocus = false
-                        }
+                    },
+                    onClearClick = {
+                        searchRequestFocus = true
+                        viewModel.resetSearchAndFilters()
+                    },
+                    placeholderText = searchPlaceholderText,
+                    modifier = modifier.focusRequester(focusRequester)
+                )
+                LaunchedEffect(searchRequestFocus) {
+                    if (searchRequestFocus) {
+                        focusRequester.requestFocus()
+                        searchRequestFocus = false
                     }
                 }
-                else {
-                    AttributeListTopAppBar(
-                        title = title,
-                        onSearchClick = {
-                            searchActive = true
-                            searchRequestFocus = true
-                        },
-                        onRefreshClick = viewModel::refresh,
-                        scrollBehavior = scrollBehavior
-                    )
-                }
+            } else {
+                AttributeListTopAppBar(
+                    title = title,
+                    onSearchClick = {
+                        searchActive = true
+                        searchRequestFocus = true
+                    },
+                    onRefreshClick = viewModel::refresh,
+                    scrollBehavior = scrollBehavior
+                )
             }
         }
     }
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(true) {
         setUiState(topAppBar, scrollBehavior.nestedScrollConnection, pullRefreshState, true)
     }
 
@@ -167,10 +163,18 @@ private fun AttributeListScreen(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
     ) {
+
         val attributes by viewModel.attributes.collectAsState()
+
+        var initial by remember { mutableStateOf(true) }
         LaunchedEffect(attributes) {
-            lazyListState.scrollToItem(0)
+            if (initial) {
+                initial = false
+            } else {
+                lazyListState.scrollToItem(0)
+            }
         }
+
         AttributeList(
             lazyListState = lazyListState,
             attributes = attributes,

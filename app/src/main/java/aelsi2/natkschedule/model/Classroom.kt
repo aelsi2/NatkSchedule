@@ -18,8 +18,8 @@ data class Classroom(
         ) || shortName?.contains(
             other = string,
             ignoreCase = true
-        ) ?: true || address?.contains(
+        ) ?: false || address?.contains(
             other = string,
             ignoreCase = true
-        ) ?: true
+        ) ?: false
 }

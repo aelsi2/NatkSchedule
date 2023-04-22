@@ -17,6 +17,6 @@ data class Teacher(
         ) || shortName?.contains(
             other = string,
             ignoreCase = true
-        ) ?: true
+        ) ?: false
 }
 
