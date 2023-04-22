@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -95,6 +96,7 @@ fun SearchTopAppBar(
                     }
                 },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = colors.searchTextColor),
+                cursorBrush = SolidColor(colors.searchTextCursorColor)
             )
             Box {
                 CompositionLocalProvider(
@@ -113,6 +115,7 @@ fun SearchTopAppBar(
 data class SearchTopAppBarColors(
     val backgroundColor: Color,
     val searchTextColor: Color,
+    val searchTextCursorColor: Color,
     val placeholderTextColor: Color,
     val leadingIconColor: Color,
     val trailingIconColor: Color,
@@ -125,6 +128,7 @@ object SearchTopAppBarDefaults {
         get() = SearchTopAppBarColors(
             backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
             searchTextColor = MaterialTheme.colorScheme.onSurface,
+            searchTextCursorColor = MaterialTheme.colorScheme.primary,
             placeholderTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
             leadingIconColor = MaterialTheme.colorScheme.onSurface,
             trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
