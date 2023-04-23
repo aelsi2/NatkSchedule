@@ -62,5 +62,11 @@
     <string name="description_classroom">Classroom</string>
     <string name="description_teacher">Teacher</string>
     <string name="description_group">Group</string>
-    <string name="message_main_schedule_not_set">Main schedule not set.\n\nTo make a schedule the main schedule:\n• Go to the \'$inline[0] Groups\', \'$inline[1] Teachers\' or \'$inline[2] Classrooms\' tab\n• Select a schedule from the list\n• Click \'$inline[3]\'\n• Click \'Set as main\'</string>
+    <string name="message_main_schedule_not_set">Main schedule not set.\n\nTo make a schedule the main schedule:\n• Go to the \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\" tab\n• Select a schedule from the list\n• Click \"$inline[3]\"\n• Click \"Set as main\"</string>
+    <string name="message_no_favorites">You have no schedules in favorites.\n\nTo add a schedule to favorites:\n• Go to the \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\" tab\n• Select a schedule from the list\n• Click \"$inline[3]\"\n• Click \"Add to favorites\"</string>
+    <string name="message_attribute_list_empty">Nothing found.</string>
+    <string name="message_attribute_list_error">An error occurred while trying to fetch schedules.</string>
+    <string name="message_schedule_error">An error occurred while trying to fetch schedule data.</string>
+    <string name="message_no_internet">No internet connection.</string>
+    <string name="message_internet_restored">Connection restored.</string>
 </resources>

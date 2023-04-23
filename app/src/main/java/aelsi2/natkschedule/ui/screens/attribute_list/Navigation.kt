@@ -3,8 +3,8 @@ package aelsi2.natkschedule.ui.screens.attribute_list
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.SetUiStateLambda
+import aelsi2.natkschedule.ui.screens.attribute_list.favorites.FavoritesListScreen
 import aelsi2.natkschedule.ui.screens.schedule.RegularScheduleScreen
-import aelsi2.natkschedule.ui.setUiState
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -37,6 +37,7 @@ fun NavGraphBuilder.attributeListTab(
     scheduleType: ScheduleType,
     onScheduleBackClick: () -> Unit,
     setUiState: SetUiStateLambda,
+    onScheduleError: suspend () -> Unit = {},
     list: @Composable (setUiState: SetUiStateLambda) -> Unit
 ) {
     navigation(startDestination = "$route/list", route = route) {
@@ -54,6 +55,7 @@ fun NavGraphBuilder.attributeListTab(
                 RegularScheduleScreen(
                     scheduleIdentifier = ScheduleIdentifier(scheduleType, Uri.decode(stringId)),
                     onBackClick = onScheduleBackClick,
+                    onError = onScheduleError,
                     setUiState = setUiState
                 )
             }
@@ -66,12 +68,15 @@ fun NavGraphBuilder.favoritesListTab(
     onScheduleBackClick: () -> Unit,
     onNavigateToSchedule: (ScheduleIdentifier) -> Unit,
     setUiState: SetUiStateLambda,
+    onListError: suspend () -> Unit = {},
+    onScheduleError: suspend () -> Unit = {},
 ) {
     navigation(startDestination = "$route/list", route = route) {
         composable("$route/list"){
             FavoritesListScreen(
                 onAttributeClick = onNavigateToSchedule,
-                setUiState = setUiState
+                setUiState = setUiState,
+                onError = onListError,
             )
         }
         composable(
@@ -86,7 +91,8 @@ fun NavGraphBuilder.favoritesListTab(
                 RegularScheduleScreen(
                     scheduleIdentifier = scheduleIdentifier,
                     onBackClick = onScheduleBackClick,
-                    setUiState = setUiState
+                    setUiState = setUiState,
+                    onError = onScheduleError,
                 )
             }
         }

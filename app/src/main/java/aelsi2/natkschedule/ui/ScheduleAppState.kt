@@ -1,10 +1,13 @@
 package aelsi2.natkschedule.ui
 
 import aelsi2.compose.material3.pullrefresh.PullRefreshState
+import aelsi2.natkschedule.data.network.ConnectivityManagerNetworkMonitor
+import aelsi2.natkschedule.data.network.NetworkMonitor
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.screens.attribute_list.navigateToFavoriteSchedule
 import aelsi2.natkschedule.ui.screens.attribute_list.navigateToSchedule
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -13,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,18 +31,26 @@ object TopLevelRoutes {
 }
 
 @Composable
+fun rememberNetworkMonitor(): NetworkMonitor {
+    val context = LocalContext.current
+    return remember { ConnectivityManagerNetworkMonitor(context) }
+}
+
+@Composable
 fun rememberScheduleAppState(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    navController: NavHostController = rememberNavController()
-) : ScheduleAppState =
-    remember(snackBarHostState, navController) {
-        ScheduleAppState(snackBarHostState, navController)
+    navController: NavHostController = rememberNavController(),
+    networkMonitor: NetworkMonitor = rememberNetworkMonitor()
+): ScheduleAppState =
+    remember(snackBarHostState, navController, networkMonitor) {
+        ScheduleAppState(snackBarHostState, navController, networkMonitor)
     }
 
 @Stable
 class ScheduleAppState(
     val snackBarHostState: SnackbarHostState,
-    val navController: NavHostController
+    val navController: NavHostController,
+    val networkMonitor: NetworkMonitor
 ) {
     var topAppBarContent: (@Composable () -> Unit)? by mutableStateOf(null)
     var topAppBarNestedScrollConnection: NestedScrollConnection? by mutableStateOf(null)
@@ -51,6 +63,20 @@ class ScheduleAppState(
     ): Boolean = navController
         .currentBackStackEntryAsState().value?.destination?.route?.startsWith(route) ?: false
 
+    suspend fun showPersistentMessage(text: String) {
+        snackBarHostState.showSnackbar(
+            text,
+            withDismissAction = true,
+            duration = SnackbarDuration.Indefinite
+        )
+    }
+
+    suspend fun showMessage(text: String) {
+        snackBarHostState.showSnackbar(
+            text
+        )
+    }
+
     fun navigateToTab(route: String) {
         val alreadyAtTab = navController.currentDestination?.route?.startsWith(route) ?: false
         navController.navigate(route) {
@@ -61,6 +87,7 @@ class ScheduleAppState(
             restoreState = true
         }
     }
+
     fun navigateToSchedule(scheduleIdentifier: ScheduleIdentifier) {
         navController.navigateToSchedule(
             route = when (scheduleIdentifier.type) {
@@ -71,12 +98,14 @@ class ScheduleAppState(
             stringId = scheduleIdentifier.stringId
         )
     }
+
     fun navigateToFavoriteSchedule(scheduleIdentifier: ScheduleIdentifier) {
         navController.navigateToFavoriteSchedule(
             route = TopLevelRoutes.FAVORITES_ROUTE,
             scheduleIdentifier = scheduleIdentifier
         )
     }
+
     fun navigateBack() {
         navController.popBackStack()
     }

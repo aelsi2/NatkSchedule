@@ -1,17 +1,18 @@
 package aelsi2.natkschedule.ui
 
+import aelsi2.compose.LaunchedEffectOnUpdate
 import aelsi2.compose.material3.pullrefresh.PullRefreshIndicator
 import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.compose.material3.pullrefresh.pullRefresh
+import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.components.*
-import aelsi2.natkschedule.ui.screens.attribute_list.ClassroomListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.FavoritesListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.GroupListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.TeacherListScreen
+import aelsi2.natkschedule.ui.screens.attribute_list.classrooms.ClassroomListScreen
+import aelsi2.natkschedule.ui.screens.attribute_list.groups.GroupListScreen
+import aelsi2.natkschedule.ui.screens.attribute_list.teachers.TeacherListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.attributeListTab
 import aelsi2.natkschedule.ui.screens.attribute_list.favoritesListTab
-import aelsi2.natkschedule.ui.screens.schedule.MainScheduleScreen
+import aelsi2.natkschedule.ui.screens.schedule.main.MainScheduleScreen
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -24,7 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.Alignment
@@ -32,6 +32,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.animation.with
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.getValue
 
 typealias SetUiStateLambda = (
     topAppBar: (@Composable () -> Unit)?,
@@ -57,6 +61,16 @@ fun ScheduleAppState.setUiState(
 fun ScheduleApp(
     appState: ScheduleAppState = rememberScheduleAppState()
 ) {
+    val isOnline by appState.networkMonitor.isOnline.collectAsState(true)
+    val noInternetMessage = stringResource(R.string.message_no_internet)
+    val internetRestoredMessage = stringResource(R.string.message_internet_restored)
+    LaunchedEffectOnUpdate(isOnline) {
+        if (isOnline) {
+            appState.showMessage(internetRestoredMessage)
+        } else {
+            appState.showPersistentMessage(noInternetMessage)
+        }
+    }
     Scaffold(
         topBar = {
             AnimatedContent(
@@ -79,6 +93,9 @@ fun ScheduleApp(
                 )
             }
         },
+        snackbarHost = {
+            SnackbarHost(appState.snackBarHostState)
+        },
         modifier = Modifier.run {
             val state = appState.pullRefreshState
             if (state == null) this else pullRefresh(state)
@@ -88,29 +105,50 @@ fun ScheduleApp(
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            val attributeListErrorMessage =
+                stringResource(R.string.message_attribute_list_error)
+            val scheduleErrorMessage =
+                stringResource(R.string.message_schedule_error)
+
+            suspend fun onListError() {
+                if (appState.snackBarHostState.currentSnackbarData == null) {
+                    appState.showMessage(attributeListErrorMessage)
+                }
+            }
+            suspend fun onScheduleError() {
+                if (appState.snackBarHostState.currentSnackbarData == null) {
+                    appState.showMessage(scheduleErrorMessage)
+                }
+            }
+
             NavHost(
                 navController = appState.navController,
                 startDestination = TopLevelRoutes.HOME_ROUTE
             ) {
                 composable(TopLevelRoutes.HOME_ROUTE) {
-                    MainScheduleScreen(appState::setUiState)
+                    MainScheduleScreen(
+                        appState::setUiState,
+                        onError = ::onScheduleError,
+                    )
                 }
                 favoritesListTab(
                     route = TopLevelRoutes.FAVORITES_ROUTE,
                     onScheduleBackClick = appState::navigateBack,
                     onNavigateToSchedule = appState::navigateToFavoriteSchedule,
+                    onListError = ::onListError,
+                    onScheduleError = ::onScheduleError,
                     setUiState = appState::setUiState
                 )
                 attributeListTab(
                     route = TopLevelRoutes.TEACHERS_ROUTE,
                     scheduleType = ScheduleType.Teacher,
                     onScheduleBackClick = appState::navigateBack,
+                    onScheduleError = ::onScheduleError,
                     setUiState = appState::setUiState
-                ) {setUiState ->
+                ) { setUiState ->
                     TeacherListScreen(
-                        onAttributeClick = {
-                            appState.navigateToSchedule(it)
-                        },
+                        onAttributeClick = appState::navigateToSchedule,
+                        onError = ::onListError,
                         setUiState = setUiState
                     )
                 }
@@ -118,12 +156,12 @@ fun ScheduleApp(
                     route = TopLevelRoutes.CLASSROOMS_ROUTE,
                     scheduleType = ScheduleType.Classroom,
                     setUiState = appState::setUiState,
+                    onScheduleError = ::onScheduleError,
                     onScheduleBackClick = appState::navigateBack
-                ) {setUiState ->
+                ) { setUiState ->
                     ClassroomListScreen(
-                        onAttributeClick = {
-                            appState.navigateToSchedule(it)
-                        },
+                        onAttributeClick = appState::navigateToSchedule,
+                        onError = ::onListError,
                         setUiState = setUiState
                     )
                 }
@@ -131,12 +169,12 @@ fun ScheduleApp(
                     route = TopLevelRoutes.GROUPS_ROUTE,
                     scheduleType = ScheduleType.Group,
                     setUiState = appState::setUiState,
+                    onScheduleError = ::onScheduleError,
                     onScheduleBackClick = appState::navigateBack
-                ) {setUiState ->
+                ) { setUiState ->
                     GroupListScreen(
-                        onAttributeClick = {
-                            appState.navigateToSchedule(it)
-                        },
+                        onAttributeClick = appState::navigateToSchedule,
+                        onError = ::onListError,
                         setUiState = setUiState
                     )
                 }

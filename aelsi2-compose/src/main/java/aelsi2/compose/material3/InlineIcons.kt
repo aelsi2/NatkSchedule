@@ -45,7 +45,7 @@ fun rememberInlineIcons(
 }
 
 @Composable
-fun rememberStringWithInlineContent(id: Int): AnnotatedString {
+fun stringResourceWithInlineContent(id: Int): AnnotatedString {
     val rawText = stringResource(id)
     return remember(rawText) {
         getStringWithInlineContent(rawText)

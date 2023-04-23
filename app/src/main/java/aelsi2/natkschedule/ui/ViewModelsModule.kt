@@ -1,10 +1,11 @@
 package aelsi2.natkschedule.ui
 
-import aelsi2.natkschedule.ui.screens.attribute_list.GroupListScreenViewModel
-import aelsi2.natkschedule.ui.screens.attribute_list.TeacherListScreenViewModel
-import aelsi2.natkschedule.ui.screens.attribute_list.ClassroomListScreenViewModel
-import aelsi2.natkschedule.ui.screens.attribute_list.FavoritesListScreenViewModel
+import aelsi2.natkschedule.ui.screens.attribute_list.groups.GroupListScreenViewModel
+import aelsi2.natkschedule.ui.screens.attribute_list.teachers.TeacherListScreenViewModel
+import aelsi2.natkschedule.ui.screens.attribute_list.classrooms.ClassroomListScreenViewModel
+import aelsi2.natkschedule.ui.screens.attribute_list.favorites.FavoriteListScreenViewModel
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreenViewModel
+import aelsi2.natkschedule.ui.screens.schedule.main.MainScheduleScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.named
@@ -14,17 +15,36 @@ import org.koin.dsl.module
 
 val viewModelsModule = module {
     viewModel {
-        ScheduleScreenViewModel(get(parameters = {it}), get(), get(), get(), get(), get(), get(), get(), get(), get())
-    } withOptions {
-        named("regular")
+        ScheduleScreenViewModel(
+            get(parameters = { it }),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
     }
     viewModel {
-        ScheduleScreenViewModel(get(qualifier = named("main")), get(), get(), get(), get(), get(), get(), get(), get(), get())
-    } withOptions {
-        named("main")
+        MainScheduleScreenViewModel(
+            get(qualifier = named("main")),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
     }
     viewModelOf(::GroupListScreenViewModel)
     viewModelOf(::TeacherListScreenViewModel)
     viewModelOf(::ClassroomListScreenViewModel)
-    viewModelOf(::FavoritesListScreenViewModel)
+    viewModelOf(::FavoriteListScreenViewModel)
 }

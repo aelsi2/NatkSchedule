@@ -62,5 +62,11 @@
     <string name="description_classroom">Аудитория</string>
     <string name="description_teacher">Преподаватель</string>
     <string name="description_group">Группа</string>
-    <string name="message_main_schedule_not_set">Главное расписание не задано.\n\nЧтобы сделать расписание главным:\n• Перейдите на вкладку \"$inline[0] Группы\", \"$inline[1] Преподаватели\" или \"$inline[2] Аудитории\"\n• Выберите расписание из списка\n• Нажмите \'$inline[3]\'\n• Нажмите \'Задать как главное\'</string>
+    <string name="message_main_schedule_not_set">Главное расписание не задано.\n\nЧтобы сделать расписание главным:\n• Перейдите на вкладку \"$inline[0] Группы\", \"$inline[1] Преподаватели\" или \"$inline[2] Аудитории\"\n• Выберите расписание из списка\n• Нажмите \"$inline[3]\"\n• Нажмите \"Задать как главное\"</string>
+    <string name="message_no_favorites">В избранном нет ни одного расписания.\n\nЧтобы добавить расписание в избранное:\n• Перейдите на вкладку \"$inline[0] Группы\", \"$inline[1] Преподаватели\" или \"$inline[2] Аудитории\"\n• Выберите расписание из списка\n• Нажмите \"$inline[3]\"\n• Нажмите \"В избранное\"</string>
+    <string name="message_attribute_list_empty">Ничего не найдено.</string>
+    <string name="message_attribute_list_error">При загрузке списка расписаний произошла ошибка.</string>
+    <string name="message_schedule_error">При загрузке данных расписания произошла ошибка.</string>
+    <string name="message_no_internet">Нет соединения с Интернетом.</string>
+    <string name="message_internet_restored">Соединение восстановлено.</string>
 </resources>

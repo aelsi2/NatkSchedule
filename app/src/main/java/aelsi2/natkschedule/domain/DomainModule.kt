@@ -17,11 +17,13 @@ val domainModule = module {
     singleOf(::GetScheduleIsFavoriteUseCase)
     singleOf(::SetMainScheduleUseCase)
     singleOf(::ToggleScheduleFavoriteUseCase)
+    singleOf(::GetMainScheduleSetUseCase)
+    singleOf(::GetFavoritesNotEmptyUseCase)
 
     factory {params ->
         GetRegularScheduleParametersUseCase(params.get(), get(), get())
     } bind(GetScheduleParametersUseCase::class) withOptions {
-        this.named("other")
+        this.named("regular")
     }
     singleOf(::GetMainScheduleParametersUseCase) {
         this.named("main")

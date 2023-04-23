@@ -20,7 +20,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Stable
-class ScheduleScreenViewModel(
+open class ScheduleScreenViewModel(
     getScheduleParameters: GetScheduleParametersUseCase,
     getScheduleIsMain: GetScheduleIsMainUseCase,
     getScheduleIsFavorite: GetScheduleIsFavoriteUseCase,
@@ -125,7 +125,6 @@ class ScheduleScreenViewModel(
             emit(
                 when {
                     hadErrors -> ScreenState.Error
-                    !isOnline -> ScreenState.NoInternet
                     else -> ScreenState.Loaded
                 }
             )
