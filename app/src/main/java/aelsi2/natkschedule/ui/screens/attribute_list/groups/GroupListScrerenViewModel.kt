@@ -79,8 +79,8 @@ class GroupListScreenViewModel(
         selectYear(null)
     }
 
-    override fun resetSearchAndFilters() {
-        super.resetSearchAndFilters()
+    override fun resetFilters() {
+        super.resetFilters()
         selectProgram(null)
         selectYear(null)
     }

@@ -1,12 +1,8 @@
 package aelsi2.natkschedule.ui.screens.attribute_list
 
 import aelsi2.natkschedule.data.network.NetworkMonitor
-import aelsi2.natkschedule.data.preferences.FavoritesReader
 import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.domain.use_cases.LoadAllAttributesUseCase
-import aelsi2.natkschedule.domain.use_cases.LoadAttributesUseCase
-import aelsi2.natkschedule.model.Classroom
-import aelsi2.natkschedule.model.Group
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleType
 import androidx.annotation.CallSuper
@@ -17,8 +13,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
-import java.util.TreeSet
 
 @Stable
 abstract class OnlineAttributeListScreenViewModel(
@@ -85,8 +79,8 @@ abstract class AttributeListScreenViewModel(
     }
 
     @CallSuper
-    open fun resetSearchAndFilters() {
-        resetSearchString()
+    open fun resetFilters() {
+
     }
 
     protected fun Flow<List<ScheduleAttribute>>.applySearch(): Flow<List<ScheduleAttribute>> =

@@ -29,7 +29,7 @@ fun ClassroomListScreen(
     AttributeListScreen(
         title = stringResource(R.string.title_classroom_list),
         searchPlaceholderText = stringResource(R.string.search_classrooms_placeholder),
-        filters = { activateSearch ->
+        filters = {
             FilterChipRow {
                 val addresses by viewModel.addresses.collectAsState()
                 val selectedAddress by viewModel.selectedAddress.collectAsState()
@@ -51,7 +51,6 @@ fun ClassroomListScreen(
                                 Text(address)
                             },
                             onClick = {
-                                activateSearch()
                                 viewModel.selectAddress(address)
                                 addressesExpanded = false
                             }
