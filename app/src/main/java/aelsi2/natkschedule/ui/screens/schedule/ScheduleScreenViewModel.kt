@@ -103,6 +103,7 @@ open class ScheduleScreenViewModel(
             endDate
         ) { params, isOnline, _, startDate, endDate ->
             if (params.identifier == null) {
+                emit(ScreenState.Loaded)
                 return@combineTransform
             }
             emit(ScreenState.Loading)

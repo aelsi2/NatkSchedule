@@ -34,6 +34,7 @@ abstract class OnlineAttributeListScreenViewModel(
         refreshTrigger
     ) { isOnline, _ ->
         if (!isOnline) {
+            emit(ScreenState.Loaded)
             return@combineTransform
         }
         emit(ScreenState.Loading)
