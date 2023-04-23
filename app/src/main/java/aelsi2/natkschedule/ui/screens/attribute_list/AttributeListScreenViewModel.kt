@@ -36,6 +36,7 @@ abstract class OnlineAttributeListScreenViewModel(
         if (!isOnline) {
             return@combineTransform
         }
+        emit(ScreenState.Loading)
         loadAttributes(
             scheduleType,
             onSuccess = {

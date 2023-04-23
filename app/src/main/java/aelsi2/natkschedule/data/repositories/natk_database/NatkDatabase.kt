@@ -93,6 +93,8 @@ class NatkDatabase {
             setProperty("password", BuildConfig.DATABASE_PASSWORD)
             setProperty("useUnicode", "true")
             setProperty("characterEncoding", "utf-8")
+            setProperty("connectTimeout", "5000")
+            setProperty("socketTimeout", "5000")
         }
     }
 }
