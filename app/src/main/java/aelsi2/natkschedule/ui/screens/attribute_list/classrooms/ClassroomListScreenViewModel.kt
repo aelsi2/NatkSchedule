@@ -68,8 +68,8 @@ class ClassroomListScreenViewModel(
         selectAddress(null)
     }
 
-    override fun resetFilters() {
-        super.resetFilters()
+    override fun resetSearchAndFilters() {
+        super.resetSearchAndFilters()
         selectAddress(null)
     }
 

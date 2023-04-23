@@ -29,7 +29,7 @@ fun GroupListScreen(
     AttributeListScreen(
         title = stringResource(R.string.title_group_list),
         searchPlaceholderText = stringResource(R.string.search_groups_placeholder),
-        filters = {
+        filters = { activateSearch ->
             FilterChipRow {
                 val programs by viewModel.programs.collectAsState()
                 val selectedProgram by viewModel.selectedProgram.collectAsState()
@@ -51,6 +51,7 @@ fun GroupListScreen(
                                 Text(program)
                             },
                             onClick = {
+                                activateSearch()
                                 viewModel.selectProgram(program)
                                 programsExpanded = false
                             }
@@ -81,6 +82,7 @@ fun GroupListScreen(
                                 Text(stringResource(R.string.filter_group_list_year_value, year))
                             },
                             onClick = {
+                                activateSearch()
                                 viewModel.selectYear(year)
                                 yearsExpanded = false
                             }

@@ -3,6 +3,7 @@ package aelsi2.natkschedule.ui.screens.attribute_list
 import aelsi2.compose.LaunchedEffectOnUpdate
 import aelsi2.compose.material3.TopAppBarDefaults
 import aelsi2.compose.material3.pullrefresh.rememberPullRefreshState
+import aelsi2.natkschedule.R
 import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.SetUiStateLambda
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,7 +36,7 @@ import androidx.compose.ui.focus.focusRequester
 fun AttributeListScreen(
     title: String,
     searchPlaceholderText: String,
-    filters: @Composable () -> Unit,
+    filters: @Composable (activateSearch: () -> Unit) -> Unit,
     onAttributeClick: (ScheduleIdentifier) -> Unit,
     onError: suspend () -> Unit,
     setUiState: SetUiStateLambda,
@@ -66,7 +68,7 @@ fun AttributeListScreen(
             if (searchActive) {
                 BackHandler {
                     searchActive = false
-                    viewModel.resetFilters()
+                    viewModel.resetSearchAndFilters()
                 }
                 val focusRequester = remember {
                     FocusRequester()
@@ -77,7 +79,7 @@ fun AttributeListScreen(
                     onTextChange = viewModel::setSearchString,
                     onBackClick = {
                         searchActive = false
-                        viewModel.resetSearchString()
+                        viewModel.resetSearchAndFilters()
                     },
                     onClearClick = {
                         searchRequestFocus = true
@@ -125,7 +127,9 @@ fun AttributeListScreen(
             attributes = attributes,
             onAttributeClick = onAttributeClick,
             modifier = modifier.fillMaxSize(),
-            filters = filters
+            filters = {
+                filters { searchActive = true }
+            }
         )
     }
 }
