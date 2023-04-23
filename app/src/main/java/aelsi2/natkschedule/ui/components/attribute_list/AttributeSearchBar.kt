@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.attribute_list
 
 import aelsi2.compose.material3.SearchTopAppBar
 import aelsi2.natkschedule.R

@@ -90,9 +90,8 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.activity:activity-compose:1.7.0")
-
-    implementation(project(":compose-material3-components"))
+    implementation("androidx.activity:activity-compose:1.7.1")
+    implementation(project(":aelsi2-compose"))
 
     //Compose navigation (навигация в интерфейсе)
     implementation("androidx.navigation:navigation-compose:$navVersion")

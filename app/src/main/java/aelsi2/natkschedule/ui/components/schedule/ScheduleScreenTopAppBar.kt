@@ -1,17 +1,18 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.schedule
 
 import aelsi2.compose.material3.TopAppBarDefaults
 import aelsi2.compose.material3.TopAppBarScrollBehavior
 import aelsi2.compose.material3.TopAppBarWithBottomContent
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleType
+import aelsi2.natkschedule.ui.components.FilterChipRow
+import aelsi2.natkschedule.ui.components.SelectableFilterChip
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleDisplayMode
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -19,7 +20,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -228,6 +228,7 @@ fun ScheduleScreenTopAppBar(
                                 contentDescription = stringResource(R.string.action_settings)
                             )
                         },
+                        enabled = false,
                         onClick = {
                             menuVisible = false
                             onSettingsClick()
@@ -236,43 +237,33 @@ fun ScheduleScreenTopAppBar(
                 }
             }
         },
-        bottomContent = {windowInsets ->
-            Box(modifier = Modifier.requiredHeight(52.dp).windowInsetsPadding(windowInsets)) {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .align(Alignment.TopStart),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    FilterChip(
-                        label = {
-                            Text(stringResource(id = R.string.filter_schedule_from_today))
-                        },
-                        selected = selectedDisplayMode == ScheduleDisplayMode.ONE_WEEK_FROM_TODAY,
-                        onClick = {
-                            onDisplayModeSelected(ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
-                        }
-                    )
-                    FilterChip(
-                        label = {
-                            Text(stringResource(id = R.string.filter_schedule_this_week))
-                        },
-                        selected = selectedDisplayMode == ScheduleDisplayMode.CURRENT_WEEK,
-                        onClick = {
-                            onDisplayModeSelected(ScheduleDisplayMode.CURRENT_WEEK)
-                        }
-                    )
-                    FilterChip(
-                        label = {
-                            Text(stringResource(id = R.string.filter_schedule_all))
-                        },
-                        selected = selectedDisplayMode == ScheduleDisplayMode.FREE_SCROLL,
-                        onClick = {
-                            onDisplayModeSelected(ScheduleDisplayMode.FREE_SCROLL)
-                        }
-                    )
-                }
-
+        bottomContent = { windowInsets ->
+            FilterChipRow(
+                modifier = Modifier
+                    .requiredHeight(52.dp)
+                    .windowInsetsPadding(windowInsets)
+            ) {
+                SelectableFilterChip(
+                    text = stringResource(id = R.string.filter_schedule_from_today),
+                    selected = selectedDisplayMode == ScheduleDisplayMode.ONE_WEEK_FROM_TODAY,
+                    onClick = {
+                        onDisplayModeSelected(ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
+                    }
+                )
+                SelectableFilterChip(
+                    text = stringResource(id = R.string.filter_schedule_current_week),
+                    selected = selectedDisplayMode == ScheduleDisplayMode.CURRENT_WEEK,
+                    onClick = {
+                        onDisplayModeSelected(ScheduleDisplayMode.CURRENT_WEEK)
+                    }
+                )
+                SelectableFilterChip(
+                    text = stringResource(id = R.string.filter_schedule_free_scroll),
+                    selected = selectedDisplayMode == ScheduleDisplayMode.FREE_SCROLL,
+                    onClick = {
+                        onDisplayModeSelected(ScheduleDisplayMode.FREE_SCROLL)
+                    }
+                )
             }
         },
         maxBottomContentHeight = 52.dp,

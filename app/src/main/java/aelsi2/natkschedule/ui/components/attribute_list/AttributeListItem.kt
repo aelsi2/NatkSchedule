@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.attribute_list
 
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.ui.theme.ScheduleTheme

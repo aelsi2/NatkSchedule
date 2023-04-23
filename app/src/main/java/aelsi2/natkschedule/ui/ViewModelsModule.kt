@@ -3,6 +3,7 @@ package aelsi2.natkschedule.ui
 import aelsi2.natkschedule.ui.screens.attribute_list.GroupListScreenViewModel
 import aelsi2.natkschedule.ui.screens.attribute_list.TeacherListScreenViewModel
 import aelsi2.natkschedule.ui.screens.attribute_list.ClassroomListScreenViewModel
+import aelsi2.natkschedule.ui.screens.attribute_list.FavoritesListScreenViewModel
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -25,4 +26,5 @@ val viewModelsModule = module {
     viewModelOf(::GroupListScreenViewModel)
     viewModelOf(::TeacherListScreenViewModel)
     viewModelOf(::ClassroomListScreenViewModel)
+    viewModelOf(::FavoritesListScreenViewModel)
 }

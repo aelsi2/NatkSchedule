@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Natk Schedule"
 include(":app")
-include(":compose-material3-components")
+include(":aelsi2-compose")

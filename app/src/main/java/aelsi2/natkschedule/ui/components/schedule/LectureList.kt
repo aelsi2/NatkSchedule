@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.schedule
 
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.domain.model.LectureState
@@ -28,7 +28,6 @@ import java.time.format.TextStyle
 import java.util.*
 import kotlin.math.round
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LectureList(
     days: List<ScheduleDay>,

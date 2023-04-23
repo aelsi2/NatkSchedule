@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.schedule
 
 import aelsi2.compose.material3.TopAppBar
 import aelsi2.natkschedule.R
@@ -60,6 +60,7 @@ fun BasicTopAppBar(title: String, onSettingsClick: () -> Unit, modifier: Modifie
                                 contentDescription = stringResource(R.string.action_settings)
                             )
                         },
+                        enabled = false,
                         onClick = {
                             menuVisible = false
                             onSettingsClick()

@@ -2,14 +2,16 @@ package aelsi2.natkschedule.ui.screens.schedule
 
 import aelsi2.compose.material3.TopAppBarDefaults
 import aelsi2.compose.material3.pullrefresh.rememberPullRefreshState
+import aelsi2.compose.material3.rememberInlineIcons
+import aelsi2.compose.material3.rememberStringWithInlineContent
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.SetUiStateLambda
-import aelsi2.natkschedule.ui.components.BasicTopAppBar
-import aelsi2.natkschedule.ui.components.LectureList
-import aelsi2.natkschedule.ui.components.ScheduleScreenTopAppBar
+import aelsi2.natkschedule.ui.components.schedule.BasicTopAppBar
+import aelsi2.natkschedule.ui.components.schedule.LectureList
+import aelsi2.natkschedule.ui.components.schedule.ScheduleScreenTopAppBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -119,8 +121,8 @@ private fun ScheduleScreen(
     val pullRefreshState = rememberPullRefreshState(
         state == ScreenState.Loading,
         viewModel::refresh,
-        refreshThreshold = 48.dp,
-        refreshingOffset = 48.dp
+        refreshThreshold = 64.dp,
+        refreshingOffset = 64.dp
     )
     LaunchedEffect(true) {
         setUiState(topAppBar, topAppBarScrollBehavior.nestedScrollConnection, pullRefreshState, true)
@@ -175,57 +177,5 @@ private fun MainScheduleNotSetScreen(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-    }
-}
-
-@Composable
-fun rememberInlineIcons(
-    icons: Map<Int, Pair<Int, Int>>,
-    iconSize: TextUnit = 14.sp,
-    iconTint: Color = MaterialTheme.colorScheme.onSurfaceVariant
-): Map<String, InlineTextContent> {
-    return remember(icons, iconSize, iconTint) {
-        val map: MutableMap<String, InlineTextContent> = mutableMapOf()
-        for (entry in icons) {
-            map[entry.key.toString()] = InlineTextContent(
-                Placeholder(
-                    width = iconSize,
-                    height = iconSize,
-                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
-                )
-            ) {
-                Icon(
-                    painter = painterResource(entry.value.first),
-                    contentDescription = stringResource(entry.value.second),
-                    tint = iconTint
-                )
-            }
-        }
-        map
-    }
-}
-
-@Composable
-fun rememberStringWithInlineContent(id: Int): AnnotatedString {
-    val rawText = stringResource(id)
-    return remember(key1 = rawText) {
-        getStringWithInlineContent(rawText)
-    }
-}
-
-private val iconPlaceholderNumberRegex = Regex("(?<!\\\\)(?<=\\\$inline\\[)[0-9]{1,5}(?=])")
-private val iconPlaceholderSplitRegex = Regex("((?<!\\\\)(?<=\\\$inline\\[[0-9]{1,5}]))|((?!\\\\)(?=\\\$inline\\[[0-9]{1,5}]))")
-private val escapeRegex = Regex("\\\\(?=\\\$inline)")
-
-fun getStringWithInlineContent(rawString: String): AnnotatedString = buildAnnotatedString {
-    val strings = iconPlaceholderSplitRegex.split(rawString)
-    for (string in strings) {
-        val match = iconPlaceholderNumberRegex.find(string)
-        if (match != null) {
-            appendInlineContent(match.value)
-        }
-        else {
-            append(escapeRegex.replace(string, ""))
-        }
     }
 }

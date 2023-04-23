@@ -6,9 +6,11 @@ import aelsi2.compose.material3.pullrefresh.pullRefresh
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.components.*
 import aelsi2.natkschedule.ui.screens.attribute_list.ClassroomListScreen
+import aelsi2.natkschedule.ui.screens.attribute_list.FavoritesListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.GroupListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.TeacherListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.attributeListTab
+import aelsi2.natkschedule.ui.screens.attribute_list.favoritesListTab
 import aelsi2.natkschedule.ui.screens.schedule.MainScheduleScreen
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -93,16 +95,17 @@ fun ScheduleApp(
                 composable(TopLevelRoutes.HOME_ROUTE) {
                     MainScheduleScreen(appState::setUiState)
                 }
-                composable(TopLevelRoutes.FAVORITES_ROUTE) {
-                    LaunchedEffect(key1 = true) {
-                        appState.setUiState()
-                    }
-                }
+                favoritesListTab(
+                    route = TopLevelRoutes.FAVORITES_ROUTE,
+                    onScheduleBackClick = appState::navigateBack,
+                    onNavigateToSchedule = appState::navigateToFavoriteSchedule,
+                    setUiState = appState::setUiState
+                )
                 attributeListTab(
                     route = TopLevelRoutes.TEACHERS_ROUTE,
                     scheduleType = ScheduleType.Teacher,
-                    setUiState = appState::setUiState,
-                    onScheduleBackClick = appState::navigateBack
+                    onScheduleBackClick = appState::navigateBack,
+                    setUiState = appState::setUiState
                 ) {setUiState ->
                     TeacherListScreen(
                         onAttributeClick = {

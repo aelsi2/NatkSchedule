@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.attribute_list
 
 import aelsi2.compose.material3.TopAppBar
 import aelsi2.compose.material3.TopAppBarDefaults
@@ -92,6 +92,7 @@ fun AttributeListTopAppBar(
                                 contentDescription = stringResource(R.string.action_settings)
                             )
                         },
+                        enabled = false,
                         onClick = {
                             menuVisible = false
                             onSettingsClick()

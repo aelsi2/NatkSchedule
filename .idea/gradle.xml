@@ -11,8 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/aelsi2-compose" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/compose-material3-components" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

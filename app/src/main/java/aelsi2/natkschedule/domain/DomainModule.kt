@@ -12,6 +12,7 @@ val domainModule = module {
     singleOf(::GetLectureStateUseCase)
     singleOf(::LoadScheduleUseCase)
     singleOf(::LoadAllAttributesUseCase)
+    singleOf(::LoadAttributesUseCase)
     singleOf(::GetScheduleIsMainUseCase)
     singleOf(::GetScheduleIsFavoriteUseCase)
     singleOf(::SetMainScheduleUseCase)

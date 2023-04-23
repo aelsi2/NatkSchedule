@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.ui.components
+package aelsi2.natkschedule.ui.components.schedule
 
 import aelsi2.natkschedule.ui.theme.ScheduleTheme
 import androidx.compose.foundation.layout.*

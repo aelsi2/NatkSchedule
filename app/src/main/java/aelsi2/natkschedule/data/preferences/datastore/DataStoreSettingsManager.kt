@@ -105,7 +105,7 @@ class DataStoreSettingsManager(appContext : Context) : SettingsManager {
         private val KEEP_LECTURES_FOR_DAYS = intPreferencesKey("keep_cache_days")
 
         private const val CACHE_MAIN_SCHEDULE_DEFAULT : Boolean = true
-        private const val CACHE_FAVORITE_SCHEDULES_DEFAULT : Boolean = false
+        private const val CACHE_FAVORITE_SCHEDULES_DEFAULT : Boolean = true
         private const val CACHE_IN_BACKGROUND_DEFAULT : Boolean = false
         private const val BACKGROUND_CACHING_INTERVAL_DEFAULT : Long = 12 * 60 * 60
         private const val CLEAN_LECTURE_CACHE_AUTOMATICALLY_DEFAULT : Boolean = true

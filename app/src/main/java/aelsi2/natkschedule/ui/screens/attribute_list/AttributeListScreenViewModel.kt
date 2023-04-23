@@ -54,7 +54,7 @@ class ClassroomListScreenViewModel(
         savedStateHandle.getStateFlow(FILTER_ADDRESS_KEY, null)
 
     override val attributes: StateFlow<List<ScheduleAttribute>> =
-        rawAttributes.applySearch().stateIn(
+        rawAttributes.applyFilters().applySearch().stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(5000), listOf()
         )
 
@@ -81,6 +81,10 @@ class ClassroomListScreenViewModel(
         savedStateHandle[FILTER_ADDRESS_KEY] = address
     }
 
+    fun resetSelectedAddress() {
+        selectAddress(null)
+    }
+
     override fun resetSearchAndFilters() {
         super.resetSearchAndFilters()
         selectAddress(null)
@@ -92,7 +96,7 @@ class ClassroomListScreenViewModel(
                 attributes
             } else {
                 attributes.filter {
-                    (it as Classroom).address === address
+                    (it as Classroom).address == address
                 }
             }
         }
@@ -154,6 +158,14 @@ class GroupListScreenViewModel(
         savedStateHandle[FILTER_YEAR_KEY] = year
     }
 
+    fun resetSelectedProgram() {
+        selectProgram(null)
+    }
+
+    fun resetSelectedYear() {
+        selectYear(null)
+    }
+
     override fun resetSearchAndFilters() {
         super.resetSearchAndFilters()
         selectProgram(null)
@@ -166,8 +178,8 @@ class GroupListScreenViewModel(
                 attributes
             } else {
                 attributes.filter {
-                    (program === null || (it as Group).programName === program) &&
-                            (year === null || (it as Group).year == year)
+                    (program == null || (it as Group).programName == program) &&
+                            (year == null || (it as Group).year == year)
                 }
             }
         }
@@ -178,7 +190,7 @@ class GroupListScreenViewModel(
     }
 }
 
-class FavoritesListViewModel(
+class FavoritesListScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
     networkMonitor: NetworkMonitor,
     loadAttributes: LoadAttributesUseCase,
@@ -186,14 +198,14 @@ class FavoritesListViewModel(
 ) : AttributeListScreenViewModel(savedStateHandle) {
     private val rawAttributes = MutableStateFlow<List<ScheduleAttribute>>(emptyList())
 
+    val selectedScheduleType: StateFlow<ScheduleType?> = savedStateHandle.getStateFlow(
+        FILTER_SCHEDULE_TYPE_KEY, null
+    )
+
     override val attributes: StateFlow<List<ScheduleAttribute>> =
         rawAttributes.applyFilters().applySearch().stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
         )
-
-    val selectedScheduleType: StateFlow<ScheduleType?> = savedStateHandle.getStateFlow(
-        FILTER_SCHEDULE_TYPE_KEY, null
-    )
 
     override val state: StateFlow<ScreenState> =
         combineTransform(
@@ -214,11 +226,11 @@ class FavoritesListViewModel(
                 onOfflineStoreError = { hadErrors = true },
                 onOfflineStoreSuccess = { rawAttributes.emit(it) }
             )
-            when {
+            emit(when {
                 hadErrors -> ScreenState.Error
                 !isOnline -> ScreenState.NoInternet
                 else -> ScreenState.Loaded
-            }
+            })
         }.stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(5000), ScreenState.Loading
         )
@@ -227,22 +239,20 @@ class FavoritesListViewModel(
         savedStateHandle[FILTER_SCHEDULE_TYPE_KEY] = scheduleType
     }
 
-    override fun resetSearchAndFilters() {
-        super.resetSearchAndFilters()
-        selectScheduleType(null)
-    }
-
     private fun Flow<List<ScheduleAttribute>>.applyFilters(): Flow<List<ScheduleAttribute>> =
         combine(selectedScheduleType) { attributes, type ->
             if (type == null) {
                 attributes
             } else {
                 attributes.filter {
-                    it.scheduleIdentifier.type === type
+                    it.scheduleIdentifier.type == type
                 }
             }
         }
 
+    init {
+        refresh()
+    }
 
     companion object {
         private const val FILTER_SCHEDULE_TYPE_KEY = "scheduleType"
@@ -309,9 +319,13 @@ abstract class AttributeListScreenViewModel(
         savedStateHandle[FILTER_SEARCH_STRING_KEY] = string
     }
 
+    fun resetSearchString() {
+        setSearchString("")
+    }
+
     @CallSuper
     open fun resetSearchAndFilters() {
-        setSearchString("")
+        resetSearchString()
     }
 
     protected fun Flow<List<ScheduleAttribute>>.applySearch(): Flow<List<ScheduleAttribute>> =

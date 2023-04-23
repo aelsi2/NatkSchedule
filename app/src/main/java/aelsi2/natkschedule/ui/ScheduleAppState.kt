@@ -3,6 +3,7 @@ package aelsi2.natkschedule.ui
 import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
+import aelsi2.natkschedule.ui.screens.attribute_list.navigateToFavoriteSchedule
 import aelsi2.natkschedule.ui.screens.attribute_list.navigateToSchedule
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -68,6 +69,12 @@ class ScheduleAppState(
                 ScheduleType.Group -> TopLevelRoutes.GROUPS_ROUTE
             },
             stringId = scheduleIdentifier.stringId
+        )
+    }
+    fun navigateToFavoriteSchedule(scheduleIdentifier: ScheduleIdentifier) {
+        navController.navigateToFavoriteSchedule(
+            route = TopLevelRoutes.FAVORITES_ROUTE,
+            scheduleIdentifier = scheduleIdentifier
         )
     }
     fun navigateBack() {
