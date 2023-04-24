@@ -148,21 +148,21 @@ fun ScheduleScreenTopAppBar(
                             onRefreshClick()
                         }
                     )
-                    DropdownMenuItem(
-                        text = {
-                            Text(stringResource(R.string.action_schedule_show_date))
-                        },
-                        trailingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.event_outlined),
-                                contentDescription = stringResource(R.string.action_schedule_show_date)
-                            )
-                        },
-                        onClick = {
-                            menuVisible = false
-                            onShowDateClick()
-                        }
-                    )
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(stringResource(R.string.action_schedule_show_date))
+//                        },
+//                        trailingIcon = {
+//                            Icon(
+//                                painter = painterResource(R.drawable.event_outlined),
+//                                contentDescription = stringResource(R.string.action_schedule_show_date)
+//                            )
+//                        },
+//                        onClick = {
+//                            menuVisible = false
+//                            onShowDateClick()
+//                        }
+//                    )
                     Divider()
                     DropdownMenuItem(
                         text = {
@@ -245,25 +245,25 @@ fun ScheduleScreenTopAppBar(
             ) {
                 SelectableFilterChip(
                     text = stringResource(id = R.string.filter_schedule_from_today),
-                    selected = selectedDisplayMode == ScheduleDisplayMode.ONE_WEEK_FROM_TODAY,
+                    selected = selectedDisplayMode == ScheduleDisplayMode.WeekFromToday,
                     onClick = {
-                        onDisplayModeSelected(ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
+                        onDisplayModeSelected(ScheduleDisplayMode.WeekFromToday)
                     }
                 )
                 SelectableFilterChip(
                     text = stringResource(id = R.string.filter_schedule_current_week),
-                    selected = selectedDisplayMode == ScheduleDisplayMode.CURRENT_WEEK,
+                    selected = selectedDisplayMode == ScheduleDisplayMode.WeekCurrent,
                     onClick = {
-                        onDisplayModeSelected(ScheduleDisplayMode.CURRENT_WEEK)
+                        onDisplayModeSelected(ScheduleDisplayMode.WeekCurrent)
                     }
                 )
-                SelectableFilterChip(
-                    text = stringResource(id = R.string.filter_schedule_free_scroll),
-                    selected = selectedDisplayMode == ScheduleDisplayMode.FREE_SCROLL,
-                    onClick = {
-                        onDisplayModeSelected(ScheduleDisplayMode.FREE_SCROLL)
-                    }
-                )
+//                SelectableFilterChip(
+//                    text = stringResource(id = R.string.filter_schedule_free_scroll),
+//                    selected = selectedDisplayMode == ScheduleDisplayMode.FreeScroll,
+//                    onClick = {
+//                        onDisplayModeSelected(ScheduleDisplayMode.FreeScroll)
+//                    }
+//                )
             }
         },
         maxBottomContentHeight = 52.dp,

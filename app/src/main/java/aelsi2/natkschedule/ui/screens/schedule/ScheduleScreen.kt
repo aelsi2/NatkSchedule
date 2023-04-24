@@ -12,11 +12,13 @@ import aelsi2.natkschedule.ui.components.schedule.ScheduleScreenTopAppBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
@@ -45,6 +47,10 @@ fun RegularScheduleScreen(
         modifier = modifier
     )
 }
+
+const val FREE_SCROLL_UNLOAD_OFFSET = 6
+const val FREE_SCROLL_LOAD_OFFSET = 3
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
@@ -99,6 +105,7 @@ fun ScheduleScreen(
     LaunchedEffect(true) {
         setUiState(topAppBar, topAppBarScrollBehavior.nestedScrollConnection, pullRefreshState, true)
     }
+    val lazyListState = rememberLazyListState()
 
     Box(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
         LectureList(
@@ -108,7 +115,9 @@ fun ScheduleScreen(
             displayClassroom = identifier?.type != ScheduleType.Classroom,
             displayGroup = identifier?.type != ScheduleType.Group,
             displaySubgroup = identifier?.type == ScheduleType.Group,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            lazyListState = lazyListState
         )
     }
 }
+

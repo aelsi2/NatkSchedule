@@ -4,7 +4,6 @@ import aelsi2.natkschedule.data.repositories.ScheduleAttributeRepository
 import aelsi2.natkschedule.data.repositories.WritableScheduleAttributeRepository
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleIdentifier
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -13,57 +12,52 @@ class LoadAttributesUseCase(
     private val networkAttributeRepo: ScheduleAttributeRepository
 ) {
     suspend operator fun invoke(
-        attributes: List<ScheduleIdentifier>,
-        loadOffline: Boolean,
-        loadOnline: Boolean,
-        storeOffline: Boolean,
-        onOfflineSuccess: (suspend (List<ScheduleAttribute>) -> Unit) = {},
-        onOfflineError: (suspend (Throwable) -> Unit) = {},
-        onOnlineSuccess: (suspend (List<ScheduleAttribute>) -> Unit) = {},
-        onOnlineError: (suspend (Throwable) -> Unit) = {},
-        onOfflineStoreSuccess: (suspend (List<ScheduleAttribute>) -> Unit) = {},
-        onOfflineStoreError: (suspend (Throwable) -> Unit) = {},
+        attributeIds: List<ScheduleIdentifier>,
+        useLocalRepo: Boolean,
+        useNetworkRepo: Boolean,
+        onSuccess: (suspend (List<ScheduleAttribute>) -> Unit) = {},
+        onFailure: (suspend (Throwable) -> Unit) = {},
     ) = coroutineScope {
-        val offlineJob = if (loadOffline) async {
-            this@LoadAttributesUseCase.localAttributeRepo.getAttributesById(attributes)
+        val offlineJob = if (useLocalRepo) async {
+            this@LoadAttributesUseCase.localAttributeRepo.getAttributesById(attributeIds)
         } else null
-        val onlineJob = if (loadOnline) async {
-            this@LoadAttributesUseCase.networkAttributeRepo.getAttributesById(attributes)
+        val onlineJob = if (useNetworkRepo) async {
+            this@LoadAttributesUseCase.networkAttributeRepo.getAttributesById(attributeIds)
         } else null
         offlineJob?.await()?.fold(
             onSuccess = {
-                onOfflineSuccess(it)
+                onSuccess(it)
             },
             onFailure = {
-                onOfflineError(it)
+                onFailure(it)
             }
         )
-        var offlineStoreJob: Job? = null
+        var onlineAttributes: List<ScheduleAttribute>? = null
         onlineJob?.await()?.fold(
             onSuccess = {
-                if (storeOffline) {
-                    offlineStoreJob = async {
-                        this@LoadAttributesUseCase.localAttributeRepo.putAttributes(it)
-                    }
-                }
-                onOnlineSuccess(it)
+                onlineAttributes = it
             },
             onFailure = {
-                onOnlineError(it)
+                onFailure(it)
             }
         )
-        if (offlineStoreJob != null) {
-            offlineStoreJob!!.join()
-            if (loadOffline) {
-                this@LoadAttributesUseCase.localAttributeRepo.getAttributesById(attributes).fold(
-                    onSuccess = {
-                        onOfflineStoreSuccess(it)
-                    },
-                    onFailure = {
-                        onOfflineStoreError(it)
-                    }
-                )
+        if (!useLocalRepo) {
+            if (onlineAttributes != null) {
+                onSuccess(onlineAttributes!!)
             }
+            return@coroutineScope
         }
+        val storeJob = if (onlineAttributes != null) async {
+            localAttributeRepo.putAttributes(onlineAttributes!!)
+            localAttributeRepo.getAttributesById(attributeIds)
+        } else null
+        storeJob?.await()?.fold(
+            onSuccess = {
+                onSuccess(it)
+            },
+            onFailure = {
+                onFailure(it)
+            }
+        )
     }
 }

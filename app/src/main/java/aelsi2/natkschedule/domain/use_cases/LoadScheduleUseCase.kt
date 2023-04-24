@@ -19,65 +19,101 @@ class LoadScheduleUseCase(
 ) {
     suspend operator fun invoke(
         identifier: ScheduleIdentifier,
-        loadOffline: Boolean,
-        loadOnline: Boolean,
         startDate: LocalDate,
         endDate: LocalDate,
-        onOfflineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit) = {},
-        onOfflineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit) = {},
-        onOfflineDaysError: (suspend (Throwable) -> Unit) = {},
-        onOfflineAttributeError: (suspend (Throwable) -> Unit) = {},
-        onOnlineDaysSuccess: (suspend (List<ScheduleDay>) -> Unit) = {},
-        onOnlineAttributeSuccess: (suspend (ScheduleAttribute) -> Unit) = {},
-        onOnlineDaysError: (suspend (Throwable) -> Unit) = {},
-        onOnlineAttributeError: (suspend (Throwable) -> Unit) = {},
+        useNetworkRepo: Boolean,
+        useLocalRepo: Boolean,
+        onSuccess: (suspend (ScheduleAttribute?, List<ScheduleDay>?) -> Unit) = {_, _ ->},
+        onFailure: (suspend (Throwable) -> Unit) = {},
     ) = coroutineScope {
-        val offlineDaysJob = if (loadOffline) async {
-            this@LoadScheduleUseCase.localDayRepo.getDays(startDate, endDate, identifier)
+        val offlineDaysJob = if (useLocalRepo) async {
+            localDayRepo.getDays(startDate, endDate, identifier)
         } else null
-        val offlineAttributeJob = if (loadOffline) async {
-            this@LoadScheduleUseCase.localAttributeRepo.getAttributeById(identifier)
+        val offlineAttributeJob = if (useLocalRepo) async {
+            localAttributeRepo.getAttributeById(identifier)
         } else null
-        val onlineDaysJob = if (loadOnline) async {
-            this@LoadScheduleUseCase.networkDayRepo.getDays(startDate, endDate, identifier)
+        val onlineDaysJob = if (useNetworkRepo) async {
+            networkDayRepo.getDays(startDate, endDate, identifier)
         } else null
-        val onlineAttributeJob = if (loadOnline) async {
-            this@LoadScheduleUseCase.networkAttributeRepo.getAttributeById(identifier)
+        val onlineAttributeJob = if (useNetworkRepo) async {
+            networkAttributeRepo.getAttributeById(identifier)
         } else null
 
+        var offlineDays: List<ScheduleDay>? = null
         offlineDaysJob?.await()?.fold(
             onSuccess = {
-                onOfflineDaysSuccess(it)
+                offlineDays = it
             },
             onFailure = {
-                onOfflineDaysError(it)
+                onFailure(it)
             }
         )
+        var offlineAttribute: ScheduleAttribute? = null
         offlineAttributeJob?.await()?.fold(
             onSuccess = {
-                onOfflineAttributeSuccess(it)
+                offlineAttribute = it
             },
             onFailure = {
-                onOfflineAttributeError(it)
+                onFailure(it)
             }
         )
+        if (offlineDays != null || offlineAttribute != null) {
+            onSuccess(offlineAttribute, offlineDays)
+        }
+
+        var onlineDays: List<ScheduleDay>? = null
         onlineDaysJob?.await()?.fold(
             onSuccess = {
-                localDayRepo.putDays(identifier, it)
-                onOnlineDaysSuccess(it)
+                onlineDays = it
             },
             onFailure = {
-                onOnlineDaysError(it)
+                onFailure(it)
             }
         )
+        var onlineAttribute: ScheduleAttribute? = null
         onlineAttributeJob?.await()?.fold(
             onSuccess = {
-                localAttributeRepo.putAttribute(it)
-                onOnlineAttributeSuccess(it)
+                onlineAttribute = it
             },
             onFailure = {
-                onOnlineAttributeError(it)
+                onFailure(it)
             }
         )
+        if (!useLocalRepo) {
+            if (onlineAttribute != null || onlineDays != null) {
+                onSuccess(onlineAttribute, onlineDays)
+            }
+            return@coroutineScope
+        }
+        val storeDaysJob = if (onlineDays != null) async {
+            localDayRepo.putDays(identifier, onlineDays!!)
+            localDayRepo.getDays(startDate, endDate, identifier)
+        } else null
+        val storeAttributeJob = if (onlineAttribute != null) async {
+            localAttributeRepo.putAttribute(onlineAttribute!!)
+            localAttributeRepo.getAttributeById(identifier)
+        } else null
+
+        var storedAttribute: ScheduleAttribute? = null
+        storeAttributeJob?.await()?.fold(
+            onSuccess = {
+                storedAttribute = it
+            },
+            onFailure = {
+                onFailure(it)
+            }
+        )
+        var storedDays: List<ScheduleDay>? = null
+        storeDaysJob?.await()?.fold(
+            onSuccess = {
+                storedDays = it
+            },
+            onFailure = {
+                onFailure(it)
+            }
+        )
+        if (storedAttribute != null || storedDays != null) {
+            onSuccess(storedAttribute, storedDays)
+        }
     }
 }

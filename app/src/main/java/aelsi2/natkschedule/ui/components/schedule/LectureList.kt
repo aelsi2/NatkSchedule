@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import android.content.res.Resources
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,10 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import java.text.DecimalFormat
 import java.time.DayOfWeek
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -38,19 +40,17 @@ fun LectureList(
     displayGroup: Boolean = true,
     displaySubgroup: Boolean = true,
     onLectureClick: ((Lecture) -> Unit)? = null,
-    onReachedTop: (() -> Unit)? = null,
-    onReachedBottom: (() -> Unit)? = null,
+    lazyListState: LazyListState =  rememberLazyListState()
 ) {
-    val listState = rememberLazyListState()
     val highlightedCardColors = LectureCardColors.Highlighted.remember()
     LazyColumn(
-        state = listState,
+        state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
         modifier = modifier
     ) {
         for (day in days) {
-            item(key = day.date.toString()) {
+            item(key = DateDividerKey(day.date)) {
                 DateDivider(
                     dayOfWeekText = DayOfWeek.from(day.date)
                         .getDisplayName(TextStyle.FULL, Locale.getDefault()),
@@ -61,7 +61,7 @@ fun LectureList(
                     )
                 )
             }
-            itemsIndexed(day.lectures, key = { index, _ -> "${day.date}:${index}" }) { _, lecture ->
+            itemsIndexed(day.lectures, key = { index, _ -> LectureCardKey(day.date, index) }) { _, lecture ->
                 val state = getLectureState(day, lecture).collectAsState().value
                 val resources = LocalContext.current.resources
                 val lectureInfo = remember(lecture) {
@@ -117,40 +117,6 @@ fun LectureList(
                         else -> LectureCardColors.Inactive
                     }
                 )
-            }
-        }
-    }
-    if (onReachedBottom != null) {
-        val atBottom = remember {
-            derivedStateOf {
-                val layoutInfo = listState.layoutInfo
-                val totalItemCount = layoutInfo.totalItemsCount
-                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                lastVisibleItemIndex != null && lastVisibleItemIndex >= totalItemCount - 1
-            }
-        }
-        LaunchedEffect(key1 = atBottom) {
-            snapshotFlow {
-                atBottom.value
-            }.filter { it }.collect {
-                onReachedBottom()
-            }
-        }
-    }
-    if (onReachedTop != null) {
-        val atTop = remember {
-            derivedStateOf {
-                val layoutInfo = listState.layoutInfo
-                val firstVisibleItemIndex = layoutInfo.visibleItemsInfo.firstOrNull()?.index
-                firstVisibleItemIndex != null && firstVisibleItemIndex <= 0
-            }
-        }
-
-        LaunchedEffect(key1 = atTop) {
-            snapshotFlow {
-                atTop.value
-            }.filter { it }.collect {
-                onReachedTop()
             }
         }
     }
@@ -241,4 +207,52 @@ private fun Long.toDurationPartWithSeparator(
         return toString()
     }
     return ':' + DecimalFormat("00").format(this)
+}
+
+interface LazyListKeyWithDate {
+    val date: LocalDate
+}
+
+data class DateDividerKey(
+    override val date: LocalDate
+) : Parcelable, LazyListKeyWithDate {
+    private constructor(parcel: Parcel) : this(LocalDate.ofEpochDay(parcel.readLong()))
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(date.toEpochDay())
+    }
+    override fun describeContents(): Int {
+        return 0
+    }
+    companion object CREATOR : Parcelable.Creator<DateDividerKey> {
+        override fun createFromParcel(parcel: Parcel): DateDividerKey {
+            return DateDividerKey(parcel)
+        }
+
+        override fun newArray(size: Int): Array<DateDividerKey?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class LectureCardKey(
+    override val date: LocalDate,
+    val index: Int,
+) : Parcelable, LazyListKeyWithDate {
+    private constructor(parcel: Parcel) : this(LocalDate.ofEpochDay(parcel.readLong()), parcel.readInt())
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(date.toEpochDay())
+        parcel.writeInt(index)
+    }
+    override fun describeContents(): Int {
+        return 0
+    }
+    companion object CREATOR : Parcelable.Creator<LectureCardKey> {
+        override fun createFromParcel(parcel: Parcel): LectureCardKey {
+            return LectureCardKey(parcel)
+        }
+
+        override fun newArray(size: Int): Array<LectureCardKey?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

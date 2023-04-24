@@ -9,6 +9,8 @@ import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.ScheduleAttribute
 import aelsi2.natkschedule.model.ScheduleDay
 import aelsi2.natkschedule.model.ScheduleIdentifier
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -47,45 +49,38 @@ open class ScheduleScreenViewModel(
         get() = _days
     private val _days = MutableStateFlow<List<ScheduleDay>>(listOf())
 
-    private val freeScrollStartDate: StateFlow<LocalDate> = savedStateHandle.getStateFlow(
-        START_DATE_KEY, timeManager.currentCollegeLocalDate
-    )
-    private val freeScrollEndDate: StateFlow<LocalDate> = savedStateHandle.getStateFlow(
-        END_DATE_KEY,
-        timeManager.currentCollegeLocalDate.plusDays(7)
-    )
-
     val displayMode =
-        savedStateHandle.getStateFlow(DISPLAY_MODE_KEY, ScheduleDisplayMode.ONE_WEEK_FROM_TODAY)
+        savedStateHandle.getStateFlow(DISPLAY_MODE_KEY, ScheduleDisplayMode.WeekFromToday)
 
-    val startDate: StateFlow<LocalDate> = combine(
-        displayMode,
-        timeManager.collegeLocalDate.conflate(),
-        freeScrollStartDate
-    ) { displayMode, currentDate, startDate ->
-        getStartDate(displayMode, currentDate, startDate)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        getStartDate(
-            displayMode.value,
+    private val freeScrollDateRange: StateFlow<DateRange> = savedStateHandle.getStateFlow(
+        FREE_SCROLL_DATE_RANGE_KEY,
+        DateRange(
             timeManager.currentCollegeLocalDate,
-            freeScrollStartDate.value
+            timeManager.currentCollegeLocalDate.plusDays(6)
         )
     )
-    val endDate: StateFlow<LocalDate> = combine(
+    val loadedDateRange: StateFlow<DateRange> = combine(
         displayMode,
         timeManager.collegeLocalDate.conflate(),
-        freeScrollEndDate
-    ) { displayMode, currentDate, endDate ->
-        getEndDate(displayMode, currentDate, endDate)
+        freeScrollDateRange
+    ) { displayMode, currentDate, freeScrollRange ->
+        when (displayMode) {
+            ScheduleDisplayMode.WeekFromToday -> DateRange(
+                currentDate,
+                currentDate.plusDays(6)
+            )
+            ScheduleDisplayMode.WeekCurrent -> DateRange(
+                currentDate.with(DayOfWeek.MONDAY),
+                currentDate.with(DayOfWeek.MONDAY).plusDays(6)
+            )
+            ScheduleDisplayMode.FreeScroll -> freeScrollRange
+        }
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        getEndDate(
-            displayMode.value,
+        DateRange(
             timeManager.currentCollegeLocalDate,
-            freeScrollEndDate.value
+            timeManager.currentCollegeLocalDate.plusDays(6)
         )
     )
 
@@ -98,10 +93,9 @@ open class ScheduleScreenViewModel(
         combineTransform(
             getScheduleParameters(),
             networkMonitor.isOnline,
-            refresh.conflate(),
-            startDate,
-            endDate
-        ) { params, isOnline, _, startDate, endDate ->
+            loadedDateRange,
+            refresh.conflate()
+        ) { params, isOnline, dateRange, _ ->
             if (params.identifier == null) {
                 emit(ScreenState.Loaded)
                 return@combineTransform
@@ -110,18 +104,21 @@ open class ScheduleScreenViewModel(
             var hadErrors = false
             loadSchedule(
                 identifier = params.identifier,
-                loadOffline = params.cache,
-                loadOnline = isOnline,
-                startDate = startDate,
-                endDate = endDate,
-                onOfflineDaysSuccess = { days -> _days.emit(days) },
-                onOfflineAttributeSuccess = { attribute -> _scheduleAttribute.emit(attribute) },
-                onOnlineDaysSuccess = { days -> _days.emit(days) },
-                onOnlineAttributeSuccess = { attribute -> _scheduleAttribute.emit(attribute) },
-                onOfflineDaysError = { hadErrors = true },
-                onOfflineAttributeError = { hadErrors = true },
-                onOnlineDaysError = { hadErrors = true },
-                onOnlineAttributeError = { hadErrors = true }
+                useLocalRepo = params.cache,
+                useNetworkRepo = isOnline,
+                startDate = dateRange.startDate,
+                endDate = dateRange.endDate,
+                onSuccess = { attribute, days ->
+                    if (attribute != null) {
+                        _scheduleAttribute.emit(attribute)
+                    }
+                    if (days != null) {
+                        _days.emit(days)
+                    }
+                },
+                onFailure = {
+                    hadErrors = true
+                }
             )
             emit(
                 when {
@@ -165,16 +162,15 @@ open class ScheduleScreenViewModel(
 
     fun setDisplayMode(displayMode: ScheduleDisplayMode) {
         if (displayMode != this.displayMode.value &&
-            displayMode == ScheduleDisplayMode.FREE_SCROLL
+            displayMode == ScheduleDisplayMode.FreeScroll
         ) {
-            setFreeScrollDateRange(startDate.value, endDate.value)
+            setFreeScrollDateRange(loadedDateRange.value)
         }
         savedStateHandle[DISPLAY_MODE_KEY] = displayMode
     }
 
-    fun setFreeScrollDateRange(startDate: LocalDate, endDate: LocalDate) {
-        savedStateHandle[START_DATE_KEY] = startDate
-        savedStateHandle[END_DATE_KEY] = endDate
+    fun setFreeScrollDateRange(range: DateRange) {
+        savedStateHandle[FREE_SCROLL_DATE_RANGE_KEY] = range
     }
 
     fun setAsMain() {
@@ -195,38 +191,44 @@ open class ScheduleScreenViewModel(
         }
     }
 
-    private fun getStartDate(
-        displayMode: ScheduleDisplayMode,
-        currentDate: LocalDate,
-        freeScrollStartDate: LocalDate
-    ): LocalDate {
-        return when (displayMode) {
-            ScheduleDisplayMode.ONE_WEEK_FROM_TODAY -> currentDate
-            ScheduleDisplayMode.CURRENT_WEEK -> currentDate.with(DayOfWeek.MONDAY)
-            ScheduleDisplayMode.FREE_SCROLL -> freeScrollStartDate
-        }
-    }
-    private fun getEndDate(
-        displayMode: ScheduleDisplayMode,
-        currentDate: LocalDate,
-        freeScrollEndDate: LocalDate
-    ): LocalDate {
-        return when (displayMode) {
-            ScheduleDisplayMode.ONE_WEEK_FROM_TODAY -> currentDate.plusDays(6)
-            ScheduleDisplayMode.CURRENT_WEEK -> currentDate.with(DayOfWeek.MONDAY).plusDays(6)
-            ScheduleDisplayMode.FREE_SCROLL -> freeScrollEndDate
-        }
-    }
-
     companion object {
         private const val DISPLAY_MODE_KEY = "displayMode"
-        private const val START_DATE_KEY = "startDate"
-        private const val END_DATE_KEY = "endDate"
+        private const val FREE_SCROLL_DATE_RANGE_KEY = "freeScrollDateRange"
     }
 }
 
 enum class ScheduleDisplayMode {
-    FREE_SCROLL,
-    CURRENT_WEEK,
-    ONE_WEEK_FROM_TODAY
+    FreeScroll,
+    WeekCurrent,
+    WeekFromToday
+}
+
+data class DateRange(
+    val startDate: LocalDate,
+    val endDate: LocalDate
+) : Parcelable {
+    private constructor(parcel: Parcel) : this(
+        LocalDate.ofEpochDay(parcel.readLong()),
+        LocalDate.ofEpochDay(parcel.readLong())
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(startDate.toEpochDay())
+        parcel.writeLong(endDate.toEpochDay())
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<DateRange> {
+        override fun createFromParcel(parcel: Parcel): DateRange {
+            return DateRange(parcel)
+        }
+
+        override fun newArray(size: Int): Array<DateRange?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 }

@@ -56,14 +56,10 @@ class FavoriteListScreenViewModel(
             emit(ScreenState.Loading)
             loadAttributes(
                 favorites,
-                loadOffline = true,
-                loadOnline = isOnline,
-                storeOffline = isOnline,
-                onOfflineError = { hadErrors = true },
-                onOfflineSuccess = { rawAttributes.emit(it) },
-                onOnlineError = { hadErrors = true },
-                onOfflineStoreError = { hadErrors = true },
-                onOfflineStoreSuccess = { rawAttributes.emit(it) }
+                useLocalRepo = true,
+                useNetworkRepo = isOnline,
+                onSuccess = { rawAttributes.emit(it) },
+                onFailure = { hadErrors = true },
             )
             emit(when {
                 hadErrors -> ScreenState.Error
