@@ -29,19 +29,18 @@ fun GroupListScreen(
     AttributeListScreen(
         title = stringResource(R.string.title_group_list),
         searchPlaceholderText = stringResource(R.string.search_groups_placeholder),
-        filters = { activateSearch ->
+        filters = {
             FilterChipRow {
                 val programs by viewModel.programs.collectAsState()
                 val selectedProgram by viewModel.selectedProgram.collectAsState()
                 var programsExpanded by remember { mutableStateOf(false) }
                 DropdownFilterChip(
                     text = selectedProgram ?: stringResource(R.string.filter_group_list_program),
-                    hasSelectedValue = selectedProgram != null,
+                    isEnabled = programs.isNotEmpty(),
+                    isSelected = selectedProgram != null,
                     isExpanded = programsExpanded,
-                    onChangeExpandedRequest = { expanded ->
-                        if (!expanded || programs.isNotEmpty()) {
-                            programsExpanded = expanded
-                        }
+                    setExpanded = { expanded ->
+                        programsExpanded = expanded
                     },
                     onClearClick = viewModel::resetSelectedProgram
                 ) {
@@ -51,13 +50,13 @@ fun GroupListScreen(
                                 Text(program)
                             },
                             onClick = {
-                                activateSearch()
                                 viewModel.selectProgram(program)
                                 programsExpanded = false
                             }
                         )
                     }
                 }
+                val years by viewModel.years.collectAsState()
                 val selectedYear by viewModel.selectedYear.collectAsState()
                 var yearsExpanded by remember { mutableStateOf(false) }
                 DropdownFilterChip(
@@ -69,20 +68,20 @@ fun GroupListScreen(
                             stringResource(R.string.filter_group_list_year_value, year)
                         }
                     },
-                    hasSelectedValue = selectedYear != null,
+                    isEnabled = years.isNotEmpty(),
+                    isSelected = selectedYear != null,
                     isExpanded = yearsExpanded,
-                    onChangeExpandedRequest = { expanded ->
-                        yearsExpanded = expanded
+                    setExpanded = {
+                        yearsExpanded = it
                     },
                     onClearClick = viewModel::resetSelectedYear
                 ) {
-                    for (year in viewModel.years) {
+                    for (year in years) {
                         DropdownMenuItem(
                             text = {
                                 Text(stringResource(R.string.filter_group_list_year_value, year))
                             },
                             onClick = {
-                                activateSearch()
                                 viewModel.selectYear(year)
                                 yearsExpanded = false
                             }

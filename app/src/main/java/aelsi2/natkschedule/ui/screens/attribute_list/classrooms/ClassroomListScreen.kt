@@ -29,19 +29,18 @@ fun ClassroomListScreen(
     AttributeListScreen(
         title = stringResource(R.string.title_classroom_list),
         searchPlaceholderText = stringResource(R.string.search_classrooms_placeholder),
-        filters = { activateSearch ->
+        filters = {
             FilterChipRow {
                 val addresses by viewModel.addresses.collectAsState()
                 val selectedAddress by viewModel.selectedAddress.collectAsState()
                 var addressesExpanded by remember { mutableStateOf(false) }
                 DropdownFilterChip(
                     text = selectedAddress ?: stringResource(R.string.filter_classroom_list_address),
-                    hasSelectedValue = selectedAddress != null,
+                    isEnabled = addresses.isNotEmpty(),
+                    isSelected = selectedAddress != null,
                     isExpanded = addressesExpanded,
-                    onChangeExpandedRequest = { expanded ->
-                        if (!expanded || addresses.isNotEmpty()) {
-                            addressesExpanded = expanded
-                        }
+                    setExpanded = {
+                        addressesExpanded = it
                     },
                     onClearClick = viewModel::resetSelectedAddress
                 ) {
@@ -51,7 +50,6 @@ fun ClassroomListScreen(
                                 Text(address)
                             },
                             onClick = {
-                                activateSearch()
                                 viewModel.selectAddress(address)
                                 addressesExpanded = false
                             }

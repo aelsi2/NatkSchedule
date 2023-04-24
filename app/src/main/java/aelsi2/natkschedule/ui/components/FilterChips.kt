@@ -47,9 +47,10 @@ fun SelectableFilterChip(
 @Composable
 fun DropdownFilterChip(
     text: String,
-    hasSelectedValue: Boolean,
+    isSelected: Boolean,
+    isEnabled: Boolean,
     isExpanded: Boolean,
-    onChangeExpandedRequest: (Boolean) -> Unit,
+    setExpanded: (Boolean) -> Unit,
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier,
     dropdownContent: @Composable ColumnScope.() -> Unit = {}
@@ -62,7 +63,7 @@ fun DropdownFilterChip(
             trailingIcon = {
                 Icon(
                     painter = painterResource(when {
-                        hasSelectedValue -> R.drawable.close
+                        isSelected -> R.drawable.close
                         isExpanded -> R.drawable.dropup_arrow
                         else -> R.drawable.dropdown_arrow
                     }),
@@ -70,13 +71,14 @@ fun DropdownFilterChip(
                     modifier = Modifier.size(18.dp)
                 )
             },
-            selected = hasSelectedValue,
+            enabled = isEnabled,
+            selected = isSelected,
             onClick = {
-                if (hasSelectedValue) {
+                if (isSelected) {
                     onClearClick()
                 }
                 else {
-                    onChangeExpandedRequest(true)
+                    setExpanded(true)
                 }
             }
         )
@@ -89,7 +91,7 @@ fun DropdownFilterChip(
                 clippingEnabled = false,
             ),
             onDismissRequest = {
-                onChangeExpandedRequest(false)
+                setExpanded(false)
             },
             modifier = Modifier.requiredSizeIn(maxHeight = 200.dp),
             content = dropdownContent

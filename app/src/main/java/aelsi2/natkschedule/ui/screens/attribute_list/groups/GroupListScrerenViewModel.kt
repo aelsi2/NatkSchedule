@@ -33,14 +33,17 @@ class GroupListScreenViewModel(
     private val _programs: MutableStateFlow<SortedSet<String>> = MutableStateFlow(sortedSetOf())
     val programs: StateFlow<SortedSet<String>> get() = _programs
 
-    // Может, надо брать допустимые курсы из результата с сервера,
-    // хотя введение 5-го курса в колледжи, вроде как, не предвидится
-    val years: List<Int> = listOf(1, 2, 3, 4)
+    val years: StateFlow<SortedSet<Int>> = MutableStateFlow(sortedSetOf(1, 2, 3, 4))
 
     val selectedProgram: StateFlow<String?> =
         savedStateHandle.getStateFlow(FILTER_PROGRAM_KEY, null)
     val selectedYear: StateFlow<Int?> =
         savedStateHandle.getStateFlow(FILTER_YEAR_KEY, null)
+
+    override val hasFiltersSet: StateFlow<Boolean> =
+        combine(searchString, selectedProgram, selectedYear) { search, program, year ->
+            search.isNotEmpty() || program != null || year != null
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override val attributes: StateFlow<List<ScheduleAttribute>> =
         rawAttributes.applyFilters().applySearch().stateIn(
@@ -79,8 +82,8 @@ class GroupListScreenViewModel(
         selectYear(null)
     }
 
-    override fun resetSearchAndFilters() {
-        super.resetSearchAndFilters()
+    override fun resetFilters() {
+        super.resetFilters()
         selectProgram(null)
         selectYear(null)
     }

@@ -36,6 +36,11 @@ class ClassroomListScreenViewModel(
     val selectedAddress: StateFlow<String?> =
         savedStateHandle.getStateFlow(FILTER_ADDRESS_KEY, null)
 
+    override val hasFiltersSet: StateFlow<Boolean> =
+        combine(searchString, selectedAddress) { search, address ->
+            search.isNotEmpty() || address != null
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     override val attributes: StateFlow<List<ScheduleAttribute>> =
         rawAttributes.applyFilters().applySearch().stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(5000), listOf()
@@ -68,8 +73,8 @@ class ClassroomListScreenViewModel(
         selectAddress(null)
     }
 
-    override fun resetSearchAndFilters() {
-        super.resetSearchAndFilters()
+    override fun resetFilters() {
+        super.resetFilters()
         selectAddress(null)
     }
 

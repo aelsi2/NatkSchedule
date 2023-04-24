@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @Stable
@@ -36,6 +37,9 @@ class FavoriteListScreenViewModel(
     val selectedScheduleType: StateFlow<ScheduleType?> = savedStateHandle.getStateFlow(
         FILTER_SCHEDULE_TYPE_KEY, null
     )
+
+    override val hasFiltersSet: StateFlow<Boolean> = searchString.map { it.isNotEmpty() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override val attributes: StateFlow<List<ScheduleAttribute>> =
         rawAttributes.applyFilters().applySearch().stateIn(
