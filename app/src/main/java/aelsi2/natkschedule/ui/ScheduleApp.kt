@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.ui
 
-import aelsi2.compose.LaunchedEffectOnUpdate
+import aelsi2.compose.RecomposeLaunchedEffect
 import aelsi2.compose.material3.pullrefresh.PullRefreshIndicator
 import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.compose.material3.pullrefresh.pullRefresh
@@ -33,9 +33,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.animation.with
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 
 typealias SetUiStateLambda = (
     topAppBar: (@Composable () -> Unit)?,
@@ -61,16 +65,23 @@ fun ScheduleAppState.setUiState(
 fun ScheduleApp(
     appState: ScheduleAppState = rememberScheduleAppState()
 ) {
-    val isOnline by appState.networkMonitor.isOnline.collectAsState(true)
     val noInternetMessage = stringResource(R.string.message_no_internet)
     val internetRestoredMessage = stringResource(R.string.message_internet_restored)
-    LaunchedEffectOnUpdate(isOnline) {
-        if (isOnline) {
-            appState.showMessage(internetRestoredMessage)
+
+    var wasOnline by rememberSaveable { mutableStateOf(true) }
+    val isOnline by appState.networkMonitor.isOnline.collectAsState(true)
+    LaunchedEffect(isOnline) {
+        if (isOnline){
+            if (!wasOnline) {
+                wasOnline = true
+                appState.showMessage(internetRestoredMessage)
+            }
         } else {
+            wasOnline = false
             appState.showPersistentMessage(noInternetMessage)
         }
     }
+
     Scaffold(
         topBar = {
             AnimatedContent(
@@ -190,4 +201,3 @@ fun ScheduleApp(
         }
     }
 }
-

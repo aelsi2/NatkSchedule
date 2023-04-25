@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun LaunchedEffectOnUpdate(vararg keys: Any?, block: suspend CoroutineScope.() -> Unit) {
+fun RecomposeLaunchedEffect(vararg keys: Any?, block: suspend CoroutineScope.() -> Unit) {
     var isUpdate by remember { mutableStateOf(false) }
     LaunchedEffect(keys) {
         if (isUpdate) {
@@ -22,7 +22,7 @@ fun LaunchedEffectOnUpdate(vararg keys: Any?, block: suspend CoroutineScope.() -
 }
 
 @Composable
-fun LaunchedEffectOnUpdate(key: Any?, block: suspend CoroutineScope.() -> Unit) {
+fun RecomposeLaunchedEffect(key: Any?, block: suspend CoroutineScope.() -> Unit) {
     var isUpdate by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = key) {
         if (isUpdate) {

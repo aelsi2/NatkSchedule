@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.ui.screens.attribute_list
 
-import aelsi2.compose.LaunchedEffectOnUpdate
+ import aelsi2.compose.RecomposeLaunchedEffect
 import aelsi2.compose.material3.TopAppBarDefaults
 import aelsi2.compose.material3.pullrefresh.rememberPullRefreshState
 import aelsi2.natkschedule.domain.model.ScreenState
@@ -118,7 +118,7 @@ fun AttributeListScreen(
     ) {
 
         val attributes by viewModel.attributes.collectAsState()
-        LaunchedEffectOnUpdate(attributes) {
+        RecomposeLaunchedEffect(attributes) {
             lazyListState.scrollToItem(0)
             scrollBehavior.state.heightOffset = 0f
             scrollBehavior.state.contentOffset = 0f
