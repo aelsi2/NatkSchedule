@@ -6,7 +6,8 @@ import aelsi2.compose.material3.pullrefresh.rememberPullRefreshState
 import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.SetUiStateLambda
-import aelsi2.natkschedule.ui.components.attribute_list.AttributeList
+ import aelsi2.natkschedule.ui.components.InnerScaffold
+ import aelsi2.natkschedule.ui.components.attribute_list.AttributeList
 import aelsi2.natkschedule.ui.components.attribute_list.AttributeListTopAppBar
 import aelsi2.natkschedule.ui.components.attribute_list.AttributeSearchBar
 import androidx.activity.compose.BackHandler
@@ -41,19 +42,16 @@ fun AttributeListScreen(
     modifier: Modifier,
     viewModel: AttributeListScreenViewModel
 ) {
-    val lazyListState = rememberLazyListState()
-
     var searchActive by rememberSaveable { mutableStateOf(false) }
     var searchRequestFocus by remember { mutableStateOf(false) }
 
+    val screenState by viewModel.state.collectAsState()
     val hasFiltersSet by viewModel.hasFiltersSet.collectAsState()
 
     BackHandler(enabled = hasFiltersSet || searchActive) {
         searchActive = false
         viewModel.resetFilters()
     }
-
-    val screenState by viewModel.state.collectAsState()
     LaunchedEffect(screenState){
         when (screenState) {
             ScreenState.Error -> onError()
@@ -68,8 +66,17 @@ fun AttributeListScreen(
         refreshingOffset = 64.dp
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val topAppBar: @Composable () -> Unit = remember {
-        {
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(true) {
+        setUiState({}, true)
+    }
+
+    InnerScaffold(
+        modifier = modifier,
+        nestedScrollConnection = scrollBehavior.nestedScrollConnection,
+        pullRefreshState = pullRefreshState,
+        topBar = {
             if (searchActive) {
                 val focusRequester = remember {
                     FocusRequester()
@@ -87,7 +94,7 @@ fun AttributeListScreen(
                         viewModel.resetSearchString()
                     },
                     placeholderText = searchPlaceholderText,
-                    modifier = modifier.focusRequester(focusRequester)
+                    modifier = Modifier.focusRequester(focusRequester)
                 )
                 LaunchedEffect(searchRequestFocus) {
                     if (searchRequestFocus) {
@@ -107,16 +114,7 @@ fun AttributeListScreen(
                 )
             }
         }
-    }
-    LaunchedEffect(true) {
-        setUiState(topAppBar, scrollBehavior.nestedScrollConnection, pullRefreshState, true)
-    }
-
-    Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
     ) {
-
         val attributes by viewModel.attributes.collectAsState()
         RecomposeLaunchedEffect(attributes) {
             lazyListState.scrollToItem(0)
@@ -127,7 +125,7 @@ fun AttributeListScreen(
             lazyListState = lazyListState,
             attributes = attributes,
             onAttributeClick = onAttributeClick,
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             filters = filters
         )
     }

@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.ui
 
-import aelsi2.compose.RecomposeLaunchedEffect
+import aelsi2.compose.material3.BottomBarScaffold
 import aelsi2.compose.material3.pullrefresh.PullRefreshIndicator
 import aelsi2.compose.material3.pullrefresh.PullRefreshState
 import aelsi2.compose.material3.pullrefresh.pullRefresh
@@ -42,25 +42,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 
 typealias SetUiStateLambda = (
-    topAppBar: (@Composable () -> Unit)?,
-    topAppBarNestedScroll: NestedScrollConnection?,
-    pullRefreshState: PullRefreshState?,
+    onCurrentTabClick: () -> Unit,
     navigationBarVisible: Boolean
 ) -> Unit
 
 fun ScheduleAppState.setUiState(
-    topAppBar: (@Composable () -> Unit)? = null,
-    topAppBarNestedScroll: NestedScrollConnection? = null,
-    pullRefreshState: PullRefreshState? = null,
+    onCurrentTabClick: () -> Unit = {},
     navigationBarVisible: Boolean = true
 ) {
-    topAppBarContent = topAppBar
-    topAppBarNestedScrollConnection = topAppBarNestedScroll
-    this.pullRefreshState = pullRefreshState
+    this.onCurrentTabClick = onCurrentTabClick
     this.navigationBarVisible = navigationBarVisible
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ScheduleApp(
     appState: ScheduleAppState = rememberScheduleAppState()
@@ -69,7 +62,7 @@ fun ScheduleApp(
     val internetRestoredMessage = stringResource(R.string.message_internet_restored)
 
     var wasOnline by rememberSaveable { mutableStateOf(true) }
-    val isOnline by appState.networkMonitor.isOnline.collectAsState(true)
+    val isOnline by appState.networkMonitor.isOnline.collectAsState()
     LaunchedEffect(isOnline) {
         if (isOnline){
             if (!wasOnline) {
@@ -82,17 +75,8 @@ fun ScheduleApp(
         }
     }
 
-    Scaffold(
-        topBar = {
-            AnimatedContent(
-                targetState = appState.topAppBarContent,
-                transitionSpec = {
-                    (fadeIn()).with(fadeOut()).using(SizeTransform { _, _ -> snap(50) })
-                }
-            ) {
-                it?.invoke()
-            }
-        },
+    BottomBarScaffold(
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             AnimatedVisibility(visible = appState.navigationBarVisible) {
                 NavBar(
@@ -103,19 +87,9 @@ fun ScheduleApp(
                     onItemClick = { route -> appState.navigateToTab(route) },
                 )
             }
-        },
-        snackbarHost = {
-            SnackbarHost(appState.snackBarHostState)
-        },
-        modifier = Modifier.run {
-            val state = appState.pullRefreshState
-            if (state == null) this else pullRefresh(state)
-        }.run {
-            val connection = appState.topAppBarNestedScrollConnection
-            if (connection == null) this else nestedScroll(connection)
         }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+    ) {
+        Box {
             val attributeListErrorMessage =
                 stringResource(R.string.message_attribute_list_error)
             val scheduleErrorMessage =
@@ -190,14 +164,10 @@ fun ScheduleApp(
                     )
                 }
             }
-            val refreshState = appState.pullRefreshState
-            if (refreshState != null) {
-                PullRefreshIndicator(
-                    state = refreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
-            }
+            SnackbarHost(
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                hostState = appState.snackBarHostState
+            )
         }
     }
 }

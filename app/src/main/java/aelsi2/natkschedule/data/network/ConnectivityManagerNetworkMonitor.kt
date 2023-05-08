@@ -1,53 +1,49 @@
 package aelsi2.natkschedule.data.network
 
-import android.net.NetworkRequest.Builder
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.os.Build.VERSION
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.stateIn
 
 class ConnectivityManagerNetworkMonitor constructor(
-    private val context: Context
+    private val connectivityManager: ConnectivityManager
 ) : NetworkMonitor {
-    override val isOnline : Flow<Boolean> = callbackFlow {
-        val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
+
+    override val isOnline: StateFlow<Boolean> = callbackFlow {
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                channel.trySend(connectivityManager.isConnected())
+                channel.trySend(network.hasInternet)
             }
+
             override fun onLost(network: Network) {
-                channel.trySend(connectivityManager.isConnected())
+                channel.trySend(false)
             }
+
             override fun onCapabilitiesChanged(
                 network: Network,
                 networkCapabilities: NetworkCapabilities,
             ) {
-                channel.trySend(connectivityManager.isConnected())
+                channel.trySend(networkCapabilities.hasInternet)
             }
         }
-        connectivityManager?.registerNetworkCallback(
-            Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build(),
-            callback,
-        )
-        channel.trySend(connectivityManager.isConnected())
+        connectivityManager.registerDefaultNetworkCallback(callback)
+        channel.trySend(connectivityManager.hasInternet)
         awaitClose {
-            connectivityManager?.unregisterNetworkCallback(callback)
+            connectivityManager.unregisterNetworkCallback(callback)
         }
-    }.conflate()
-    private fun ConnectivityManager?.isConnected() : Boolean {
-        this ?: return false
-        @Suppress("DEPRECATION")
-        return when {
-            VERSION.SDK_INT > 29 -> activeNetwork?.let(::getNetworkCapabilities)
-                ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-            else -> activeNetworkInfo?.isConnected ?: false
-        }
-    }
+    }.stateIn(MainScope(), SharingStarted.WhileSubscribed(5000), true)
+
+    private val ConnectivityManager?.hasInternet : Boolean
+        get() = this?.activeNetwork?.hasInternet ?: false
+
+    private val Network?.hasInternet: Boolean
+        get() = this?.let(connectivityManager::getNetworkCapabilities)?.hasInternet ?: false
+
+    private val NetworkCapabilities?.hasInternet: Boolean
+        get() = this?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
 }

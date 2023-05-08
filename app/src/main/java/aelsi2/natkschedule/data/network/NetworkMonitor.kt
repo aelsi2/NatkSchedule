@@ -1,7 +1,7 @@
 package aelsi2.natkschedule.data.network
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface NetworkMonitor {
-    val isOnline : Flow<Boolean>
+    val isOnline : StateFlow<Boolean>
 }

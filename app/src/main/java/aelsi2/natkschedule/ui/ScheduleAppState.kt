@@ -21,6 +21,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import org.koin.androidx.compose.get
 
 object TopLevelRoutes {
     const val HOME_ROUTE = "home"
@@ -31,16 +32,10 @@ object TopLevelRoutes {
 }
 
 @Composable
-fun rememberNetworkMonitor(): NetworkMonitor {
-    val context = LocalContext.current
-    return remember { ConnectivityManagerNetworkMonitor(context) }
-}
-
-@Composable
 fun rememberScheduleAppState(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navController: NavHostController = rememberNavController(),
-    networkMonitor: NetworkMonitor = rememberNetworkMonitor()
+    networkMonitor: NetworkMonitor = get()
 ): ScheduleAppState =
     remember(snackBarHostState, navController, networkMonitor) {
         ScheduleAppState(snackBarHostState, navController, networkMonitor)
@@ -52,9 +47,7 @@ class ScheduleAppState(
     val navController: NavHostController,
     val networkMonitor: NetworkMonitor
 ) {
-    var topAppBarContent: (@Composable () -> Unit)? by mutableStateOf(null)
-    var topAppBarNestedScrollConnection: NestedScrollConnection? by mutableStateOf(null)
-    var pullRefreshState: PullRefreshState? by mutableStateOf(null)
+    var onCurrentTabClick: () -> Unit by mutableStateOf({})
     var navigationBarVisible: Boolean by mutableStateOf(true)
 
     @Composable

@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "aelsi2.natkschedule"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

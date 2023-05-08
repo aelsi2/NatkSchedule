@@ -6,7 +6,9 @@ import aelsi2.natkschedule.R
 import aelsi2.natkschedule.domain.model.ScreenState
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
+import aelsi2.natkschedule.ui.PULL_REFRESH_OFFSET
 import aelsi2.natkschedule.ui.SetUiStateLambda
+import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.components.schedule.LectureList
 import aelsi2.natkschedule.ui.components.schedule.ScheduleScreenTopAppBar
 import androidx.compose.foundation.background
@@ -48,8 +50,7 @@ fun RegularScheduleScreen(
     )
 }
 
-const val FREE_SCROLL_UNLOAD_OFFSET = 6
-const val FREE_SCROLL_LOAD_OFFSET = 3
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,8 +78,23 @@ fun ScheduleScreen(
     val displayMode by viewModel.displayMode.collectAsState()
 
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val topAppBar: @Composable () -> Unit = remember {
-        {
+    val pullRefreshState = rememberPullRefreshState(
+        state == ScreenState.Loading,
+        viewModel::refresh,
+        refreshThreshold = PULL_REFRESH_OFFSET,
+        refreshingOffset = PULL_REFRESH_OFFSET
+    )
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(true) {
+        setUiState({}, true)
+    }
+
+    InnerScaffold(
+        modifier = modifier,
+        nestedScrollConnection = topAppBarScrollBehavior.nestedScrollConnection,
+        pullRefreshState = pullRefreshState,
+        topBar = {
             val attributeName = attribute?.displayName ?: stringResource(R.string.title_loading)
             ScheduleScreenTopAppBar(
                 title = attributeName,
@@ -95,19 +111,7 @@ fun ScheduleScreen(
                 scrollBehavior = topAppBarScrollBehavior
             )
         }
-    }
-    val pullRefreshState = rememberPullRefreshState(
-        state == ScreenState.Loading,
-        viewModel::refresh,
-        refreshThreshold = 64.dp,
-        refreshingOffset = 64.dp
-    )
-    LaunchedEffect(true) {
-        setUiState(topAppBar, topAppBarScrollBehavior.nestedScrollConnection, pullRefreshState, true)
-    }
-    val lazyListState = rememberLazyListState()
-
-    Box(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
+    ) {
         LectureList(
             days = days,
             viewModel::getLectureState,

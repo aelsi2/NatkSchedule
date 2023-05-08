@@ -8,6 +8,7 @@ import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.SetUiStateLambda
 import aelsi2.natkschedule.ui.components.BasicTopAppBar
 import aelsi2.natkschedule.ui.components.FilterChipRow
+import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.components.SelectableFilterChip
 import aelsi2.natkschedule.ui.screens.attribute_list.AttributeListScreen
 import androidx.compose.foundation.background
@@ -91,8 +92,12 @@ private fun FavoritesEmptyScreen(
     setUiState: SetUiStateLambda,
     modifier: Modifier
 ) {
-    val topAppBar: @Composable () -> Unit = remember {
-        {
+    LaunchedEffect(true) {
+        setUiState({}, true)
+    }
+    InnerScaffold(
+        modifier = modifier,
+        topBar = {
             BasicTopAppBar(
                 title = stringResource(R.string.title_favorite_list),
                 onSettingsClick = {
@@ -100,26 +105,25 @@ private fun FavoritesEmptyScreen(
                 }
             )
         }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = stringResourceWithInlineContent(R.string.message_no_favorites),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .align(Alignment.Center),
+                inlineContent = rememberInlineIcons(remember { mapOf(
+                    Pair(0, Pair(R.drawable.people_outlined, R.string.groups_tab_name)),
+                    Pair(1, Pair(R.drawable.person_outlined, R.string.teachers_tab_name)),
+                    Pair(2, Pair(R.drawable.door_outlined, R.string.classrooms_tab_name)),
+                    Pair(3, Pair(R.drawable.more_vertical, R.string.action_menu))
+                )}, iconSize = 16.sp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
-    LaunchedEffect(true) {
-        setUiState(topAppBar, null, null, true)
-    }
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.surface)) {
-        Text(
-            text = stringResourceWithInlineContent(R.string.message_no_favorites),
-            modifier = Modifier
-                .padding(20.dp)
-                .align(Alignment.Center),
-            inlineContent = rememberInlineIcons(remember { mapOf(
-                Pair(0, Pair(R.drawable.people_outlined, R.string.groups_tab_name)),
-                Pair(1, Pair(R.drawable.person_outlined, R.string.teachers_tab_name)),
-                Pair(2, Pair(R.drawable.door_outlined, R.string.classrooms_tab_name)),
-                Pair(3, Pair(R.drawable.more_vertical, R.string.action_menu))
-            )}, iconSize = 16.sp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+
 }
