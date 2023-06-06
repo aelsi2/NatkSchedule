@@ -8,6 +8,8 @@ data class Group(
 ) : ScheduleAttribute {
     override val displayName: String
         get() = name
+    override val longDisplayName: String
+        get() = name
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.Group, id)
 

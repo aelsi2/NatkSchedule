@@ -1,6 +1,5 @@
 package aelsi2.natkschedule.data.room_database.daos
 
-import aelsi2.natkschedule.data.room_database.model.ClassroomEntity
 import aelsi2.natkschedule.data.room_database.model.DisciplineEntity
 import androidx.room.Dao
 import androidx.room.Query
@@ -24,9 +23,9 @@ interface DisciplineDao {
         DELETE FROM Disciplines
         WHERE disciplineId NOT IN
         (
-            SELECT lectureDataDisciplineId
-            FROM LectureData
-            WHERE lectureDataDisciplineId IS NOT NULL
+            SELECT lectureDisciplineId
+            FROM Lectures
+            WHERE lectureDisciplineId IS NOT NULL
         )
         """)
     suspend fun deleteUnused()

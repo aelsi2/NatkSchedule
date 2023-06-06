@@ -1,7 +1,6 @@
 package aelsi2.natkschedule.data.repositories.natk_database
 
 import aelsi2.natkschedule.model.*
-import android.util.Log
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -53,11 +52,13 @@ class NatkDatabaseDataParser {
     fun parseLecture(
         rawIndex: Int,
         rawTime: String?,
+        rawDisciplineName: String?,
         lectureData: List<LectureData>
     ): Lecture? {
         if (lectureData.isEmpty()) {
             return null
         }
+        val discipline = parseDiscipline(rawDisciplineName) ?: return null
         val index = rawIndex.nonPositiveToNull()
         val (startTime, endTime) = parseStartEndTime(rawTime)
         val breakStartTime = getBreakStartTime(startTime, endTime)
@@ -68,26 +69,24 @@ class NatkDatabaseDataParser {
             endTime,
             breakStartTime,
             breakEndTime,
+            discipline,
             lectureData
         )
     }
 
     fun parseLectureData(
-        rawDisciplineName: String?,
         rawTeacherName: String?,
         rawClassroomName: String?,
         rawGroupName: String?,
         rawGroupProgramName: String?,
         groupYear: Int,
         rawSubgroupIndex: Int
-    ): LectureData? {
-        val discipline = parseDiscipline(rawDisciplineName) ?: return null
+    ): LectureData {
         val teacher = parseTeacher(rawTeacherName)
         val classroom = parseClassroom(rawClassroomName)
         val group = parseGroup(rawGroupName, rawGroupProgramName, groupYear)
         val subgroupIndex: Int? = rawSubgroupIndex.nonPositiveToNull()
         return LectureData(
-            discipline,
             teacher,
             classroom,
             group,
@@ -120,12 +119,12 @@ class NatkDatabaseDataParser {
             return Classroom(fullName, num, address, rawName!!)
         }
         if (fullName.matches(CLASSROOM_REMOTE_PATTERN)) {
-            return Classroom(fullName, CLASSROOM_REMOTE_SHORT, address, rawName!!)
+            return Classroom(fullName, CLASSROOM_REMOTE_SHORT_NAME, address, rawName!!)
         }
         if (fullName.matches(CLASSROOM_GYM_PATTERN)) {
-            return Classroom(fullName, CLASSROOM_GYM_SHORT, address, rawName!!)
+            return Classroom(fullName, CLASSROOM_GYM_SHORT_NAME, address, rawName!!)
         }
-        return Classroom(fullName, fullName, address, rawName!!)
+        return Classroom(fullName, null, address, rawName!!)
     }
 
     fun parseGroup(rawName: String?, rawProgramName: String?, year: Int): Group? {
@@ -225,7 +224,7 @@ class NatkDatabaseDataParser {
             "\\s*дистанционные\\s+технологии\\s*".toRegex(option = RegexOption.IGNORE_CASE)
         private val CLASSROOM_GYM_PATTERN =
             "\\s*спортивный\\s+зал\\s*".toRegex(option = RegexOption.IGNORE_CASE)
-        private const val CLASSROOM_GYM_SHORT = "Спортзал"
-        private const val CLASSROOM_REMOTE_SHORT = "Дистант"
+        private const val CLASSROOM_GYM_SHORT_NAME = "Спортзал"
+        private const val CLASSROOM_REMOTE_SHORT_NAME = "Дистант"
     }
 }

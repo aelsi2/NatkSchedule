@@ -81,16 +81,16 @@ class GetLectureStateUseCase(
         if (zonedCurrentTime < zonedStartTime) {
             // Если задано время окончания предыдущей лекции, и она закончилась, значит проверяемая лекция следующая
             if (isToday && (zonedPreviousLectureEndTime == null || zonedCurrentTime > zonedPreviousLectureEndTime)) {
-                return LectureState.UpNext(
+                return LectureState.Upcoming(
                     Duration.between(zonedCurrentTime, zonedStartTime)
                 )
             }
             // Если предыдущая лекция не задана, то возвращаем просто "не началась"
-            return LectureState.HasNotStarted
+            return LectureState.NotStarted
         }
         // Проверка на окончание
         if (zonedCurrentTime > zonedEndTime) {
-            return LectureState.HasEnded
+            return LectureState.Ended
         }
         // Проверка на перерыв
         if (hasBreak) {

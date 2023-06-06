@@ -3,21 +3,30 @@ package aelsi2.natkschedule.domain.model
 import java.time.Duration
 
 sealed interface LectureState{
-    object HasNotStarted : LectureState
-    object HasEnded : LectureState
-    data class UpNext(
-        val startsIn : Duration
-    ) : LectureState
+    sealed interface HasTimeToEnd : LectureState {
+        val timeToEnd: Duration
+    }
+    sealed interface HasTimeFromStart : LectureState {
+        val timeFromStart: Duration
+    }
+    sealed interface HasTimeBoth: HasTimeFromStart, HasTimeToEnd
+
+    object NotStarted : LectureState
+    object Ended : LectureState
+
+    data class Upcoming(
+        override val timeToEnd : Duration
+    ) : HasTimeToEnd
     data class Ongoing(
-        val started: Duration,
-        val endsIn: Duration
-    ) : LectureState
+        override val timeFromStart: Duration,
+        override val timeToEnd: Duration
+    ) : HasTimeBoth
     data class OngoingPreBreak(
-        val started: Duration,
-        val endsIn: Duration
-    ) : LectureState
+        override val timeFromStart: Duration,
+        override val timeToEnd: Duration
+    ) : HasTimeBoth
     data class Break(
-        val started: Duration,
-        val endsIn: Duration
-    ) : LectureState
+        override val timeFromStart: Duration,
+        override val timeToEnd: Duration
+    ) : HasTimeBoth
 }

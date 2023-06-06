@@ -1,6 +1,5 @@
 package aelsi2.natkschedule.model
 
-import java.time.LocalDate
 import java.time.LocalTime
 
 data class Lecture(
@@ -9,5 +8,6 @@ data class Lecture(
     val endTime: LocalTime?,
     val breakStartTime: LocalTime? = null,
     val breakEndTime: LocalTime? = null,
+    val discipline: Discipline,
     val data: List<LectureData>
 )

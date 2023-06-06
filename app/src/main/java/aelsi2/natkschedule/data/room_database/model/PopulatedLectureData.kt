@@ -7,11 +7,6 @@ import androidx.room.Relation
 data class PopulatedLectureData(
     @Embedded val lectureDataEntity : LectureDataEntity,
     @Relation(
-        parentColumn = "lectureDataDisciplineId",
-        entityColumn = "disciplineId"
-    )
-    val disciplineEntity: DisciplineEntity,
-    @Relation(
         parentColumn = "lectureDataClassroomId",
         entityColumn = "classroomId"
     )
@@ -28,7 +23,6 @@ data class PopulatedLectureData(
     val groupEntity: GroupEntity?,
 ) {
     fun toLectureData() = LectureData(
-        disciplineEntity.toDiscipline(),
         teacherEntity?.toTeacher(),
         classroomEntity?.toClassroom(),
         groupEntity?.toGroup(),

@@ -1,7 +1,5 @@
 package aelsi2.natkschedule.ui
 
-import aelsi2.compose.material3.pullrefresh.PullRefreshState
-import aelsi2.natkschedule.data.network.ConnectivityManagerNetworkMonitor
 import aelsi2.natkschedule.data.network.NetworkMonitor
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
@@ -15,8 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -54,7 +51,7 @@ class ScheduleAppState(
     fun isAtTopRoute(
         route: String
     ): Boolean = navController
-        .currentBackStackEntryAsState().value?.destination?.route?.startsWith(route) ?: false
+        .currentBackStackEntryAsState().value.destinationStartsWithRoute(route)
 
     suspend fun showPersistentMessage(text: String) {
         snackBarHostState.showSnackbar(
@@ -71,7 +68,6 @@ class ScheduleAppState(
     }
 
     fun navigateToTab(route: String) {
-        val alreadyAtTab = navController.currentDestination?.route?.startsWith(route) ?: false
         navController.navigate(route) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
@@ -82,12 +78,29 @@ class ScheduleAppState(
     }
 
     fun navigateToSchedule(scheduleIdentifier: ScheduleIdentifier) {
+        val topRoute = when (scheduleIdentifier.type) {
+            ScheduleType.Teacher -> TopLevelRoutes.TEACHERS_ROUTE
+            ScheduleType.Classroom -> TopLevelRoutes.CLASSROOMS_ROUTE
+            ScheduleType.Group -> TopLevelRoutes.GROUPS_ROUTE
+        }
+        if (!navController.currentBackStackEntry.destinationStartsWithRoute(topRoute)) {
+            //Возвращаемся в корень и переходим на вкладку, восстанавливая ее back stack
+            navController.navigate(route = topRoute) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+            //Сносим восстановленный back stack
+            navController.popBackStack(route = topRoute, inclusive = true, saveState = false)
+            //Снова переходим на вкладку
+            navController.navigate(topRoute) {
+                launchSingleTop = true
+            }
+        }
         navController.navigateToSchedule(
-            route = when (scheduleIdentifier.type) {
-                ScheduleType.Teacher -> TopLevelRoutes.TEACHERS_ROUTE
-                ScheduleType.Classroom -> TopLevelRoutes.CLASSROOMS_ROUTE
-                ScheduleType.Group -> TopLevelRoutes.GROUPS_ROUTE
-            },
+            route = topRoute,
             stringId = scheduleIdentifier.stringId
         )
     }
@@ -102,4 +115,7 @@ class ScheduleAppState(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    private fun NavBackStackEntry?.destinationStartsWithRoute(route: String): Boolean =
+        this?.destination?.route?.startsWith(route) == true
 }

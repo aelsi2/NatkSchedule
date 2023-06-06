@@ -11,10 +11,10 @@ data class ScheduleDayWithLectures(
         entityColumn = "lectureScheduleDayId",
         entity = LectureEntity::class
     )
-    val lectures: List<LectureWithData>
+    val lectures: List<LectureWithDataAndDiscipline>
 ) {
     fun toScheduleDay() = ScheduleDay(
         scheduleDayEntity.scheduleDayDate,
-        lectures.map(LectureWithData::toLecture).sortedBy { it.index }
+        lectures.map(LectureWithDataAndDiscipline::toLecture).sortedBy { it.index }
     )
 }

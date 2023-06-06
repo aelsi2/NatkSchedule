@@ -66,8 +66,7 @@ class RoomDatabaseScheduleAttributeRepository(
             teacherDao.deleteUnused(teacherIds)
             classroomDao.deleteUnused(classroomIds)
             groupDao.deleteUnused(groupIds)
-            // Дисциплины не атрибуты, по которым можно получать расписания,
-            // но работают очень похоже; может, когда нибудь, сделаю расписания по дисциплинам :)
+            // Дисциплины не атрибуты, по которым можно получать расписания, но работают очень похоже
             disciplineDao.deleteUnused()
         }
     }
@@ -94,15 +93,12 @@ class RoomDatabaseScheduleAttributeRepository(
 
     override suspend fun getAttributeById(
         id: ScheduleIdentifier
-    ): Result<ScheduleAttribute> = when (id.type) {
+    ): Result<ScheduleAttribute?> = when (id.type) {
         ScheduleType.Teacher -> teacherDao.getTeacher(id.stringId)?.toTeacher()
         ScheduleType.Classroom -> classroomDao.getClassroom(id.stringId)?.toClassroom()
         ScheduleType.Group -> groupDao.getGroup(id.stringId)?.toGroup()
     }.let {
-        when (it) {
-            null -> Result.failure(Exception())
-            else -> Result.success(it)
-        }
+        Result.success(it)
     }
 
     override suspend fun getAllAttributes(

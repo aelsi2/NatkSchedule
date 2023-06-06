@@ -55,7 +55,7 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
 
     override suspend fun getAttributeById(
         id: ScheduleIdentifier
-    ): Result<ScheduleAttribute> = database.tryWithConnection(
+    ): Result<ScheduleAttribute?> = database.tryWithConnection(
         "Во время загрузки атрибута по id произошла ошибка."
     ) {
         val sqlResultSet = it.executeGetAttributesByIdQuery(id.type, listOf(id))
@@ -68,11 +68,6 @@ class NatkDatabaseScheduleAttributeRepository(private val database: NatkDatabase
                 )
             }
         }.firstOrNull()
-    }.let {result ->
-        result.fold(
-            onSuccess = { if (it == null) Result.failure(Exception()) else Result.success(it) },
-            onFailure = { Result.failure(it) },
-        )
     }
 
     override suspend fun getAllAttributes(

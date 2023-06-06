@@ -49,7 +49,6 @@ class NatkDatabaseScheduleDayRepository(
             var currentLectureData = ArrayList<LectureData>()
             for ((current, next) in results.zip(results.drop(1) + listOf(null))) {
                 val lectureData = parser.parseLectureData(
-                    current.disciplineName,
                     current.teacherName,
                     current.classroomName,
                     current.groupName,
@@ -65,12 +64,10 @@ class NatkDatabaseScheduleDayRepository(
                     rawTime2 = next?.stringTime
                 )
                 val sameDiscipline = parser.compareDisciplines(current.disciplineName, next?.disciplineName)
-                if (lectureData != null){
-                    currentLectureData.add(lectureData)
-                }
+                currentLectureData.add(lectureData)
                 if (!sameLecture || !sameDay || !sameDiscipline) {
                     val lecture = parser.parseLecture(
-                        current.index, current.stringTime, currentLectureData
+                        current.index, current.stringTime, current.disciplineName, currentLectureData
                     )
                     if (lecture != null) {
                         currentDayLectures.add(lecture)

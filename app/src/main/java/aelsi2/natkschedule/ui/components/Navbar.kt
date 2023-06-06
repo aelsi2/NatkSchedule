@@ -42,6 +42,7 @@ fun NavBar(
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
                     Icon(
+
                         painter = painterResource(
                             if (isSelected) {
                                 item.iconSelected

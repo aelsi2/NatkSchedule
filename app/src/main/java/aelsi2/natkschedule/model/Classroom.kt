@@ -8,6 +8,8 @@ data class Classroom(
 ) : ScheduleAttribute {
     override val displayName: String
         get() = shortName ?: fullName
+    override val longDisplayName: String
+        get() = fullName
     override val scheduleIdentifier: ScheduleIdentifier
         get() = ScheduleIdentifier(ScheduleType.Classroom, id)
 

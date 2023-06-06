@@ -3,6 +3,7 @@ package aelsi2.natkschedule.ui.screens.schedule.main
 import aelsi2.compose.material3.rememberInlineIcons
 import aelsi2.compose.material3.stringResourceWithInlineContent
 import aelsi2.natkschedule.R
+import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.SetUiStateLambda
 import aelsi2.natkschedule.ui.components.BasicTopAppBar
 import aelsi2.natkschedule.ui.components.InnerScaffold
@@ -28,6 +29,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MainScheduleScreen(
     setUiState: SetUiStateLambda,
+    onScheduleClick: (ScheduleIdentifier) -> Unit,
     modifier: Modifier = Modifier,
     onError: suspend () -> Unit = {},
     viewModel: MainScheduleScreenViewModel = koinViewModel()
@@ -37,6 +39,7 @@ fun MainScheduleScreen(
         ScheduleScreen(
             backButtonVisible = false,
             onBackClick = { },
+            onScheduleClick = onScheduleClick,
             onError = onError,
             viewModel = viewModel,
             setUiState = setUiState,

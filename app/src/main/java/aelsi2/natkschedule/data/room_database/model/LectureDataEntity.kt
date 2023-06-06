@@ -16,12 +16,6 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = DisciplineEntity::class,
-            parentColumns = ["disciplineId"],
-            childColumns = ["lectureDataDisciplineId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
             entity = TeacherEntity::class,
             parentColumns = ["teacherId"],
             childColumns = ["lectureDataTeacherId"],
@@ -42,7 +36,6 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index("lectureDataLectureId", unique = false),
-        Index("lectureDataDisciplineId", unique = false),
         Index("lectureDataTeacherId", unique = false),
         Index("lectureDataClassroomId", unique = false),
         Index("lectureDataGroupId", unique = false),
@@ -50,7 +43,6 @@ import androidx.room.PrimaryKey
 )
 data class LectureDataEntity(
     val lectureDataLectureId: Long,
-    val lectureDataDisciplineId: String,
     val lectureDataTeacherId: String?,
     val lectureDataClassroomId: String?,
     val lectureDataGroupId: String?,
@@ -61,7 +53,6 @@ data class LectureDataEntity(
         fun fromLectureData(lectureData: LectureData, lectureId: Long) =
             LectureDataEntity(
                 lectureId,
-                lectureData.discipline.id,
                 lectureData.teacher?.id,
                 lectureData.classroom?.id,
                 lectureData.group?.id,

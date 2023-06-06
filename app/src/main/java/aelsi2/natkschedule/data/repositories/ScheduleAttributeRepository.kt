@@ -24,7 +24,7 @@ interface ScheduleAttributeRepository {
      */
     suspend fun getAttributeById(
         id: ScheduleIdentifier
-    ): Result<ScheduleAttribute>
+    ): Result<ScheduleAttribute?>
     /**
      * Получить все атрибуты расписаний типа [type].
      * @param type Тип атрибутов расписаний.

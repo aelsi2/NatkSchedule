@@ -151,7 +151,7 @@ open class ScheduleScreenViewModel(
         getLectureStateUseCase(scheduleDay, lecture).stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            LectureState.HasNotStarted
+            LectureState.NotStarted
         )
 
     fun refresh() {

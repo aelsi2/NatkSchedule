@@ -1,9 +1,6 @@
 package aelsi2.natkschedule.ui
 
 import aelsi2.compose.material3.BottomBarScaffold
-import aelsi2.compose.material3.pullrefresh.PullRefreshIndicator
-import aelsi2.compose.material3.pullrefresh.PullRefreshState
-import aelsi2.compose.material3.pullrefresh.pullRefresh
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.components.*
@@ -13,25 +10,13 @@ import aelsi2.natkschedule.ui.screens.attribute_list.teachers.TeacherListScreen
 import aelsi2.natkschedule.ui.screens.attribute_list.attributeListTab
 import aelsi2.natkschedule.ui.screens.attribute_list.favoritesListTab
 import aelsi2.natkschedule.ui.screens.schedule.main.MainScheduleScreen
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.snap
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.compose.animation.with
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -74,7 +59,7 @@ fun ScheduleApp(
             appState.showPersistentMessage(noInternetMessage)
         }
     }
-
+    
     BottomBarScaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -113,13 +98,15 @@ fun ScheduleApp(
                 composable(TopLevelRoutes.HOME_ROUTE) {
                     MainScheduleScreen(
                         appState::setUiState,
+                        onScheduleClick = appState::navigateToSchedule,
                         onError = ::onScheduleError,
                     )
                 }
                 favoritesListTab(
                     route = TopLevelRoutes.FAVORITES_ROUTE,
                     onScheduleBackClick = appState::navigateBack,
-                    onNavigateToSchedule = appState::navigateToFavoriteSchedule,
+                    onListScheduleClick = appState::navigateToFavoriteSchedule,
+                    onScheduleClick = appState::navigateToSchedule,
                     onListError = ::onListError,
                     onScheduleError = ::onScheduleError,
                     setUiState = appState::setUiState
@@ -128,6 +115,7 @@ fun ScheduleApp(
                     route = TopLevelRoutes.TEACHERS_ROUTE,
                     scheduleType = ScheduleType.Teacher,
                     onScheduleBackClick = appState::navigateBack,
+                    onScheduleClick = appState::navigateToSchedule,
                     onScheduleError = ::onScheduleError,
                     setUiState = appState::setUiState
                 ) { setUiState ->
@@ -142,7 +130,8 @@ fun ScheduleApp(
                     scheduleType = ScheduleType.Classroom,
                     setUiState = appState::setUiState,
                     onScheduleError = ::onScheduleError,
-                    onScheduleBackClick = appState::navigateBack
+                    onScheduleBackClick = appState::navigateBack,
+                    onScheduleClick = appState::navigateToSchedule,
                 ) { setUiState ->
                     ClassroomListScreen(
                         onAttributeClick = appState::navigateToSchedule,
@@ -155,7 +144,8 @@ fun ScheduleApp(
                     scheduleType = ScheduleType.Group,
                     setUiState = appState::setUiState,
                     onScheduleError = ::onScheduleError,
-                    onScheduleBackClick = appState::navigateBack
+                    onScheduleBackClick = appState::navigateBack,
+                    onScheduleClick = appState::navigateToSchedule,
                 ) { setUiState ->
                     GroupListScreen(
                         onAttributeClick = appState::navigateToSchedule,

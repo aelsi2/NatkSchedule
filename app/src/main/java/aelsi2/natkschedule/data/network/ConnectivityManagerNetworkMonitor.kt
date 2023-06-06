@@ -38,12 +38,13 @@ class ConnectivityManagerNetworkMonitor constructor(
         }
     }.stateIn(MainScope(), SharingStarted.WhileSubscribed(5000), true)
 
-    private val ConnectivityManager?.hasInternet : Boolean
+    private val ConnectivityManager?.hasInternet: Boolean
         get() = this?.activeNetwork?.hasInternet ?: false
 
     private val Network?.hasInternet: Boolean
         get() = this?.let(connectivityManager::getNetworkCapabilities)?.hasInternet ?: false
 
     private val NetworkCapabilities?.hasInternet: Boolean
-        get() = this?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+        get() = (this?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false)
+                && (this?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false)
 }

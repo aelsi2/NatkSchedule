@@ -1,9 +1,7 @@
 package aelsi2.natkschedule.data.room_database.model
 
 import aelsi2.natkschedule.model.Lecture
-import aelsi2.natkschedule.model.ScheduleDay
 import androidx.room.*
-import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity(
@@ -14,9 +12,18 @@ import java.time.LocalTime
             parentColumns = ["scheduleDayId"],
             childColumns = ["lectureScheduleDayId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = DisciplineEntity::class,
+            parentColumns = ["disciplineId"],
+            childColumns = ["lectureDisciplineId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [ Index("lectureScheduleDayId", unique = false) ]
+    indices = [
+        Index("lectureScheduleDayId", unique = false),
+        Index("lectureDisciplineId", unique = false),
+    ]
 )
 data class LectureEntity(
     val lectureScheduleDayId: Long,
@@ -25,6 +32,7 @@ data class LectureEntity(
     val lectureEndTime: LocalTime?,
     val lectureBreakStartTime: LocalTime?,
     val lectureBreakEndTime: LocalTime?,
+    val lectureDisciplineId: String,
 ) {
     @PrimaryKey(autoGenerate = true) var lectureId: Long = 0
     companion object {
@@ -35,7 +43,8 @@ data class LectureEntity(
                 lecture.startTime,
                 lecture.endTime,
                 lecture.breakStartTime,
-                lecture.breakEndTime
+                lecture.breakEndTime,
+                lecture.discipline.id
             )
     }
 }

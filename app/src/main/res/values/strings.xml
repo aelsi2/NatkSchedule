@@ -6,6 +6,9 @@
     <string name="groups_tab_name">Groups</string>
     <string name="teachers_tab_name">Teachers</string>
     <string name="classrooms_tab_name">Rooms</string>
+    <string name="lecture_state_next">Up next</string>
+    <string name="lecture_state_not_started">Has not started</string>
+    <string name="lecture_state_ended">Ended</string>
     <string name="lecture_state_ongoing">Ongoing</string>
     <string name="lecture_state_break">Break</string>
     <string name="lecture_state_canceled">Canceled</string>
@@ -15,15 +18,12 @@
     <string name="lecture_time_to_break">Break in: %1$s</string>
     <string name="lecture_time_from_start">Going for: %1$s</string>
     <string name="lecture_time_from_break_start">Going for: %1$s</string>
+    <string name="lecture_time_from_state_start">Going for: %1$s</string>
+    <string name="lecture_time_to_state_end">Ends in: %1$s</string>
     <string name="lecture_info_time">%1$s – %2$s</string>
     <string name="lecture_info_attribute_separator">\ •\ </string>
     <string name="lecture_info_subgroup">%1$d</string>
-    <string name="lecture_details_date">Date</string>
-    <string name="lecture_details_time">Time</string>
-    <string name="lecture_details_teacher">Teacher</string>
-    <string name="lecture_details_classroom">Classroom</string>
-    <string name="lecture_details_group">Group</string>
-    <string name="lecture_details_subgroup">SubGroup</string>
+    <string name="lecture_details_group_subgroup">%1$s (subgroup %2$d)</string>
     <string name="group_info">Year %1$d • %2$s</string>
     <string name="discipline_list_first_item">%1$s</string>
     <string name="discipline_list_item">;\n%1$s</string>
@@ -62,11 +62,15 @@
     <string name="description_classroom">Classroom</string>
     <string name="description_teacher">Teacher</string>
     <string name="description_group">Group</string>
-    <string name="message_main_schedule_not_set">Main schedule not set.\n\nTo make a schedule the main schedule:\n• Go to the \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\" tab\n• Select a schedule from the list\n• Click \"$inline[3]\"\n• Click \"Set as main\"</string>
-    <string name="message_no_favorites">You have no schedules in favorites.\n\nTo add a schedule to favorites:\n• Go to the \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\" tab\n• Select a schedule from the list\n• Click \"$inline[3]\"\n• Click \"Add to favorites\"</string>
+    <string name="message_main_schedule_not_set">Main schedule not set.\n\nTo make a schedule the main schedule:\n• Go to \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\"\n• Click on a schedule\n• Click \"$inline[3]\"\n• Click \"Set as main\"</string>
+    <string name="message_no_favorites">You have no schedules in favorites.\n\nTo add a schedule to favorites:\n• Go to \"$inline[0] Groups\", \"$inline[1] Teachers\" or \"$inline[2] Classrooms\"\n• Click on a schedule\n• Click \"$inline[3]\"\n• Click \"Add to favorites\"</string>
     <string name="message_attribute_list_empty">Nothing found.</string>
     <string name="message_attribute_list_error">An error occurred while trying to fetch schedules.</string>
     <string name="message_schedule_error">An error occurred while trying to fetch schedule data.</string>
     <string name="message_no_internet">No internet connection.</string>
     <string name="message_internet_restored">Connection restored.</string>
+    <string name="group_schedule_info_year">Year %1$d</string>
+    <string name="schedule_details_classroom">Classroom</string>
+    <string name="schedule_details_teacher">Teacher</string>
+    <string name="schedule_details_group">Group</string>
 </resources>

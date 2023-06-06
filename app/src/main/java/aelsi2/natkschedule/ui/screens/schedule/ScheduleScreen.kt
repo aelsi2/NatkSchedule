@@ -9,30 +9,29 @@ import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.PULL_REFRESH_OFFSET
 import aelsi2.natkschedule.ui.SetUiStateLambda
 import aelsi2.natkschedule.ui.components.InnerScaffold
+import aelsi2.natkschedule.ui.components.schedule.LectureInfoDialog
 import aelsi2.natkschedule.ui.components.schedule.LectureList
+import aelsi2.natkschedule.ui.components.schedule.ScheduleInfoDialog
 import aelsi2.natkschedule.ui.components.schedule.ScheduleScreenTopAppBar
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import aelsi2.natkschedule.ui.components.schedule.rememberLectureInfoDialogState
+import aelsi2.natkschedule.ui.components.schedule.rememberScheduleInfoDialogState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 
 @Composable
 fun RegularScheduleScreen(
     scheduleIdentifier: ScheduleIdentifier,
     onBackClick: () -> Unit,
+    onScheduleClick: (ScheduleIdentifier) -> Unit,
     onError: suspend () -> Unit,
     setUiState: SetUiStateLambda,
     modifier: Modifier = Modifier,
@@ -43,6 +42,7 @@ fun RegularScheduleScreen(
     ScheduleScreen(
         backButtonVisible = true,
         onBackClick = onBackClick,
+        onScheduleClick = onScheduleClick,
         onError = onError,
         viewModel = viewModel,
         setUiState = setUiState,
@@ -57,6 +57,7 @@ fun RegularScheduleScreen(
 fun ScheduleScreen(
     backButtonVisible: Boolean,
     onBackClick: () -> Unit,
+    onScheduleClick: (ScheduleIdentifier) -> Unit,
     onError: suspend () -> Unit,
     viewModel: ScheduleScreenViewModel,
     setUiState: SetUiStateLambda,
@@ -90,6 +91,25 @@ fun ScheduleScreen(
         setUiState({}, true)
     }
 
+    val lectureInfoDialogState = rememberLectureInfoDialogState(
+        getLectureState = viewModel::getLectureState
+    )
+    LectureInfoDialog(
+        state = lectureInfoDialogState,
+        onDismissRequest = lectureInfoDialogState::hide,
+        onScheduleClick = {schedule ->
+            lectureInfoDialogState.hide()
+            onScheduleClick(schedule)
+        }
+    )
+
+    val scheduleInfoDialogState = rememberScheduleInfoDialogState()
+
+    ScheduleInfoDialog(
+        state = scheduleInfoDialogState,
+        onDismissRequest = scheduleInfoDialogState::hide
+    )
+
     InnerScaffold(
         modifier = modifier,
         nestedScrollConnection = topAppBarScrollBehavior.nestedScrollConnection,
@@ -101,6 +121,12 @@ fun ScheduleScreen(
                 titleIcon = identifier?.type,
                 backButtonVisible = backButtonVisible,
                 onBackClick = onBackClick,
+                onDetailsClick = {
+                    val currentAttribute = attribute
+                    if (currentAttribute != null) {
+                        scheduleInfoDialogState.show(currentAttribute)
+                    }
+                },
                 selectedDisplayMode = displayMode,
                 isInFavorites = isInFavorites,
                 isMain = isMain,
@@ -113,14 +139,17 @@ fun ScheduleScreen(
         }
     ) {
         LectureList(
-            days = days,
+            scheduleDays = days,
             viewModel::getLectureState,
             displayTeacher = identifier?.type != ScheduleType.Teacher,
             displayClassroom = identifier?.type != ScheduleType.Classroom,
             displayGroup = identifier?.type != ScheduleType.Group,
             displaySubgroup = identifier?.type == ScheduleType.Group,
             modifier = Modifier.fillMaxSize(),
-            lazyListState = lazyListState
+            lazyListState = lazyListState,
+            onLectureClick = { lecture, day ->
+                lectureInfoDialogState.show(lecture, day)
+            }
         )
     }
 }
