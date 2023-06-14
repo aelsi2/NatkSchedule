@@ -11,12 +11,9 @@ import aelsi2.natkschedule.ui.SetUiStateLambda
 import aelsi2.natkschedule.ui.components.attribute_list.AttributeListTopAppBar
 import aelsi2.natkschedule.ui.components.attribute_list.AttributeSearchBar
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,6 +34,7 @@ fun AttributeListScreen(
     searchPlaceholderText: String,
     filters: @Composable () -> Unit,
     onAttributeClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     onError: suspend () -> Unit,
     setUiState: SetUiStateLambda,
     modifier: Modifier,
@@ -109,6 +107,7 @@ fun AttributeListScreen(
                         searchActive = true
                         searchRequestFocus = true
                     },
+                    onSettingsClick = onSettingsClick,
                     onRefreshClick = viewModel::refresh,
                     scrollBehavior = scrollBehavior
                 )

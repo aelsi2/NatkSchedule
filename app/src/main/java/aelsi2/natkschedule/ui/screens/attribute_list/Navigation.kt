@@ -37,13 +37,14 @@ fun NavGraphBuilder.attributeListTab(
     scheduleType: ScheduleType,
     onScheduleBackClick: () -> Unit,
     onScheduleClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     setUiState: SetUiStateLambda,
     onScheduleError: suspend () -> Unit = {},
-    list: @Composable (setUiState: SetUiStateLambda) -> Unit
+    list: @Composable (setUiState: SetUiStateLambda, onSettingsClick: () -> Unit) -> Unit
 ) {
     navigation(startDestination = "$route/list", route = route) {
         composable("$route/list"){
-            list(setUiState)
+            list(setUiState, onSettingsClick)
         }
         composable(
             "$route/schedule/{stringId}",
@@ -55,10 +56,11 @@ fun NavGraphBuilder.attributeListTab(
             if (stringId != null) {
                 RegularScheduleScreen(
                     scheduleIdentifier = ScheduleIdentifier(scheduleType, Uri.decode(stringId)),
+                    setUiState = setUiState,
                     onBackClick = onScheduleBackClick,
                     onScheduleClick = onScheduleClick,
-                    onError = onScheduleError,
-                    setUiState = setUiState
+                    onSettingsClick = onSettingsClick,
+                    onError = onScheduleError
                 )
             }
         }
@@ -70,6 +72,7 @@ fun NavGraphBuilder.favoritesListTab(
     onScheduleBackClick: () -> Unit,
     onScheduleClick: (ScheduleIdentifier) -> Unit,
     onListScheduleClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     setUiState: SetUiStateLambda,
     onListError: suspend () -> Unit = {},
     onScheduleError: suspend () -> Unit = {},
@@ -77,8 +80,9 @@ fun NavGraphBuilder.favoritesListTab(
     navigation(startDestination = "$route/list", route = route) {
         composable("$route/list"){
             FavoritesListScreen(
-                onAttributeClick = onListScheduleClick,
                 setUiState = setUiState,
+                onAttributeClick = onListScheduleClick,
+                onSettingsClick = onSettingsClick,
                 onError = onListError,
             )
         }
@@ -92,10 +96,11 @@ fun NavGraphBuilder.favoritesListTab(
             val scheduleIdentifier = ScheduleIdentifier.fromString(Uri.decode(stringId))
             if (scheduleIdentifier != null) {
                 RegularScheduleScreen(
+                    setUiState = setUiState,
                     scheduleIdentifier = scheduleIdentifier,
                     onBackClick = onScheduleBackClick,
                     onScheduleClick = onScheduleClick,
-                    setUiState = setUiState,
+                    onSettingsClick = onSettingsClick,
                     onError = onScheduleError,
                 )
             }

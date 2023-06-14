@@ -26,6 +26,7 @@ object TopLevelRoutes {
     const val GROUPS_ROUTE = "groups"
     const val TEACHERS_ROUTE = "teachers"
     const val CLASSROOMS_ROUTE = "classrooms"
+    const val SETTINGS = "settings"
 }
 
 @Composable
@@ -114,6 +115,10 @@ class ScheduleAppState(
 
     fun navigateBack() {
         navController.popBackStack()
+    }
+
+    fun navigateToSettings() {
+        navController.navigate(TopLevelRoutes.SETTINGS)
     }
 
     private fun NavBackStackEntry?.destinationStartsWithRoute(route: String): Boolean =

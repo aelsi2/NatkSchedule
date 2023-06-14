@@ -8,7 +8,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val domainModule = module {
-    singleOf(::CleanCacheUnusedUseCase)
+    singleOf(::CleanUpCacheUseCase)
     singleOf(::GetLectureStateUseCase)
     singleOf(::LoadScheduleUseCase)
     singleOf(::LoadAllAttributesUseCase)
@@ -17,8 +17,11 @@ val domainModule = module {
     singleOf(::GetScheduleIsFavoriteUseCase)
     singleOf(::SetMainScheduleUseCase)
     singleOf(::ToggleScheduleFavoriteUseCase)
-    singleOf(::GetMainScheduleSetUseCase)
+    singleOf(::GetMainScheduleIsSetUseCase)
     singleOf(::GetFavoritesNotEmptyUseCase)
+    singleOf(::DoBackgroundWorkUseCase)
+    singleOf(::DoStartupWorkUseCase)
+    singleOf(::SetUpBackgroundWorkUseCase)
 
     factory {params ->
         GetRegularScheduleParametersUseCase(params.get(), get(), get())

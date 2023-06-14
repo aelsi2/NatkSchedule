@@ -11,8 +11,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TeacherListScreen(
-    onAttributeClick: (ScheduleIdentifier) -> Unit,
     setUiState: SetUiStateLambda,
+    onAttributeClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onError: suspend () -> Unit = {},
     viewModel: TeacherListScreenViewModel = koinViewModel()
@@ -22,6 +23,7 @@ fun TeacherListScreen(
         searchPlaceholderText = stringResource(R.string.search_teachers_placeholder),
         filters = {},
         onAttributeClick = onAttributeClick,
+        onSettingsClick = onSettingsClick,
         onError = onError,
         setUiState = setUiState,
         modifier = modifier,

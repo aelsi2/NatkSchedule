@@ -1,6 +1,7 @@
 package aelsi2.natkschedule.ui.components
 
 import aelsi2.natkschedule.R
+import aelsi2.natkschedule.ui.DROPDOWN_MAX_HEIGHT
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.requiredSizeIn
@@ -93,7 +94,7 @@ fun DropdownFilterChip(
             onDismissRequest = {
                 setExpanded(false)
             },
-            modifier = Modifier.requiredSizeIn(maxHeight = 200.dp),
+            modifier = Modifier.requiredSizeIn(maxHeight = DROPDOWN_MAX_HEIGHT),
             content = dropdownContent
         )
     }

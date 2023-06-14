@@ -68,6 +68,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
+    //WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+
     //Koin (автоматическое внедрение зависимостей)
     implementation("io.insert-koin:koin-android:3.3.3")
     implementation("io.insert-koin:koin-androidx-compose:3.4.2")

@@ -2,21 +2,13 @@ package aelsi2.natkschedule.ui
 
 import aelsi2.compose.material3.BottomBarScaffold
 import aelsi2.natkschedule.R
-import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.components.*
-import aelsi2.natkschedule.ui.screens.attribute_list.classrooms.ClassroomListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.groups.GroupListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.teachers.TeacherListScreen
-import aelsi2.natkschedule.ui.screens.attribute_list.attributeListTab
-import aelsi2.natkschedule.ui.screens.attribute_list.favoritesListTab
-import aelsi2.natkschedule.ui.screens.schedule.main.MainScheduleScreen
-import androidx.compose.animation.AnimatedVisibility
+import aelsi2.natkschedule.ui.screens.scheduleNavGraph
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,7 +55,7 @@ fun ScheduleApp(
     BottomBarScaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AnimatedVisibility(visible = appState.navigationBarVisible) {
+            if (appState.navigationBarVisible) {
                 NavBar(
                     items = ScheduleAppTab.values().toList(),
                     isItemSelected = { route ->
@@ -95,64 +87,15 @@ fun ScheduleApp(
                 navController = appState.navController,
                 startDestination = TopLevelRoutes.HOME_ROUTE
             ) {
-                composable(TopLevelRoutes.HOME_ROUTE) {
-                    MainScheduleScreen(
-                        appState::setUiState,
-                        onScheduleClick = appState::navigateToSchedule,
-                        onError = ::onScheduleError,
-                    )
-                }
-                favoritesListTab(
-                    route = TopLevelRoutes.FAVORITES_ROUTE,
-                    onScheduleBackClick = appState::navigateBack,
-                    onListScheduleClick = appState::navigateToFavoriteSchedule,
-                    onScheduleClick = appState::navigateToSchedule,
+                scheduleNavGraph(
+                    setUiState = appState::setUiState,
+                    navigateBack = appState::navigateBack,
+                    navigateToSchedule = appState::navigateToSchedule,
+                    navigateToFavoriteSchedule = appState::navigateToFavoriteSchedule,
+                    navigateToSettings = appState::navigateToSettings,
                     onListError = ::onListError,
-                    onScheduleError = ::onScheduleError,
-                    setUiState = appState::setUiState
+                    onScheduleError = ::onScheduleError
                 )
-                attributeListTab(
-                    route = TopLevelRoutes.TEACHERS_ROUTE,
-                    scheduleType = ScheduleType.Teacher,
-                    onScheduleBackClick = appState::navigateBack,
-                    onScheduleClick = appState::navigateToSchedule,
-                    onScheduleError = ::onScheduleError,
-                    setUiState = appState::setUiState
-                ) { setUiState ->
-                    TeacherListScreen(
-                        onAttributeClick = appState::navigateToSchedule,
-                        onError = ::onListError,
-                        setUiState = setUiState
-                    )
-                }
-                attributeListTab(
-                    route = TopLevelRoutes.CLASSROOMS_ROUTE,
-                    scheduleType = ScheduleType.Classroom,
-                    setUiState = appState::setUiState,
-                    onScheduleError = ::onScheduleError,
-                    onScheduleBackClick = appState::navigateBack,
-                    onScheduleClick = appState::navigateToSchedule,
-                ) { setUiState ->
-                    ClassroomListScreen(
-                        onAttributeClick = appState::navigateToSchedule,
-                        onError = ::onListError,
-                        setUiState = setUiState
-                    )
-                }
-                attributeListTab(
-                    route = TopLevelRoutes.GROUPS_ROUTE,
-                    scheduleType = ScheduleType.Group,
-                    setUiState = appState::setUiState,
-                    onScheduleError = ::onScheduleError,
-                    onScheduleBackClick = appState::navigateBack,
-                    onScheduleClick = appState::navigateToSchedule,
-                ) { setUiState ->
-                    GroupListScreen(
-                        onAttributeClick = appState::navigateToSchedule,
-                        onError = ::onListError,
-                        setUiState = setUiState
-                    )
-                }
             }
             SnackbarHost(
                 modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),

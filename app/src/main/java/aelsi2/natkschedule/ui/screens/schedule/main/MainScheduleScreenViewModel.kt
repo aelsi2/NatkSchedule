@@ -3,8 +3,7 @@ package aelsi2.natkschedule.ui.screens.schedule.main
 import aelsi2.natkschedule.data.network.NetworkMonitor
 import aelsi2.natkschedule.data.time.TimeManager
 import aelsi2.natkschedule.domain.use_cases.GetLectureStateUseCase
-import aelsi2.natkschedule.domain.use_cases.GetMainScheduleParametersUseCase
-import aelsi2.natkschedule.domain.use_cases.GetMainScheduleSetUseCase
+import aelsi2.natkschedule.domain.use_cases.GetMainScheduleIsSetUseCase
 import aelsi2.natkschedule.domain.use_cases.GetScheduleIsFavoriteUseCase
 import aelsi2.natkschedule.domain.use_cases.GetScheduleIsMainUseCase
 import aelsi2.natkschedule.domain.use_cases.GetScheduleParametersUseCase
@@ -31,7 +30,7 @@ class MainScheduleScreenViewModel(
     getLectureStateUseCase: GetLectureStateUseCase,
     setMainSchedule: SetMainScheduleUseCase,
     toggleScheduleFavorite: ToggleScheduleFavoriteUseCase,
-    getMainScheduleSet: GetMainScheduleSetUseCase,
+    getMainScheduleSet: GetMainScheduleIsSetUseCase,
 ) : ScheduleScreenViewModel(
     getScheduleParameters,
     getScheduleIsMain,

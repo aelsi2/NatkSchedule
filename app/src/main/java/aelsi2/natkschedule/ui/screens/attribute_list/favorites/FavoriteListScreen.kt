@@ -6,12 +6,11 @@ import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.SetUiStateLambda
-import aelsi2.natkschedule.ui.components.BasicTopAppBar
+import aelsi2.natkschedule.ui.components.EmptyScreenTopAppBar
 import aelsi2.natkschedule.ui.components.FilterChipRow
 import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.components.SelectableFilterChip
 import aelsi2.natkschedule.ui.screens.attribute_list.AttributeListScreen
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,6 +31,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FavoritesListScreen(
     onAttributeClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     onError: suspend () -> Unit,
     setUiState: SetUiStateLambda,
     modifier: Modifier = Modifier,
@@ -76,6 +76,7 @@ fun FavoritesListScreen(
                 }
             },
             onAttributeClick = onAttributeClick,
+            onSettingsClick = onSettingsClick,
             onError = onError,
             setUiState = setUiState,
             modifier = modifier,
@@ -83,14 +84,19 @@ fun FavoritesListScreen(
         )
     }
     else {
-        FavoritesEmptyScreen(setUiState = setUiState, modifier = modifier)
+        FavoritesEmptyScreen(
+            setUiState = setUiState,
+            onSettingsClick = onSettingsClick,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
 private fun FavoritesEmptyScreen(
     setUiState: SetUiStateLambda,
-    modifier: Modifier
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(true) {
         setUiState({}, true)
@@ -98,11 +104,9 @@ private fun FavoritesEmptyScreen(
     InnerScaffold(
         modifier = modifier,
         topBar = {
-            BasicTopAppBar(
+            EmptyScreenTopAppBar(
                 title = stringResource(R.string.title_favorite_list),
-                onSettingsClick = {
-
-                }
+                onSettingsClick = onSettingsClick
             )
         }
     ) {

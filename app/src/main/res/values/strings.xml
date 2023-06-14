@@ -33,6 +33,7 @@
     <string name="title_teacher_list">Teachers</string>
     <string name="title_group_list">Groups</string>
     <string name="title_loading">Loading…</string>
+    <string name="title_settings">Settings</string>
     <string name="filter_schedule_from_today">From today</string>
     <string name="filter_schedule_current_week">Current week</string>
     <string name="filter_schedule_free_scroll">All</string>
@@ -73,4 +74,28 @@
     <string name="schedule_details_classroom">Classroom</string>
     <string name="schedule_details_teacher">Teacher</string>
     <string name="schedule_details_group">Group</string>
+    <string name="setting_title_save_main_schedule">Save main schedule</string>
+    <string name="setting_description_save_main_schedule">Whether to save the main schedule on your device</string>
+    <string name="setting_title_save_favorites">Save favorite schedules</string>
+    <string name="setting_description_save_favorites">Whether to save the favorite schedules on your device</string>
+    <string name="setting_title_background_sync">Sync in background</string>
+    <string name="setting_description_background_sync">Whether to sync the locally saved schedules with the ones on the server when the app is not running</string>
+    <string name="setting_title_background_sync_interval">Sync interval</string>
+    <string name="setting_description_background_sync_interval">How often to sync the schedules in background</string>
+    <string name="setting_title_clean_cache_on_sync">Clean cache in background</string>
+    <string name="setting_description_clean_cache_on_sync">Whether to delete old schedule data during background sync</string>
+    <string name="setting_title_clean_cache_on_startup">Clean cache on startup</string>
+    <string name="setting_description_clean_cache_on_startup">Whether to delete old schedule data every time the app is started</string>
+    <string name="setting_title_keep_schedule_days">Keep schedule for</string>
+    <string name="setting_description_keep_schedule_days">How many past days should be kept saved</string>
+    <plurals name="setting_format_background_sync_interval">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="setting_format_keep_schedule_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="settings_category_caching">Schedule cache</string>
+    <string name="settings_category_background_sync">Background sync</string>
 </resources>

@@ -228,7 +228,6 @@ fun ScheduleScreenTopAppBar(
                                 contentDescription = stringResource(R.string.action_settings)
                             )
                         },
-                        enabled = false,
                         onClick = {
                             menuVisible = false
                             onSettingsClick()

@@ -20,8 +20,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ClassroomListScreen(
-    onAttributeClick: (ScheduleIdentifier) -> Unit,
     setUiState: SetUiStateLambda,
+    onAttributeClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onError: suspend () -> Unit = {},
     viewModel: ClassroomListScreenViewModel = koinViewModel()
@@ -59,6 +60,7 @@ fun ClassroomListScreen(
             }
         },
         onAttributeClick = onAttributeClick,
+        onSettingsClick = onSettingsClick,
         onError = onError,
         setUiState = setUiState,
         modifier = modifier,

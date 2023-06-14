@@ -8,21 +8,23 @@ import aelsi2.natkschedule.data.time.TimeManager
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import kotlinx.coroutines.flow.first
 
-class CleanCacheUnusedUseCase(
-    private val localLectures: WritableScheduleDayRepository,
+class CleanUpCacheUseCase(
+    private val localDays: WritableScheduleDayRepository,
     private val localAttributes: WritableScheduleAttributeRepository,
     private val settings: SettingsReader,
     private val favorites: FavoritesReader,
     private val timeManager: TimeManager
 ) {
     suspend operator fun invoke() {
-        cleanUnusedSchedules()
+        cleanUnusedDays()
+        cleanOldDays()
         cleanUnusedAttributes()
     }
 
-    private suspend fun cleanLectures() {
-        val cleanCacheTimeDays = settings.keepLecturesForDays.first()
-        localLectures.deleteAllBefore(
+    private suspend fun cleanOldDays() {
+        val cleanCacheTimeDays = settings.keepScheduleForDays.first()
+
+        localDays.deleteAllBefore(
             timeManager.currentCollegeLocalDateTime.minusDays(
                 cleanCacheTimeDays.toLong()
             ).toLocalDate()
@@ -31,28 +33,32 @@ class CleanCacheUnusedUseCase(
 
     private suspend fun cleanUnusedAttributes() {
         val favoriteSchedules = favorites.favoriteScheduleIds.first()
-        val mainSchedule = favorites.mainScheduleId.first()
         val attributesToKeep = ArrayList(favoriteSchedules)
+
+        val mainSchedule = favorites.mainScheduleId.first()
         if (mainSchedule != null) {
             attributesToKeep.add(mainSchedule)
         }
-        localAttributes.deleteUnused(attributesToKeep)
+
+        localAttributes.deleteUnusedExcept(attributesToKeep)
     }
 
-    private suspend fun cleanUnusedSchedules() {
-        val cacheMainEnabled = settings.cacheMainScheduleEnabled.first()
-        val cacheFavoritesEnabled = settings.cacheFavoriteSchedulesEnabled.first()
+    private suspend fun cleanUnusedDays() {
         val schedulesToKeep = ArrayList<ScheduleIdentifier>()
+
+        val cacheMainEnabled = settings.saveMainScheduleEnabled.first()
         if (cacheMainEnabled) {
             val mainSchedule = favorites.mainScheduleId.first()
             if (mainSchedule != null) {
                 schedulesToKeep.add(mainSchedule)
             }
         }
+        val cacheFavoritesEnabled = settings.saveFavoritesEnabled.first()
         if (cacheFavoritesEnabled) {
             val favorites = favorites.favoriteScheduleIds.first()
             schedulesToKeep.addAll(favorites)
         }
-        localLectures.deleteAllExcept(schedulesToKeep)
+
+        localDays.deleteAllExcept(schedulesToKeep)
     }
 }

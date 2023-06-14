@@ -1,11 +1,12 @@
 package aelsi2.natkschedule.data.preferences
 
 interface SettingsManager : SettingsReader {
-    suspend fun setCacheMainScheduleEnabled(value : Boolean)
-    suspend fun setCacheFavoriteSchedulesEnabled(value : Boolean)
-    suspend fun setCacheInBackgroundEnabled(value : Boolean)
-    suspend fun setBackgroundCachingIntervalSeconds(value : Long)
-    suspend fun setCleanLectureCacheAutomatically(value: Boolean)
-    suspend fun setKeepLecturesForDays(value : Int)
+    suspend fun setSaveMainScheduleEnabled(value : Boolean)
+    suspend fun setSaveFavoritesEnabled(value : Boolean)
+    suspend fun setCacheBackgroundSyncEnabled(value : Boolean)
+    suspend fun setBackgroundSyncIntervalHours(value : Int)
+    suspend fun setCleanCacheOnStartupEnabled(value: Boolean)
+    suspend fun setCleanCacheOnSyncEnabled(value: Boolean)
+    suspend fun setKeepScheduleForDays(value : Int)
     suspend fun resetAll()
 }

@@ -33,6 +33,7 @@
     <string name="title_teacher_list">Преподаватели</string>
     <string name="title_group_list">Группы</string>
     <string name="title_loading">Загрузка…</string>
+    <string name="title_settings">Настройки</string>
     <string name="filter_schedule_from_today">С сегодня</string>
     <string name="filter_schedule_current_week">Эта неделя</string>
     <string name="filter_schedule_free_scroll">Все</string>
@@ -73,4 +74,30 @@
     <string name="schedule_details_classroom">Аудитория</string>
     <string name="schedule_details_teacher">Преподаватель</string>
     <string name="schedule_details_group">Группа</string>
+    <string name="setting_title_save_main_schedule">Сохранять главное расписание</string>
+    <string name="setting_description_save_main_schedule">Следует ли сохранять главное расписание на вашем устройстве</string>
+    <string name="setting_title_save_favorites">Сохранять избранные расписания</string>
+    <string name="setting_description_save_favorites">Следует ли сохранять избранные расписания на вашем устройстве</string>
+    <string name="setting_title_background_sync">Фоновая синхронизация</string>
+    <string name="setting_description_background_sync">Следует ли синхронизовывать локально сохраненные расписания с сервером, когда приложение не запущено</string>
+    <string name="setting_title_background_sync_interval">Интервал синхронизации</string>
+    <string name="setting_description_background_sync_interval">Как часто следует проводить фоновую синхронизацию</string>
+    <string name="setting_title_clean_cache_on_sync">Фоновая очистка кэша</string>
+    <string name="setting_description_clean_cache_on_sync">Следует ли удалять старые расписания во время фоновой синхронизации</string>
+    <string name="setting_title_clean_cache_on_startup">Очистка кэша при запуске</string>
+    <string name="setting_description_clean_cache_on_startup">Следует ли удалять старые расписания при запуске приложения</string>
+    <string name="setting_title_keep_schedule_days">Время хранения расписания</string>
+    <string name="setting_description_keep_schedule_days">Сколько прошедших дней следует хранить</string>
+    <plurals name="setting_format_background_sync_interval">
+        <item quantity="one">%1$d час</item>
+        <item quantity="few">%1$d часа</item>
+        <item quantity="many">%1$d часов</item>
+    </plurals>
+    <plurals name="setting_format_keep_schedule_days">
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+    </plurals>
+    <string name="settings_category_caching">Кэширование расписаний</string>
+    <string name="settings_category_background_sync">Фоновая синхронизация</string>
 </resources>

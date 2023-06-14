@@ -5,10 +5,9 @@ import aelsi2.compose.material3.stringResourceWithInlineContent
 import aelsi2.natkschedule.R
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.SetUiStateLambda
-import aelsi2.natkschedule.ui.components.BasicTopAppBar
+import aelsi2.natkschedule.ui.components.EmptyScreenTopAppBar
 import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreen
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +29,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MainScheduleScreen(
     setUiState: SetUiStateLambda,
     onScheduleClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onError: suspend () -> Unit = {},
     viewModel: MainScheduleScreenViewModel = koinViewModel()
@@ -40,6 +40,7 @@ fun MainScheduleScreen(
             backButtonVisible = false,
             onBackClick = { },
             onScheduleClick = onScheduleClick,
+            onSettingsClick = onSettingsClick,
             onError = onError,
             viewModel = viewModel,
             setUiState = setUiState,
@@ -47,14 +48,19 @@ fun MainScheduleScreen(
         )
     }
     else {
-        MainScheduleNotSetScreen(setUiState = setUiState, modifier = modifier)
+        MainScheduleNotSetScreen(
+            setUiState = setUiState,
+            onSettingsClick = onSettingsClick,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
 private fun MainScheduleNotSetScreen(
     setUiState: SetUiStateLambda,
-    modifier: Modifier
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(true) {
         setUiState({}, true)
@@ -62,11 +68,9 @@ private fun MainScheduleNotSetScreen(
     InnerScaffold(
         modifier = modifier,
         topBar = {
-            BasicTopAppBar(
+            EmptyScreenTopAppBar(
                 title = stringResource(R.string.title_home),
-                onSettingsClick = {
-
-                }
+                onSettingsClick = onSettingsClick
             )
         }
     ) {

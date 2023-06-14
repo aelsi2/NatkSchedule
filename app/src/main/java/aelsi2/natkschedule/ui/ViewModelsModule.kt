@@ -6,10 +6,9 @@ import aelsi2.natkschedule.ui.screens.attribute_list.classrooms.ClassroomListScr
 import aelsi2.natkschedule.ui.screens.attribute_list.favorites.FavoriteListScreenViewModel
 import aelsi2.natkschedule.ui.screens.schedule.ScheduleScreenViewModel
 import aelsi2.natkschedule.ui.screens.schedule.main.MainScheduleScreenViewModel
+import aelsi2.natkschedule.ui.screens.settings.SettingsScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.core.module.dsl.named
-import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -47,4 +46,5 @@ val viewModelsModule = module {
     viewModelOf(::TeacherListScreenViewModel)
     viewModelOf(::ClassroomListScreenViewModel)
     viewModelOf(::FavoriteListScreenViewModel)
+    viewModelOf(::SettingsScreenViewModel)
 }

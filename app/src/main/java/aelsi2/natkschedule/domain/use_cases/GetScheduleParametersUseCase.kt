@@ -13,7 +13,7 @@ class GetMainScheduleParametersUseCase(
     private val favorites: FavoritesReader,
     private val settings: SettingsReader
 ) : GetScheduleParametersUseCase {
-    override fun invoke(): Flow<ScheduleParameters> = favorites.mainScheduleId.combine(settings.cacheMainScheduleEnabled) { identifier, cache ->
+    override fun invoke(): Flow<ScheduleParameters> = favorites.mainScheduleId.combine(settings.saveMainScheduleEnabled) { identifier, cache ->
         ScheduleParameters(identifier, cache)
     }.conflate().distinctUntilChanged()
 }
@@ -26,8 +26,8 @@ class GetRegularScheduleParametersUseCase(
     override fun invoke(): Flow<ScheduleParameters> = combine(
         favoritesReader.isInFavorites(identifier),
         favoritesReader.mainScheduleId.map { it == identifier },
-        settingsReader.cacheFavoriteSchedulesEnabled,
-        settingsReader.cacheMainScheduleEnabled
+        settingsReader.saveFavoritesEnabled,
+        settingsReader.saveMainScheduleEnabled
     ) { isFavorite, isMain, cacheFavorite, cacheMain ->
         when {
             isMain -> ScheduleParameters(identifier, cacheMain)

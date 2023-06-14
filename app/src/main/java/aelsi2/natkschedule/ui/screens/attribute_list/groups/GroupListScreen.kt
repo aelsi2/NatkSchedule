@@ -20,8 +20,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GroupListScreen(
-    onAttributeClick: (ScheduleIdentifier) -> Unit,
     setUiState: SetUiStateLambda,
+    onAttributeClick: (ScheduleIdentifier) -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     onError: suspend () -> Unit = {},
     viewModel: GroupListScreenViewModel = koinViewModel()
@@ -91,6 +92,7 @@ fun GroupListScreen(
             }
         },
         onAttributeClick = onAttributeClick,
+        onSettingsClick = onSettingsClick,
         onError = onError,
         setUiState = setUiState,
         modifier = modifier,

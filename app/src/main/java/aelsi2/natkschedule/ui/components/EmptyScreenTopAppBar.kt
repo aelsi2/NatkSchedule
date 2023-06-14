@@ -23,7 +23,7 @@ import androidx.compose.ui.window.PopupProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicTopAppBar(title: String, onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
+fun EmptyScreenTopAppBar(title: String, onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             Text(title)
@@ -60,7 +60,6 @@ fun BasicTopAppBar(title: String, onSettingsClick: () -> Unit, modifier: Modifie
                                 contentDescription = stringResource(R.string.action_settings)
                             )
                         },
-                        enabled = false,
                         onClick = {
                             menuVisible = false
                             onSettingsClick()
