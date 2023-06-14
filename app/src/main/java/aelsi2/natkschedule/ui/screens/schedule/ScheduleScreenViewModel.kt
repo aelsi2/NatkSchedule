@@ -25,6 +25,7 @@ import java.time.LocalDate
 open class ScheduleScreenViewModel(
     getScheduleParameters: GetScheduleParametersUseCase,
     getScheduleIsMain: GetScheduleIsMainUseCase,
+    getMainScheduleSet: GetMainScheduleIsSetUseCase,
     getScheduleIsFavorite: GetScheduleIsFavoriteUseCase,
     networkMonitor: NetworkMonitor,
     timeManager: TimeManager,
@@ -137,6 +138,12 @@ open class ScheduleScreenViewModel(
         SharingStarted.WhileSubscribed(5000),
         false
     )
+    val mainScheduleSet: StateFlow<Boolean> =
+        getMainScheduleSet().stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue = true
+        )
     val isInFavorites: StateFlow<Boolean> = getScheduleIsFavorite(scheduleIdentifier).stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),

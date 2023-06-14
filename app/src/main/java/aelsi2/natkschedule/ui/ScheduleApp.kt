@@ -41,7 +41,7 @@ fun ScheduleApp(
     var wasOnline by rememberSaveable { mutableStateOf(true) }
     val isOnline by appState.networkMonitor.isOnline.collectAsState()
     LaunchedEffect(isOnline) {
-        if (isOnline){
+        if (isOnline) {
             if (!wasOnline) {
                 wasOnline = true
                 appState.showMessage(internetRestoredMessage)
@@ -51,11 +51,11 @@ fun ScheduleApp(
             appState.showPersistentMessage(noInternetMessage)
         }
     }
-    
+
     BottomBarScaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            if (appState.navigationBarVisible) {
+        bottomBar = if (appState.navigationBarVisible) {
+            {
                 NavBar(
                     items = ScheduleAppTab.values().toList(),
                     isItemSelected = { route ->
@@ -64,7 +64,7 @@ fun ScheduleApp(
                     onItemClick = { route -> appState.navigateToTab(route) },
                 )
             }
-        }
+        } else null
     ) {
         Box {
             val attributeListErrorMessage =
@@ -77,6 +77,7 @@ fun ScheduleApp(
                     appState.showMessage(attributeListErrorMessage)
                 }
             }
+
             suspend fun onScheduleError() {
                 if (appState.snackBarHostState.currentSnackbarData == null) {
                     appState.showMessage(scheduleErrorMessage)
@@ -98,7 +99,9 @@ fun ScheduleApp(
                 )
             }
             SnackbarHost(
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
                 hostState = appState.snackBarHostState
             )
         }

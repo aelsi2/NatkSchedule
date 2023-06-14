@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
@@ -39,7 +40,7 @@ fun TopBarScaffold(
 @Composable
 fun BottomBarScaffold(
     modifier: Modifier = Modifier,
-    bottomBar: @Composable () -> Unit = {},
+    bottomBar: (@Composable () -> Unit)? = null,
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
     content: @Composable () -> Unit
@@ -50,7 +51,17 @@ fun BottomBarScaffold(
                 content()
             }
             Box {
-                bottomBar()
+                if (bottomBar != null) {
+                    bottomBar()
+                } else {
+                    Box(
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets.systemBars.only(
+                                WindowInsetsSides.Bottom
+                            )
+                        )
+                    )
+                }
             }
         }
     }

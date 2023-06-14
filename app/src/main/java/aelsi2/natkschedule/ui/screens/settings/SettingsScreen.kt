@@ -5,8 +5,10 @@ import aelsi2.natkschedule.R
 import aelsi2.natkschedule.ui.KEEP_SCHEDULE_FOR_OPTIONS_DAYS
 import aelsi2.natkschedule.ui.SYNC_INTERVAL_OPTIONS_HOURS
 import aelsi2.natkschedule.ui.SetUiStateLambda
+import aelsi2.natkschedule.ui.components.ConfirmationDialog
 import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.components.ModalScreenTopAppBar
+import aelsi2.natkschedule.ui.components.settings.ButtonSettingsItem
 import aelsi2.natkschedule.ui.components.settings.DropdownSettingsItem
 import aelsi2.natkschedule.ui.components.settings.SettingsCategoryHeader
 import aelsi2.natkschedule.ui.components.settings.ToggleSettingsItem
@@ -171,6 +173,25 @@ fun SettingsScreen(
                 isEnabled = backgroundSyncEnabled,
                 onCheckedChange = viewModel::setCleanCacheOnSyncEnabled
             )
+
+            SettingsCategoryHeader(stringResource(R.string.settings_category_reset))
+
+            var confirmResetDialogShown by remember { mutableStateOf(false) }
+            ButtonSettingsItem(
+                mainText = stringResource(R.string.setting_title_reset_settings),
+                onClick = { confirmResetDialogShown = true}
+            )
+            if (confirmResetDialogShown) {
+                ConfirmationDialog(
+                    onDismissRequest = {
+                        confirmResetDialogShown = false
+                    },
+                    titleText = stringResource(R.string.dialog_title_confirm_reset_settings),
+                    contentText = stringResource(R.string.dialog_content_confirm_reset_settings),
+                    iconResource = R.drawable.settings_outlined,
+                    onYesClick = viewModel::resetAllSettings
+                )
+            }
         }
     }
 }

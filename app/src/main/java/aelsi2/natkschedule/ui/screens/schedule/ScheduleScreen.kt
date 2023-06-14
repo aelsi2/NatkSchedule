@@ -8,6 +8,7 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.model.ScheduleType
 import aelsi2.natkschedule.ui.PULL_REFRESH_OFFSET
 import aelsi2.natkschedule.ui.SetUiStateLambda
+import aelsi2.natkschedule.ui.components.ConfirmationDialog
 import aelsi2.natkschedule.ui.components.InnerScaffold
 import aelsi2.natkschedule.ui.components.schedule.LectureInfoDialog
 import aelsi2.natkschedule.ui.components.schedule.LectureList
@@ -25,6 +26,9 @@ import androidx.compose.ui.Modifier
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 
 @Composable
@@ -53,7 +57,6 @@ fun RegularScheduleScreen(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
@@ -76,6 +79,7 @@ fun ScheduleScreen(
 
     val days by viewModel.days.collectAsState()
     val identifier by viewModel.scheduleIdentifier.collectAsState()
+    val mainIsSet by viewModel.mainScheduleSet.collectAsState()
     val isMain by viewModel.isMain.collectAsState()
     val isInFavorites by viewModel.isInFavorites.collectAsState()
     val attribute by viewModel.scheduleAttribute.collectAsState()
@@ -100,7 +104,7 @@ fun ScheduleScreen(
     LectureInfoDialog(
         state = lectureInfoDialogState,
         onDismissRequest = lectureInfoDialogState::hide,
-        onScheduleClick = {schedule ->
+        onScheduleClick = { schedule ->
             lectureInfoDialogState.hide()
             onScheduleClick(schedule)
         }
@@ -119,6 +123,8 @@ fun ScheduleScreen(
         pullRefreshState = pullRefreshState,
         topBar = {
             val attributeName = attribute?.displayName ?: stringResource(R.string.title_loading)
+            var confirmToggleFavoriteDialogShown by remember { mutableStateOf(false) }
+            var confirmSetMainDialogShown by remember { mutableStateOf(false) }
             ScheduleScreenTopAppBar(
                 title = attributeName,
                 titleIcon = identifier?.type,
@@ -136,10 +142,44 @@ fun ScheduleScreen(
                 onSettingsClick = onSettingsClick,
                 onRefreshClick = viewModel::refresh,
                 onDisplayModeSelected = viewModel::setDisplayMode,
-                onToggleFavoriteClick = viewModel::toggleFavorite,
-                onSetMainClick = viewModel::setAsMain,
+                onToggleFavoriteClick = {
+                    if (isInFavorites) {
+                        confirmToggleFavoriteDialogShown = true
+                    } else {
+                        viewModel.toggleFavorite()
+                    }
+                },
+                onSetMainClick = {
+                    if (mainIsSet) {
+                        confirmSetMainDialogShown = true
+                    } else {
+                        viewModel.setAsMain()
+                    }
+                },
                 scrollBehavior = topAppBarScrollBehavior
             )
+            if (confirmToggleFavoriteDialogShown) {
+                ConfirmationDialog(
+                    onDismissRequest = {
+                        confirmToggleFavoriteDialogShown = false
+                    },
+                    titleText = stringResource(R.string.dialog_title_confirm_remove_from_favorites),
+                    contentText = stringResource(R.string.dialog_content_confirm_remove_from_favorites),
+                    iconResource = R.drawable.star_outlined,
+                    onYesClick = viewModel::toggleFavorite
+                )
+            }
+            if (confirmSetMainDialogShown) {
+                ConfirmationDialog(
+                    onDismissRequest = {
+                        confirmSetMainDialogShown = false
+                    },
+                    titleText = stringResource(R.string.dialog_title_confirm_set_main_schedule),
+                    contentText = stringResource(R.string.dialog_content_confirm_set_main_schedule),
+                    iconResource = R.drawable.home_outlined,
+                    onYesClick = viewModel::setAsMain
+                )
+            }
         }
     ) {
         LectureList(

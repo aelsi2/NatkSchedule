@@ -45,6 +45,8 @@
     <string name="filter_favorite_list_classrooms">Classrooms</string>
     <string name="filter_favorite_list_teachers">Teachers</string>
     <string name="filter_favorite_list_groups">Groups</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
     <string name="action_back">Back</string>
     <string name="action_menu">Menu</string>
     <string name="action_search">Search</string>
@@ -96,6 +98,14 @@
         <item quantity="one">%1$d day</item>
         <item quantity="other">%1$d days</item>
     </plurals>
+    <string name="setting_title_reset_settings">Reset settings</string>
     <string name="settings_category_caching">Schedule cache</string>
     <string name="settings_category_background_sync">Background sync</string>
+    <string name="settings_category_reset">Reset</string>
+    <string name="dialog_title_confirm_reset_settings">Reset settings?</string>
+    <string name="dialog_content_confirm_reset_settings">Are you sure you want to reset the application settings to their defaults?</string>
+    <string name="dialog_title_confirm_set_main_schedule">Set main schedule?</string>
+    <string name="dialog_content_confirm_set_main_schedule">Are you sure you want to set this schedule as your main schedule?</string>
+    <string name="dialog_title_confirm_remove_from_favorites">Remove from favorites?</string>
+    <string name="dialog_content_confirm_remove_from_favorites">Are you sure you want to remove this schedule from favorites?</string>
 </resources>

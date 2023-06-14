@@ -34,6 +34,7 @@ class MainScheduleScreenViewModel(
 ) : ScheduleScreenViewModel(
     getScheduleParameters,
     getScheduleIsMain,
+    getMainScheduleSet,
     getScheduleIsFavorite,
     networkMonitor,
     timeManager,
@@ -42,11 +43,4 @@ class MainScheduleScreenViewModel(
     getLectureStateUseCase,
     setMainSchedule,
     toggleScheduleFavorite
-) {
-    val mainScheduleSet: StateFlow<Boolean> =
-        getMainScheduleSet().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            initialValue = true
-        )
-}
+)

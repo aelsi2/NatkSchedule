@@ -45,6 +45,8 @@
     <string name="filter_favorite_list_classrooms">Аудитории</string>
     <string name="filter_favorite_list_teachers">Преподаватели</string>
     <string name="filter_favorite_list_groups">Группы</string>
+    <string name="action_yes">Да</string>
+    <string name="action_no">Нет</string>
     <string name="action_back">Назад</string>
     <string name="action_menu">Меню</string>
     <string name="action_search">Поиск</string>
@@ -98,6 +100,14 @@
         <item quantity="few">%1$d дня</item>
         <item quantity="many">%1$d дней</item>
     </plurals>
+    <string name="setting_title_reset_settings">Сбросить настройки</string>
     <string name="settings_category_caching">Кэширование расписаний</string>
     <string name="settings_category_background_sync">Фоновая синхронизация</string>
+    <string name="settings_category_reset">Сброс</string>
+    <string name="dialog_title_confirm_reset_settings">Сбросить настройки?</string>
+    <string name="dialog_content_confirm_reset_settings">Вы уверены, что хотите сбросить настройки приложения и выставить значения по умолчанию?</string>
+    <string name="dialog_title_confirm_set_main_schedule">Задать главное расписание?</string>
+    <string name="dialog_content_confirm_set_main_schedule">Вы уверены, что хотите задать это расписание как главное?</string>
+    <string name="dialog_title_confirm_remove_from_favorites">Убрать из избранных?</string>
+    <string name="dialog_content_confirm_remove_from_favorites">Вы уверены, что хотите убрать это расписание из избранных?</string>
 </resources>
