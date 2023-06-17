@@ -28,7 +28,7 @@
 - Автоматическое обновление сохраненных расписаний в фономов режиме.
 
 ## Особенности
-- Дизайн приложения основан на [Material 3](https://m3.material.io/);
+- [Дизайн приложения](https://www.figma.com/file/n10dERdJYx375pg5hX9Wga/Schedule?type=design&node-id=0%3A1&t=aeca6OfxvEfVdKKW-1) основан на [Material 3](https://m3.material.io/);
 - Архитектура приложения основана на [рекоммендациях Google/Modern App Architecture](https://developer.android.com/topic/architecture#modern-app-architecture);
 - Приложение написано на языке [Kotlin](https://kotlinlang.org/);
 - В приложении исползуются [корутины](https://kotlinlang.org/docs/coroutines-overview.html) и [потоки](https://kotlinlang.org/docs/flow.html) Kotlin;
