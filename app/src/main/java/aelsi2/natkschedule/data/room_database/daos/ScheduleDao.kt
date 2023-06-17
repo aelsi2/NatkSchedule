@@ -63,4 +63,10 @@ interface ScheduleDao {
     suspend fun deleteAllExcept(
         scheduleIdentifiers: List<ScheduleIdentifier>
     )
+    @Query(
+        """
+        DELETE FROM ScheduleDays
+        """
+    )
+    suspend fun deleteAll()
 }

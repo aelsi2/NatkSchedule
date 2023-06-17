@@ -7,4 +7,7 @@ interface FavoritesManager : FavoritesReader {
     suspend fun removeFromFavorites(schedule : ScheduleIdentifier)
     suspend fun clearFavorites()
     suspend fun setMainScheduleId(value : ScheduleIdentifier?)
+    suspend fun resetMainScheduleId() {
+        setMainScheduleId(null)
+    }
 }

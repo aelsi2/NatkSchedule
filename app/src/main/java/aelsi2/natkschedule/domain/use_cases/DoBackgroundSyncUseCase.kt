@@ -6,15 +6,15 @@ import aelsi2.natkschedule.data.time.TimeManager
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
-class DoBackgroundWorkUseCase(
-    private val cleanUpCache: CleanUpCacheUseCase,
+class DoBackgroundSyncUseCase(
+    private val cleanUpCache: CleanCacheUseCase,
     private val loadSchedule: LoadScheduleUseCase,
     private val settingsReader: SettingsReader,
     private val favoritesReader: FavoritesReader,
     private val timeManager: TimeManager,
 ) {
     suspend operator fun invoke() {
-        if (settingsReader.cleanCacheOnSyncEnabled.first()) {
+        if (settingsReader.cleanOldSchedulesEnabled.first()) {
             cleanUpCache()
         }
         if (settingsReader.backgroundSyncEnabled.first()) {

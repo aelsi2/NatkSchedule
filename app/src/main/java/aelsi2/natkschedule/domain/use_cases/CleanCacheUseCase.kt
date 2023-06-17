@@ -8,7 +8,7 @@ import aelsi2.natkschedule.data.time.TimeManager
 import aelsi2.natkschedule.model.ScheduleIdentifier
 import kotlinx.coroutines.flow.first
 
-class CleanUpCacheUseCase(
+class CleanCacheUseCase(
     private val localDays: WritableScheduleDayRepository,
     private val localAttributes: WritableScheduleAttributeRepository,
     private val settings: SettingsReader,
@@ -22,7 +22,7 @@ class CleanUpCacheUseCase(
     }
 
     private suspend fun cleanOldDays() {
-        val cleanCacheTimeDays = settings.keepScheduleForDays.first()
+        val cleanCacheTimeDays = settings.savedScheduleMaxAgeDays.first()
 
         localDays.deleteAllBefore(
             timeManager.currentCollegeLocalDateTime.minusDays(

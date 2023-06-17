@@ -1,5 +1,6 @@
 package aelsi2.natkschedule
 
+import aelsi2.natkschedule.data.background_work.backgroundWorkModule
 import aelsi2.natkschedule.data.room_database.roomDatabaseModule
 import aelsi2.natkschedule.data.network.networkModule
 import aelsi2.natkschedule.data.preferences.preferencesModule
@@ -8,7 +9,7 @@ import aelsi2.natkschedule.data.repositories.room_database.roomDatabaseReposModu
 import aelsi2.natkschedule.data.time.timeModule
 import aelsi2.natkschedule.domain.domainModule
 import aelsi2.natkschedule.domain.use_cases.DoStartupWorkUseCase
-import aelsi2.natkschedule.domain.use_cases.SetUpBackgroundWorkUseCase
+import aelsi2.natkschedule.domain.use_cases.SetUpBackgroundSyncUseCase
 import aelsi2.natkschedule.ui.viewModelsModule
 import android.app.Application
 import kotlinx.coroutines.MainScope
@@ -27,6 +28,7 @@ class ScheduleApplication : Application() {
                 preferencesModule,
                 natkDatabaseReposModule,
                 roomDatabaseReposModule,
+                backgroundWorkModule,
                 timeModule
             )
             modules(domainModule)
@@ -35,9 +37,9 @@ class ScheduleApplication : Application() {
 
         MainScope().launch {
             val doStartupWork: DoStartupWorkUseCase = koin.get()
-            val setupBackgroundWork: SetUpBackgroundWorkUseCase = koin.get()
+            val setupBackgroundSync: SetUpBackgroundSyncUseCase = koin.get()
             doStartupWork()
-            setupBackgroundWork()
+            setupBackgroundSync()
         }
     }
 }
