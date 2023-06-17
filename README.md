@@ -7,7 +7,7 @@
 
 
 ## Скачать
-[![Последний релиз на GitHub](https://img.shields.io/github/v/release/aelsi2/NatkSchedule?include_prereleases&logo=github&style=for-the-badge)](https://github.com/aelsi2/NatkSchedule/releases/download/latest/natk_schedule.apk)
+[![Последний релиз на GitHub](https://img.shields.io/github/v/release/aelsi2/NatkSchedule?include_prereleases&logo=github&style=for-the-badge)](https://github.com/aelsi2/NatkSchedule/releases/latest)
 
 ## Скриншоты
 <div>
