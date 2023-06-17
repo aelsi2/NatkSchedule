@@ -103,7 +103,7 @@
     <string name="setting_title_reset_main_schedule">Сбросить главное расписание</string>
     <string name="settings_category_offline">Оффлайн-просмотр</string>
     <string name="settings_category_background_sync">Фоновая синхронизация</string>
-    <string name="settings_note_background_sync">Вам может понадобиться дать приложению разрешение на автозапуск в настройках телефона, чтобы эта функция работала правильно.</string>
+    <string name="settings_note_background_sync">Вам может понадобиться дать приложению разрешение на автозапуск в настройках устройства, чтобы эта функция работала правильно.</string>
     <string name="settings_category_reset">Сброс</string>
     <string name="dialog_title_confirm_reset_settings">Сбросить настройки?</string>
     <string name="dialog_content_confirm_reset_settings">Вы уверены, что хотите сбросить настройки приложения и выставить значения по умолчанию?</string>

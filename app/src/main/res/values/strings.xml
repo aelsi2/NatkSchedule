@@ -101,7 +101,7 @@
     <string name="setting_title_reset_main_schedule">Reset main schedule</string>
     <string name="settings_category_offline">Offline viewing</string>
     <string name="settings_category_background_sync">Background sync</string>
-    <string name="settings_note_background_sync">It may be necessary to give the app permission to start automatically in your phone\'s settings for this to function properly.</string>
+    <string name="settings_note_background_sync">It may be necessary to give the app permission to start automatically in your device\'s settings for this to function properly.</string>
     <string name="settings_category_reset">Reset</string>
     <string name="dialog_title_confirm_reset_settings">Reset settings?</string>
     <string name="dialog_content_confirm_reset_settings">Are you sure you want to reset the application settings to their defaults?</string>
