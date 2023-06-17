@@ -4,11 +4,11 @@ import aelsi2.natkschedule.data.preferences.SettingsReader
 import kotlinx.coroutines.flow.first
 
 class DoStartupWorkUseCase(
-    private val cleanUpCache: CleanUpCacheUseCase,
+    private val cleanUpCache: CleanCacheUseCase,
     private val settingsReader: SettingsReader
 ) {
     suspend operator fun invoke() {
-        if (settingsReader.cleanCacheOnStartupEnabled.first()) {
+        if (settingsReader.cleanOldSchedulesEnabled.first()) {
             cleanUpCache()
         }
     }

@@ -77,30 +77,31 @@
     <string name="schedule_details_teacher">Teacher</string>
     <string name="schedule_details_group">Group</string>
     <string name="setting_title_save_main_schedule">Save main schedule</string>
-    <string name="setting_description_save_main_schedule">Whether to save the main schedule on your device</string>
+    <string name="setting_description_save_main_schedule">Whether to download the main schedule for offline viewing</string>
     <string name="setting_title_save_favorites">Save favorite schedules</string>
-    <string name="setting_description_save_favorites">Whether to save the favorite schedules on your device</string>
+    <string name="setting_description_save_favorites">Whether to download the favorite schedules for offline viewing</string>
+    <string name="setting_title_history_length_days">Schedule history length</string>
+    <string name="setting_description_history_length_days">How many past days should be kept saved</string>
+    <string name="setting_title_clear_saved_schedules">Delete saved schedules</string>
     <string name="setting_title_background_sync">Sync in background</string>
-    <string name="setting_description_background_sync">Whether to sync the locally saved schedules with the ones on the server when the app is not running</string>
+    <string name="setting_description_background_sync">Whether to update the downloaded schedules when the app is not running</string>
     <string name="setting_title_background_sync_interval">Sync interval</string>
-    <string name="setting_description_background_sync_interval">How often to sync the schedules in background</string>
-    <string name="setting_title_clean_cache_on_sync">Clean cache in background</string>
-    <string name="setting_description_clean_cache_on_sync">Whether to delete old schedule data during background sync</string>
-    <string name="setting_title_clean_cache_on_startup">Clean cache on startup</string>
-    <string name="setting_description_clean_cache_on_startup">Whether to delete old schedule data every time the app is started</string>
-    <string name="setting_title_keep_schedule_days">Keep schedule for</string>
-    <string name="setting_description_keep_schedule_days">How many past days should be kept saved</string>
+    <string name="setting_description_background_sync_interval">How often to perform background sync</string>
     <plurals name="setting_format_background_sync_interval">
         <item quantity="one">%1$d hour</item>
         <item quantity="other">%1$d hours</item>
     </plurals>
-    <plurals name="setting_format_keep_schedule_days">
+    <plurals name="setting_format_history_length">
         <item quantity="one">%1$d day</item>
         <item quantity="other">%1$d days</item>
     </plurals>
+    <string name="setting_format_history_length_unlimited">Unlimited</string>
     <string name="setting_title_reset_settings">Reset settings</string>
-    <string name="settings_category_caching">Schedule cache</string>
+    <string name="setting_title_clear_favorites">Clear favorites</string>
+    <string name="setting_title_reset_main_schedule">Reset main schedule</string>
+    <string name="settings_category_offline">Offline viewing</string>
     <string name="settings_category_background_sync">Background sync</string>
+    <string name="settings_note_background_sync">It may be necessary to give the app permission to start automatically in your phone\'s settings for this to function properly.</string>
     <string name="settings_category_reset">Reset</string>
     <string name="dialog_title_confirm_reset_settings">Reset settings?</string>
     <string name="dialog_content_confirm_reset_settings">Are you sure you want to reset the application settings to their defaults?</string>
@@ -108,4 +109,11 @@
     <string name="dialog_content_confirm_set_main_schedule">Are you sure you want to set this schedule as your main schedule?</string>
     <string name="dialog_title_confirm_remove_from_favorites">Remove from favorites?</string>
     <string name="dialog_content_confirm_remove_from_favorites">Are you sure you want to remove this schedule from favorites?</string>
+    <string name="dialog_title_confirm_clear_saved_schedules">Delete downloaded schedules?</string>
+    <string name="dialog_content_confirm_clear_saved_schedules">Are you sure you want to delete all downloaded schedules?</string>
+    <string name="dialog_title_confirm_clear_favorites">Clear favorite schedules?</string>
+    <string name="dialog_content_confirm_clear_favorites">Are you sure you want to remove all schedules from favorites?</string>
+    <string name="dialog_title_confirm_reset_main_schedule">Reset main schedule?</string>
+    <string name="dialog_content_confirm_reset_main_schedule">Are you sure you want to reset your main schedule?</string>
+    <string name="description_settings_note">Note</string>
 </resources>

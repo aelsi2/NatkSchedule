@@ -78,4 +78,8 @@ class RoomDatabaseScheduleDayRepository(
     override suspend fun deleteAllExcept(schedulesToKeep: List<ScheduleIdentifier>) {
         scheduleDao.deleteAllExcept(schedulesToKeep)
     }
+
+    override suspend fun deleteAll() {
+        scheduleDao.deleteAll()
+    }
 }

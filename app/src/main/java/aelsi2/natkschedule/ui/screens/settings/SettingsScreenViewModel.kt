@@ -1,16 +1,23 @@
 package aelsi2.natkschedule.ui.screens.settings
 
+import aelsi2.natkschedule.data.preferences.FavoritesManager
 import aelsi2.natkschedule.data.preferences.SettingsManager
+import aelsi2.natkschedule.domain.use_cases.CleanCacheUseCase
+import aelsi2.natkschedule.domain.use_cases.ClearSavedSchedulesUseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SettingsScreenViewModel(
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
+    private val favoritesManager: FavoritesManager,
+    private val clearSavedSchedulesUseCase: ClearSavedSchedulesUseCase,
+    private val cleanCache: CleanCacheUseCase
 ) : ViewModel() {
     val saveMainScheduleEnabled: StateFlow<Boolean> =
         settingsManager.saveMainScheduleEnabled.stateInViewModelScope(false)
@@ -24,22 +31,30 @@ class SettingsScreenViewModel(
     val backgroundSyncIntervalHours: StateFlow<Int> =
         settingsManager.backgroundSyncIntervalHours.stateInViewModelScope(0)
 
-    val cleanCacheOnSyncEnabled: StateFlow<Boolean> =
-        settingsManager.cleanCacheOnSyncEnabled.stateInViewModelScope(false)
+    val cleanOldSchedulesEnabled: StateFlow<Boolean> =
+        settingsManager.cleanOldSchedulesEnabled.stateInViewModelScope(false)
 
-    val cleanCacheOnStartupEnabled: StateFlow<Boolean> =
-        settingsManager.cleanCacheOnStartupEnabled.stateInViewModelScope(false)
+    val savedScheduleMaxAgeDays: StateFlow<Int> =
+        settingsManager.savedScheduleMaxAgeDays.stateInViewModelScope(0)
 
-    val keepScheduleForDays: StateFlow<Int> =
-        settingsManager.keepScheduleForDays.stateInViewModelScope(0)
+    val loaded: StateFlow<Boolean>
+        get() = _loaded
+    private val _loaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    fun setCacheMainScheduleEnabled(value: Boolean) {
+    init {
+        viewModelScope.launch {
+            settingsManager.waitForSettings()
+            _loaded.emit(true)
+        }
+    }
+
+    fun setSaveMainScheduleEnabled(value: Boolean) {
         viewModelScope.launch {
             settingsManager.setSaveMainScheduleEnabled(value)
         }
     }
 
-    fun setCacheFavoriteSchedulesEnabled(value: Boolean) {
+    fun setSaveFavoriteSchedulesEnabled(value: Boolean) {
         viewModelScope.launch {
             println(value)
             settingsManager.setSaveFavoritesEnabled(value)
@@ -48,7 +63,7 @@ class SettingsScreenViewModel(
 
     fun setBackgroundSyncEnabled(value: Boolean) {
         viewModelScope.launch {
-            settingsManager.setCacheBackgroundSyncEnabled(value)
+            settingsManager.setBackgroundSyncEnabled(value)
         }
     }
 
@@ -58,33 +73,46 @@ class SettingsScreenViewModel(
         }
     }
 
-    fun setCleanCacheOnStartupEnabled(value: Boolean) {
+    fun setCleanOldSchedulesEnabled(value: Boolean) {
         viewModelScope.launch {
-            settingsManager.setCleanCacheOnStartupEnabled(value)
+            settingsManager.setCleanOldSchedulesEnabled(value)
         }
     }
 
-    fun setCleanCacheOnSyncEnabled(value: Boolean) {
+    fun setSavedScheduleMaxAgeDays(value: Int) {
         viewModelScope.launch {
-            settingsManager.setCleanCacheOnSyncEnabled(value)
+            settingsManager.setSavedScheduleMaxAgeDays(value)
         }
     }
 
-    fun setKeepScheduleForDays(value: Int) {
-        viewModelScope.launch {
-            settingsManager.setKeepScheduleForDays(value)
-        }
-    }
-
-    fun resetAllSettings() {
+    fun resetSettings() {
         viewModelScope.launch {
             settingsManager.resetAll()
         }
     }
 
+    fun clearFavorites() {
+        viewModelScope.launch {
+            favoritesManager.clearFavorites()
+        }
+    }
+
+    fun resetMainSchedule() {
+        viewModelScope.launch {
+            favoritesManager.resetMainScheduleId()
+        }
+    }
+
+    fun clearSavedSchedules() {
+        viewModelScope.launch {
+            clearSavedSchedulesUseCase()
+            cleanCache()
+        }
+    }
+
     private fun <T> Flow<T>.stateInViewModelScope(initialValue: T): StateFlow<T> = stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Eagerly,
         initialValue
     )
 }

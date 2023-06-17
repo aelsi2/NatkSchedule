@@ -7,7 +7,7 @@ interface SettingsReader {
     val saveFavoritesEnabled : Flow<Boolean>
     val backgroundSyncEnabled : Flow<Boolean>
     val backgroundSyncIntervalHours : Flow<Int>
-    val cleanCacheOnStartupEnabled : Flow<Boolean>
-    val cleanCacheOnSyncEnabled : Flow<Boolean>
-    val keepScheduleForDays : Flow<Int>
+    val cleanOldSchedulesEnabled: Flow<Boolean>
+    val savedScheduleMaxAgeDays : Flow<Int>
+    suspend fun waitForSettings()
 }

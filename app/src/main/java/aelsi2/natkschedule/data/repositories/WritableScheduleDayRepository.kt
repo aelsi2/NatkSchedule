@@ -11,4 +11,5 @@ interface WritableScheduleDayRepository : ScheduleDayRepository {
         days: List<ScheduleDay>
     )
     suspend fun deleteAllExcept(schedulesToKeep: List<ScheduleIdentifier>)
+    suspend fun deleteAll()
 }

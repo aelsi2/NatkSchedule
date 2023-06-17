@@ -46,7 +46,7 @@ fun ScheduleApp(
                 wasOnline = true
                 appState.showMessage(internetRestoredMessage)
             }
-        } else {
+        } else if (wasOnline) {
             wasOnline = false
             appState.showPersistentMessage(noInternetMessage)
         }

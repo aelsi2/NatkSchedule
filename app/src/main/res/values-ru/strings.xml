@@ -77,32 +77,33 @@
     <string name="schedule_details_teacher">Преподаватель</string>
     <string name="schedule_details_group">Группа</string>
     <string name="setting_title_save_main_schedule">Сохранять главное расписание</string>
-    <string name="setting_description_save_main_schedule">Следует ли сохранять главное расписание на вашем устройстве</string>
+    <string name="setting_description_save_main_schedule">Следует ли скачивать главное расписание для оффлайн-просмотра</string>
     <string name="setting_title_save_favorites">Сохранять избранные расписания</string>
-    <string name="setting_description_save_favorites">Следует ли сохранять избранные расписания на вашем устройстве</string>
+    <string name="setting_description_save_favorites">Следует ли скачивать избранные расписания для оффлайн-просмотра</string>
+    <string name="setting_title_history_length_days">Длина истории расписаний</string>
+    <string name="setting_description_history_length_days">Для скольки прошедших дней следует хранить скачанные расписания</string>
+    <string name="setting_title_clear_saved_schedules">Удалить сохраненные расписания</string>
     <string name="setting_title_background_sync">Фоновая синхронизация</string>
-    <string name="setting_description_background_sync">Следует ли синхронизовывать локально сохраненные расписания с сервером, когда приложение не запущено</string>
+    <string name="setting_description_background_sync">Следует ли обновлять скачанные расписания, когда приложение не запущено.</string>
     <string name="setting_title_background_sync_interval">Интервал синхронизации</string>
-    <string name="setting_description_background_sync_interval">Как часто следует проводить фоновую синхронизацию</string>
-    <string name="setting_title_clean_cache_on_sync">Фоновая очистка кэша</string>
-    <string name="setting_description_clean_cache_on_sync">Следует ли удалять старые расписания во время фоновой синхронизации</string>
-    <string name="setting_title_clean_cache_on_startup">Очистка кэша при запуске</string>
-    <string name="setting_description_clean_cache_on_startup">Следует ли удалять старые расписания при запуске приложения</string>
-    <string name="setting_title_keep_schedule_days">Время хранения расписания</string>
-    <string name="setting_description_keep_schedule_days">Сколько прошедших дней следует хранить</string>
+    <string name="setting_description_background_sync_interval">Как часто следует выполнять фоновую синхронизацию</string>
     <plurals name="setting_format_background_sync_interval">
         <item quantity="one">%1$d час</item>
         <item quantity="few">%1$d часа</item>
         <item quantity="many">%1$d часов</item>
     </plurals>
-    <plurals name="setting_format_keep_schedule_days">
+    <plurals name="setting_format_history_length">
         <item quantity="one">%1$d день</item>
         <item quantity="few">%1$d дня</item>
         <item quantity="many">%1$d дней</item>
     </plurals>
+    <string name="setting_format_history_length_unlimited">Не ограничена</string>
     <string name="setting_title_reset_settings">Сбросить настройки</string>
-    <string name="settings_category_caching">Кэширование расписаний</string>
+    <string name="setting_title_clear_favorites">Очистить избранные</string>
+    <string name="setting_title_reset_main_schedule">Сбросить главное расписание</string>
+    <string name="settings_category_offline">Оффлайн-просмотр</string>
     <string name="settings_category_background_sync">Фоновая синхронизация</string>
+    <string name="settings_note_background_sync">Вам может понадобиться дать приложению разрешение на автозапуск в настройках телефона, чтобы эта функция работала правильно.</string>
     <string name="settings_category_reset">Сброс</string>
     <string name="dialog_title_confirm_reset_settings">Сбросить настройки?</string>
     <string name="dialog_content_confirm_reset_settings">Вы уверены, что хотите сбросить настройки приложения и выставить значения по умолчанию?</string>
@@ -110,4 +111,11 @@
     <string name="dialog_content_confirm_set_main_schedule">Вы уверены, что хотите задать это расписание как главное?</string>
     <string name="dialog_title_confirm_remove_from_favorites">Убрать из избранных?</string>
     <string name="dialog_content_confirm_remove_from_favorites">Вы уверены, что хотите убрать это расписание из избранных?</string>
+    <string name="dialog_title_confirm_clear_saved_schedules">Удалить сохраненные расписания?</string>
+    <string name="dialog_content_confirm_clear_saved_schedules">Вы уверены, что хотите удалить все сохраненные для оффлайн-просмотра расписания?</string>
+    <string name="dialog_title_confirm_clear_favorites">Очистить избранные?</string>
+    <string name="dialog_content_confirm_clear_favorites">Вы уверены, что хотите очистить список избранных расписаний?</string>
+    <string name="dialog_title_confirm_reset_main_schedule">Сбросить главное расписание?</string>
+    <string name="dialog_content_confirm_reset_main_schedule">Вы уверены, что хотите сбросить главное расписание?</string>
+    <string name="description_settings_note">Примечание</string>
 </resources>
