@@ -25,6 +25,7 @@
     <string name="lecture_info_attribute_separator">\ •\ </string>
     <string name="lecture_info_subgroup">%1$d</string>
     <string name="lecture_details_group_subgroup">%1$s (%2$d подгруппа)</string>
+    <string name="lecture_details_index">%1$d пара</string>
     <string name="group_info">%1$d курс • %2$s</string>
     <string name="discipline_list_first_item">%1$s</string>
     <string name="discipline_list_item">;\n%1$s</string>

@@ -8,6 +8,7 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.components.InfoDialog
 import aelsi2.natkschedule.ui.components.InfoDialogRow
 import aelsi2.natkschedule.ui.components.InfoDialogState
+import aelsi2.natkschedule.ui.lectureIndexText
 import aelsi2.natkschedule.ui.lectureStateTextFull
 import aelsi2.natkschedule.ui.lectureStateTimeFromStartText
 import aelsi2.natkschedule.ui.lectureStateTimeToEndText
@@ -137,6 +138,12 @@ private fun LectureInfoDialogDetailsPanel(
             InfoDialogRow(
                 mainText = lectureTimeText(lecture),
                 leadingIconResource = R.drawable.time_period,
+            )
+        }
+        if (lecture.index != null) {
+            InfoDialogRow(
+                mainText = lectureIndexText(lecture.index),
+                leadingIconResource = R.drawable.numbers,
             )
         }
         for (lectureData in lecture.data) {

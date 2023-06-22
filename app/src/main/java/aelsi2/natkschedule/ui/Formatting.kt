@@ -19,6 +19,11 @@ import java.util.Locale
 import kotlin.math.round
 
 @Composable
+fun lectureIndexText(
+    index: Int
+): String = stringResource(R.string.lecture_details_index, index)
+
+@Composable
 fun lectureIndexDisciplineText(
     index: Int?,
     disciplineName: String?
