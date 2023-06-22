@@ -4,6 +4,7 @@ import aelsi2.natkschedule.domain.model.LectureState
 import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.ScheduleDay
 import aelsi2.natkschedule.ui.dayOfWeekText
+import aelsi2.natkschedule.ui.lectureIndexDisciplineText
 import aelsi2.natkschedule.ui.lectureInfoText
 import aelsi2.natkschedule.ui.lectureStateTextSimple
 import aelsi2.natkschedule.ui.lectureStateTimeToEndText
@@ -52,7 +53,8 @@ fun LectureList(
                 key = { index, _ -> LectureCardKey(scheduleDay.date, index) }) { _, lecture ->
                 val state = getLectureState(scheduleDay, lecture).collectAsState().value
                 LectureCard(
-                    titleText = lecture.discipline.name,
+                    titleText = lectureIndexDisciplineText(lecture.index, lecture.discipline.name)
+                        ?: "",
                     infoText = lectureInfoText(
                         lecture = lecture,
                         displayTeacher = displayTeacher,

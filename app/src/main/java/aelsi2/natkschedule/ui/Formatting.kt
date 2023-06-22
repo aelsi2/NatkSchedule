@@ -19,6 +19,21 @@ import java.util.Locale
 import kotlin.math.round
 
 @Composable
+fun lectureIndexDisciplineText(
+    index: Int?,
+    disciplineName: String?
+): String? = when {
+    index != null && disciplineName != null -> stringResource(
+        R.string.lecture_info_format_index_discipline,
+        index,
+        disciplineName
+    )
+    index == null && disciplineName != null -> disciplineName
+    index != null && disciplineName == null -> index.toString()
+    else -> null
+}
+
+@Composable
 fun dayOfWeekText(
     date: LocalDate
 ): String = remember(date) {

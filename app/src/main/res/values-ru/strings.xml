@@ -4,7 +4,7 @@
     <string name="home_tab_name">Главная</string>
     <string name="favorites_tab_name">Избранное</string>
     <string name="groups_tab_name">Группы</string>
-    <string name="teachers_tab_name">Преподы</string>
+    <string name="teachers_tab_name">Учителя</string>
     <string name="classrooms_tab_name">Аудитории</string>
     <string name="lecture_state_next">Следующее</string>
     <string name="lecture_state_not_started">Не началось</string>
@@ -20,6 +20,7 @@
     <string name="lecture_time_from_break_start">Прошло: %1$s</string>
     <string name="lecture_time_from_state_start">Прошло: %1$s</string>
     <string name="lecture_time_to_state_end">До конца: %1$s</string>
+    <string name="lecture_info_format_index_discipline">%1$d • %2$s</string>
     <string name="lecture_info_time">%1$s – %2$s</string>
     <string name="lecture_info_attribute_separator">\ •\ </string>
     <string name="lecture_info_subgroup">%1$d</string>

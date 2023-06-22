@@ -20,6 +20,7 @@
     <string name="lecture_time_from_break_start">Going for: %1$s</string>
     <string name="lecture_time_from_state_start">Going for: %1$s</string>
     <string name="lecture_time_to_state_end">Ends in: %1$s</string>
+    <string name="lecture_info_format_index_discipline">%1$d • %2$s</string>
     <string name="lecture_info_time">%1$s – %2$s</string>
     <string name="lecture_info_attribute_separator">\ •\ </string>
     <string name="lecture_info_subgroup">%1$d</string>

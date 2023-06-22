@@ -180,7 +180,7 @@ fun LectureCardPreview() {
             ) {
                 val highlighted = LectureCardColors.Highlighted.remember()
                 LectureCard(
-                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    titleText = "1 • МДК.01.03 Разработка мобильных приложений",
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
@@ -193,7 +193,7 @@ fun LectureCardPreview() {
                     },
                 )
                 LectureCard(
-                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    titleText = "1 • МДК.01.03 Разработка мобильных приложений",
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
@@ -206,7 +206,7 @@ fun LectureCardPreview() {
                     },
                 )
                 LectureCard(
-                    titleText = "МДК.01.03 Разработка мобильных приложений",
+                    titleText = "1 • МДК.01.03 Разработка мобильных приложений",
                     infoText = "16:20 – 18:00\n№366 • Климова И. С.",
                     stateText = "Идет",
                     stateTimerText = "До перерыва: 40:31",
