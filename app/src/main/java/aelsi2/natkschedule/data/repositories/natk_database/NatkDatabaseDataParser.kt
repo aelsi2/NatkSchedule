@@ -42,6 +42,9 @@ class NatkDatabaseDataParser {
         rawDate: String?,
         lectures: List<Lecture>
     ): ScheduleDay? {
+        if (lectures.isEmpty()) {
+            return null
+        }
         val date = rawDate.toLocalDateNoExcept() ?: return null
         return ScheduleDay(
             date,
@@ -55,6 +58,9 @@ class NatkDatabaseDataParser {
         rawDisciplineName: String?,
         lectureData: List<LectureData>
     ): Lecture? {
+        if (rawDisciplineName == DISCIPLINE_NAME_SKIP) {
+            return null
+        }
         if (lectureData.isEmpty()) {
             return null
         }
@@ -226,5 +232,7 @@ class NatkDatabaseDataParser {
             "\\s*спортивный\\s+зал\\s*".toRegex(option = RegexOption.IGNORE_CASE)
         private const val CLASSROOM_GYM_SHORT_NAME = "Спортзал"
         private const val CLASSROOM_REMOTE_SHORT_NAME = "Дистант"
+        private const val DISCIPLINE_NAME_SKIP: String = "информация отсутствует"
+        private const val DISCIPLINE_NAME_CANCELED: String = "отмена"
     }
 }

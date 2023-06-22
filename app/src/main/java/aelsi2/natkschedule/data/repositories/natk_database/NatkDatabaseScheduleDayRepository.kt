@@ -102,7 +102,7 @@ class NatkDatabaseScheduleDayRepository(
                 ScheduleType.Classroom -> "`auditoria` = ?"
             }
         } and ? <= data and data <= ?
-            ORDER BY `data` ASC, `vremya` ASC, `disciplina` ASC, `podgruppa` ASC
+            ORDER BY `data` ASC, `vremya` ASC, `para` ASC, `podgruppa` ASC, `disciplina` ASC
         """
     ).apply {
         setString(1, identifier.stringId)
