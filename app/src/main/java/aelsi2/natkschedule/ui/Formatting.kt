@@ -12,6 +12,7 @@ import java.text.DecimalFormat
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
@@ -19,27 +20,33 @@ import java.util.Locale
 import kotlin.math.round
 
 @Composable
-fun lectureIndexText(
+fun lectureInfoDialogTitleString(
+    disciplineName: String?
+): String = disciplineName ?: stringResource(R.string.lecture_details_placeholder_title)
+
+@Composable
+fun lectureIndexString(
     index: Int
 ): String = stringResource(R.string.lecture_details_index, index)
 
 @Composable
-fun lectureIndexDisciplineText(
+fun lectureIndexDisciplineString(
     index: Int?,
     disciplineName: String?
-): String? = when {
+): String = when {
     index != null && disciplineName != null -> stringResource(
         R.string.lecture_info_format_index_discipline,
         index,
         disciplineName
     )
-    index == null && disciplineName != null -> disciplineName
-    index != null && disciplineName == null -> index.toString()
-    else -> null
+
+    index == null && disciplineName != null -> stringResource(R.string.lecture_info_format_discipline, disciplineName)
+    index != null && disciplineName == null -> stringResource(R.string.lecture_info_format_index, index.toString())
+    else -> ""
 }
 
 @Composable
-fun dayOfWeekText(
+fun dayOfWeekString(
     date: LocalDate
 ): String = remember(date) {
     DayOfWeek.from(date)
@@ -47,7 +54,7 @@ fun dayOfWeekText(
 }
 
 @Composable
-fun mediumDateText(
+fun mediumDateString(
     date: LocalDate
 ): String = remember(date) {
     date.format(
@@ -58,7 +65,7 @@ fun mediumDateText(
 }
 
 @Composable
-fun shortDateText(
+fun shortDateString(
     date: LocalDate
 ): String = remember(date) {
     date.format(
@@ -69,7 +76,7 @@ fun shortDateText(
 }
 
 @Composable
-fun lectureStateTextSimple(
+fun simpleLectureStateString(
     lectureState: LectureState
 ): String? = when (lectureState) {
     is LectureState.OngoingPreBreak -> stringResource(R.string.lecture_state_ongoing)
@@ -79,7 +86,7 @@ fun lectureStateTextSimple(
 }
 
 @Composable
-fun lectureStateTextFull(
+fun fullLectureStateString(
     lectureState: LectureState
 ): String = when (lectureState) {
     is LectureState.NotStarted -> stringResource(R.string.lecture_state_not_started)
@@ -92,7 +99,7 @@ fun lectureStateTextFull(
 }
 
 @Composable
-fun lectureStateTimeFromStartText(lectureState: LectureState.HasTimeFromStart): String {
+fun lectureStateTimeFromStartString(lectureState: LectureState.HasTimeFromStart): String {
     return stringResource(
         when (lectureState) {
             is LectureState.OngoingPreBreak -> R.string.lecture_time_from_start
@@ -105,7 +112,7 @@ fun lectureStateTimeFromStartText(lectureState: LectureState.HasTimeFromStart): 
 }
 
 @Composable
-fun lectureStateTimeToEndText(lectureState: LectureState.HasTimeToEnd): String {
+fun lectureStateTimeToEndString(lectureState: LectureState.HasTimeToEnd): String {
     return stringResource(
         when (lectureState) {
             is LectureState.OngoingPreBreak -> R.string.lecture_time_to_break
@@ -119,7 +126,7 @@ fun lectureStateTimeToEndText(lectureState: LectureState.HasTimeToEnd): String {
 }
 
 @Composable
-fun lectureInfoText(
+fun lectureInfoString(
     lecture: Lecture,
     displayTeacher: Boolean = true,
     displayClassroom: Boolean = true,
@@ -135,7 +142,7 @@ fun lectureInfoText(
         displayGroup,
         displaySubgroup
     ) {
-        makeLectureInfoText(
+        makeLectureInfoString(
             resources,
             lecture,
             displayTeacher,
@@ -147,25 +154,41 @@ fun lectureInfoText(
 }
 
 @Composable
-fun lectureTimeText(
-    lecture: Lecture
+fun lectureTimeString(
+    startTime: LocalTime?,
+    endTime: LocalTime?
 ): String {
     val resources = LocalContext.current.resources
-    return remember(resources, lecture) {
-        makeLectureTimeText(resources, lecture)
+    return remember(startTime, endTime) {
+        makeLectureTimeString(startTime, endTime, resources)
     }
 }
 
-private fun makeLectureTimeText(
-    resources: Resources,
-    lecture: Lecture,
-): String = resources.getString(
-    R.string.lecture_info_time,
-    lecture.startTime.toString(),
-    lecture.endTime.toString()
-)
+private fun makeLectureTimeString(
+    startTime: LocalTime?,
+    endTime: LocalTime?,
+    resources: Resources
+): String = when {
+    startTime != null && endTime != null -> resources.getString(
+        R.string.lecture_info_start_end_time,
+        startTime.toString(),
+        endTime.toString()
+    )
 
-private fun makeLectureInfoText(
+    startTime != null -> resources.getString(
+        R.string.lecture_info_start_time,
+        startTime.toString()
+    )
+
+    endTime != null -> resources.getString(
+        R.string.lecture_info_end_time,
+        endTime.toString()
+    )
+
+    else -> ""
+}
+
+private fun makeLectureInfoString(
     resources: Resources,
     lecture: Lecture,
     displayTeacher: Boolean,
@@ -175,9 +198,9 @@ private fun makeLectureInfoText(
 ): String {
     val infoSb = StringBuilder()
     val attributeSeparator = resources.getString(R.string.lecture_info_attribute_separator)
-    if (lecture.startTime != null && lecture.endTime != null) {
+    if (lecture.startTime != null || lecture.endTime != null) {
         infoSb.append(
-            makeLectureTimeText(resources, lecture)
+            makeLectureTimeString(lecture.startTime, lecture.endTime, resources)
         )
     }
     lecture.data.forEach {
@@ -227,13 +250,16 @@ fun Duration.toHumanReadableString(): String {
     val hours = timePart % 24
     timePart = (timePart - hours) / 24
     val days = timePart
-    return days.toDurationPartWithSeparator(isFirst = true) +
-            hours.toDurationPartWithSeparator(isFirst = days == 0L) +
-            minutes.toDurationPartWithSeparator(isFirst = days + hours == 0L, displayZero = true) +
-            seconds.toDurationPartWithSeparator(isFirst = false, displayZero = true)
+    return days.toDurationPartWithSeparatorString(isFirst = true) +
+            hours.toDurationPartWithSeparatorString(isFirst = days == 0L) +
+            minutes.toDurationPartWithSeparatorString(
+                isFirst = days + hours == 0L,
+                displayZero = true
+            ) +
+            seconds.toDurationPartWithSeparatorString(isFirst = false, displayZero = true)
 }
 
-private fun Long.toDurationPartWithSeparator(
+private fun Long.toDurationPartWithSeparatorString(
     isFirst: Boolean,
     displayZero: Boolean = false
 ): String {

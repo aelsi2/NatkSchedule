@@ -1,6 +1,7 @@
 package aelsi2.natkschedule
 
 import aelsi2.natkschedule.data.background_work.backgroundWorkModule
+import aelsi2.natkschedule.data.natk_database.natkDatabaseModule
 import aelsi2.natkschedule.data.room_database.roomDatabaseModule
 import aelsi2.natkschedule.data.network.networkModule
 import aelsi2.natkschedule.data.preferences.preferencesModule
@@ -24,10 +25,11 @@ class ScheduleApplication : Application() {
             androidContext(this@ScheduleApplication)
             modules(
                 roomDatabaseModule,
-                networkModule,
-                preferencesModule,
+                natkDatabaseModule,
                 natkDatabaseReposModule,
                 roomDatabaseReposModule,
+                preferencesModule,
+                networkModule,
                 backgroundWorkModule,
                 timeModule
             )

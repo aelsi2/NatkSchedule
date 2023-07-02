@@ -8,12 +8,13 @@ import aelsi2.natkschedule.model.ScheduleIdentifier
 import aelsi2.natkschedule.ui.components.InfoDialog
 import aelsi2.natkschedule.ui.components.InfoDialogRow
 import aelsi2.natkschedule.ui.components.InfoDialogState
-import aelsi2.natkschedule.ui.lectureIndexText
-import aelsi2.natkschedule.ui.lectureStateTextFull
-import aelsi2.natkschedule.ui.lectureStateTimeFromStartText
-import aelsi2.natkschedule.ui.lectureStateTimeToEndText
-import aelsi2.natkschedule.ui.lectureTimeText
-import aelsi2.natkschedule.ui.shortDateText
+import aelsi2.natkschedule.ui.lectureIndexString
+import aelsi2.natkschedule.ui.fullLectureStateString
+import aelsi2.natkschedule.ui.lectureInfoDialogTitleString
+import aelsi2.natkschedule.ui.lectureStateTimeFromStartString
+import aelsi2.natkschedule.ui.lectureStateTimeToEndString
+import aelsi2.natkschedule.ui.lectureTimeString
+import aelsi2.natkschedule.ui.shortDateString
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,7 +64,9 @@ fun LectureInfoDialog(
     onScheduleClick: (identifier: ScheduleIdentifier) -> Unit = {}
 ) {
     InfoDialog(
-        titleText = { it.lecture.discipline.name },
+        titleText = {
+            lectureInfoDialogTitleString(it.lecture.discipline?.name)
+        },
         onDismissRequest = onDismissRequest,
         state = state,
         modifier = modifier
@@ -94,7 +97,7 @@ private fun LectureInfoDialogStatePanel(
         modifier = modifier.padding(horizontal = 16.dp)
     ) {
         Text(
-            text = lectureStateTextFull(lectureState),
+            text = fullLectureStateString(lectureState),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.run {
                 when (lectureState) {
@@ -107,14 +110,14 @@ private fun LectureInfoDialogStatePanel(
         )
         if (lectureState is LectureState.HasTimeFromStart) {
             Text(
-                text = lectureStateTimeFromStartText(lectureState),
+                text = lectureStateTimeFromStartString(lectureState),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         if (lectureState is LectureState.HasTimeToEnd) {
             Text(
-                text = lectureStateTimeToEndText(lectureState),
+                text = lectureStateTimeToEndString(lectureState),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -131,18 +134,18 @@ private fun LectureInfoDialogDetailsPanel(
 ) {
     Column(modifier = modifier) {
         InfoDialogRow(
-            mainText = shortDateText(scheduleDay.date),
+            mainText = shortDateString(scheduleDay.date),
             leadingIconResource = R.drawable.event_outlined,
         )
-        if (lecture.startTime != null && lecture.endTime != null) {
+        if (lecture.startTime != null || lecture.endTime != null) {
             InfoDialogRow(
-                mainText = lectureTimeText(lecture),
+                mainText = lectureTimeString(lecture.startTime, lecture.endTime),
                 leadingIconResource = R.drawable.time_period,
             )
         }
         if (lecture.index != null) {
             InfoDialogRow(
-                mainText = lectureIndexText(lecture.index),
+                mainText = lectureIndexString(lecture.index),
                 leadingIconResource = R.drawable.numbers,
             )
         }

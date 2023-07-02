@@ -1,6 +1,6 @@
 package aelsi2.natkschedule.test.repositories.natk_database
 
-import aelsi2.natkschedule.data.repositories.natk_database.NatkDatabaseDataParser
+import aelsi2.natkschedule.data.natk_database.NatkDatabaseDataParser
 import aelsi2.natkschedule.model.Classroom
 import aelsi2.natkschedule.model.Teacher
 import org.junit.Assert

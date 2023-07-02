@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data.repositories.natk_database
+package aelsi2.natkschedule.data.natk_database
 
 import aelsi2.natkschedule.BuildConfig
 import android.util.Log

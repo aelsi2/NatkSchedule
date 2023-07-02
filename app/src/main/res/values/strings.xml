@@ -21,9 +21,14 @@
     <string name="lecture_time_from_state_start">Going for: %1$s</string>
     <string name="lecture_time_to_state_end">Ends in: %1$s</string>
     <string name="lecture_info_format_index_discipline">%1$d • %2$s</string>
-    <string name="lecture_info_time">%1$s – %2$s</string>
+    <string name="lecture_info_format_index">%1$d</string>
+    <string name="lecture_info_format_discipline">%1$s</string>
+    <string name="lecture_info_start_end_time">%1$s – %2$s</string>
+    <string name="lecture_info_start_time">%1$s</string>
+    <string name="lecture_info_end_time">%1$s</string>
     <string name="lecture_info_attribute_separator">\ •\ </string>
     <string name="lecture_info_subgroup">%1$d</string>
+    <string name="lecture_details_placeholder_title">Lecture</string>
     <string name="lecture_details_group_subgroup">%1$s (subgroup %2$d)</string>
     <string name="lecture_details_index">Lecture %1$d</string>
     <string name="group_info">Year %1$d • %2$s</string>

@@ -1,4 +1,4 @@
-package aelsi2.natkschedule.data.repositories.natk_database
+package aelsi2.natkschedule.data.natk_database
 
 import aelsi2.natkschedule.model.*
 import java.time.LocalDate
@@ -64,7 +64,7 @@ class NatkDatabaseDataParser {
         if (lectureData.isEmpty()) {
             return null
         }
-        val discipline = parseDiscipline(rawDisciplineName) ?: return null
+        val discipline = parseDiscipline(rawDisciplineName)
         val index = rawIndex.nonPositiveToNull()
         val (startTime, endTime) = parseStartEndTime(rawTime)
         val breakStartTime = getBreakStartTime(startTime, endTime)

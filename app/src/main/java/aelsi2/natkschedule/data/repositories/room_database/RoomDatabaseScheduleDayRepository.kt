@@ -45,9 +45,11 @@ class RoomDatabaseScheduleDayRepository(
                 ScheduleDayEntity.fromDay(day, scheduleIdentifier)
             ))
             day.lectures.forEach { lecture ->
-                disciplineDao.putDiscipline(
-                    DisciplineEntity.fromDiscipline(lecture.discipline)
-                )
+                if (lecture.discipline != null) {
+                    disciplineDao.putDiscipline(
+                        DisciplineEntity.fromDiscipline(lecture.discipline)
+                    )
+                }
                 val lectureEntity = scheduleDao.getLecture(scheduleDao.putLecture(
                     LectureEntity.fromLecture(lecture, dayEntity.scheduleDayId)
                 ))

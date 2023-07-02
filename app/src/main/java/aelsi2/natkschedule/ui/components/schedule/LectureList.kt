@@ -3,12 +3,12 @@ package aelsi2.natkschedule.ui.components.schedule
 import aelsi2.natkschedule.domain.model.LectureState
 import aelsi2.natkschedule.model.Lecture
 import aelsi2.natkschedule.model.ScheduleDay
-import aelsi2.natkschedule.ui.dayOfWeekText
-import aelsi2.natkschedule.ui.lectureIndexDisciplineText
-import aelsi2.natkschedule.ui.lectureInfoText
-import aelsi2.natkschedule.ui.lectureStateTextSimple
-import aelsi2.natkschedule.ui.lectureStateTimeToEndText
-import aelsi2.natkschedule.ui.mediumDateText
+import aelsi2.natkschedule.ui.dayOfWeekString
+import aelsi2.natkschedule.ui.lectureIndexDisciplineString
+import aelsi2.natkschedule.ui.lectureInfoString
+import aelsi2.natkschedule.ui.simpleLectureStateString
+import aelsi2.natkschedule.ui.lectureStateTimeToEndString
+import aelsi2.natkschedule.ui.mediumDateString
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -44,8 +44,8 @@ fun LectureList(
         for (scheduleDay in scheduleDays) {
             item(key = DateDividerKey(scheduleDay.date)) {
                 DateDivider(
-                    dayOfWeekText = dayOfWeekText(scheduleDay.date),
-                    dateText = mediumDateText(scheduleDay.date)
+                    dayOfWeekText = dayOfWeekString(scheduleDay.date),
+                    dateText = mediumDateString(scheduleDay.date)
                 )
             }
             itemsIndexed(
@@ -53,9 +53,8 @@ fun LectureList(
                 key = { index, _ -> LectureCardKey(scheduleDay.date, index) }) { _, lecture ->
                 val state = getLectureState(scheduleDay, lecture).collectAsState().value
                 LectureCard(
-                    titleText = lectureIndexDisciplineText(lecture.index, lecture.discipline.name)
-                        ?: "",
-                    infoText = lectureInfoText(
+                    titleText = lectureIndexDisciplineString(lecture.index, lecture.discipline?.name),
+                    infoText = lectureInfoString(
                         lecture = lecture,
                         displayTeacher = displayTeacher,
                         displayClassroom = displayClassroom,
@@ -63,9 +62,9 @@ fun LectureList(
                         displaySubgroup = displaySubgroup
                     ),
                     onClick = { onLectureClick(lecture, scheduleDay) },
-                    stateText = lectureStateTextSimple(state),
+                    stateText = simpleLectureStateString(state),
                     stateTimerText = if (state is LectureState.HasTimeToEnd) {
-                        lectureStateTimeToEndText(state)
+                        lectureStateTimeToEndString(state)
                     } else null,
                     colors = when (state) {
                         is LectureState.Ongoing -> highlightedCardColors

@@ -1,5 +1,8 @@
 package aelsi2.natkschedule.data.repositories.natk_database
 
+import aelsi2.natkschedule.data.natk_database.NatkDatabase
+import aelsi2.natkschedule.data.natk_database.NatkDatabaseDataParser
+import aelsi2.natkschedule.data.natk_database.map
 import aelsi2.natkschedule.data.repositories.ScheduleDayRepository
 import aelsi2.natkschedule.data.time.TimeManager
 import aelsi2.natkschedule.model.*

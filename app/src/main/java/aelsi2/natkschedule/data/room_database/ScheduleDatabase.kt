@@ -19,7 +19,7 @@ import androidx.room.TypeConverters
         ScheduleDayEntity::class,
         LectureDataEntity::class
     ],
-    version = 4
+    version = 5
 )
 @TypeConverters(DateConverter::class, TimeConverter::class, ScheduleIdentifierConverter::class)
 abstract class ScheduleDatabase : RoomDatabase() {

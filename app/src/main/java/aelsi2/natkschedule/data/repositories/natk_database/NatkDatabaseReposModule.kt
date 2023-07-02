@@ -7,8 +7,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val natkDatabaseReposModule = module {
-    singleOf(::NatkDatabase)
-    singleOf(::NatkDatabaseDataParser)
     singleOf(::NatkDatabaseScheduleDayRepository) bind ScheduleDayRepository::class
     singleOf(::NatkDatabaseScheduleAttributeRepository) bind ScheduleAttributeRepository::class
 }

@@ -32,7 +32,7 @@ data class LectureEntity(
     val lectureEndTime: LocalTime?,
     val lectureBreakStartTime: LocalTime?,
     val lectureBreakEndTime: LocalTime?,
-    val lectureDisciplineId: String,
+    val lectureDisciplineId: String?,
 ) {
     @PrimaryKey(autoGenerate = true) var lectureId: Long = 0
     companion object {
@@ -44,7 +44,7 @@ data class LectureEntity(
                 lecture.endTime,
                 lecture.breakStartTime,
                 lecture.breakEndTime,
-                lecture.discipline.id
+                lecture.discipline?.id
             )
     }
 }
