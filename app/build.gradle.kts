@@ -20,8 +20,8 @@ android {
         applicationId = "aelsi2.natkschedule"
         minSdk = 24
         targetSdk = 33
-        versionCode = 2
-        versionName = "0.2"
+        versionCode = 3
+        versionName = "0.3-demo"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -52,6 +52,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
     }
+    flavorDimensions += listOf()
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
