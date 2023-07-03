@@ -5,6 +5,7 @@ import aelsi2.natkschedule.data.natk_database.natkDatabaseModule
 import aelsi2.natkschedule.data.room_database.roomDatabaseModule
 import aelsi2.natkschedule.data.network.networkModule
 import aelsi2.natkschedule.data.preferences.preferencesModule
+import aelsi2.natkschedule.data.repositories.demo.demoReposModule
 import aelsi2.natkschedule.data.repositories.natk_database.natkDatabaseReposModule
 import aelsi2.natkschedule.data.repositories.room_database.roomDatabaseReposModule
 import aelsi2.natkschedule.data.time.timeModule
@@ -28,6 +29,7 @@ class ScheduleApplication : Application() {
                 natkDatabaseModule,
                 natkDatabaseReposModule,
                 roomDatabaseReposModule,
+                demoReposModule,
                 preferencesModule,
                 networkModule,
                 backgroundWorkModule,
