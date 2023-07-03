@@ -11,20 +11,20 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 val DEMO_GROUP = Group(
-    name = "ХД-69.420",
+    name = "ПР-77.101",
     programName = "01.02.03",
     year = 3
 )
 val DEMO_CLASSROOM = Classroom(
-    shortName = "№666",
-    fullName = "Призывная аудитория №666",
-    address = "Зеленый проспект 72"
+    shortName = "№999",
+    fullName = "Лекционная аудитория №999",
+    address = "Зеленый проспект 88"
 )
 val DEMO_TEACHER = Teacher(
     fullName = "Вонави Нави Чивонави",
     shortName = "Вонави Н. Ч."
 )
-val DEMO_DISCIPLINE = Discipline("Имитация бурной деятельности")
+val DEMO_DISCIPLINE = Discipline("Разработка искусственного интеллекта")
 
 private const val DAY_LECTURE_COUNT = 5
 
